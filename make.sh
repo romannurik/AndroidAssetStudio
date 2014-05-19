@@ -14,30 +14,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-rm -rf dist
-mkdir -p dist
-mkdir -p dist/js
-#mkdir -p dist/images
-mkdir -p dist/css
+rm -rf _gh-pages/*
+mkdir -p _gh-pages/js
+mkdir -p _gh-pages/lib
+mkdir -p _gh-pages/css
 
 cd src/
-#find images -iname \*.png -exec pngcrush {} ../dist/{} \;
 
 cd js/
 ant clean
 ant dist
 cd ..
 
-find css -iname \*.css -exec java -jar ../lib/yuicompressor-2.4.2.jar -o ../dist/{} {} \;
+find css -iname \*.css -exec java -jar ../lib/yuicompressor-2.4.2.jar -o ../_gh-pages/{} {} \;
 
-cp -rf lib/ ../dist/lib/
+cp -rf lib/ ../_gh-pages/lib/
 
-cp -rf res/ ../dist/res/
+cp -rf res/ ../_gh-pages/res/
 
 cd html
-#find . -iname \*.html -exec java -jar ../../lib/htmlcompressor-0.9.jar --remove-intertag-spaces --remove-quotes -o ../out/{} {} \;
-find . -iname \*.html -exec cp {} ../../dist/{} \;
-#find . -iname \*.manifest -exec cp {} ../../dist/{} \;
-#find . -iname .htaccess -exec cp {} ../../dist/{} \;
+find . -iname \*.html -exec cp {} ../../_gh-pages/{} \;
 cd ..
 cd ..
