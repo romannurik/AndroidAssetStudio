@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <!--
+    Copyright 2010 Google Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+  -->
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Android Asset Studio - Icon Generator - Menu icons (pre-Android 3.0)</title>
+
+    <link rel="stylesheet" href="lib/cssreset-3.4.1.min.css">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:regular,medium,thin,italic,mediumitalic,bold" title="roboto">
+    <link rel="stylesheet" href="css/studio.css">
+
+    <script src="lib/jquery.min.js"></script>
+
+    <!-- canvg used to work around <img src=SVG> toDataURL security issues -->
+    <!-- see code.google.com/p/chromium/issues/detail?id=54204 -->
+    <script src="lib/canvg/rgbcolor.js"></script> 
+    <script src="lib/canvg/canvg.js"></script>
+
+    <!-- prereq. for asset studio lib -->
+    <link rel="stylesheet" href="lib/spectrum/spectrum-assetstudio.css">
+    <script src="lib/spectrum/spectrum.js"></script>
+    <script src="lib/jszip/jszip.js"></script>
+
+    <script src="js/asset-studio.pack.js"></script>
+
+    <!-- TODO: remove Analytics tracking if you're building the tools locally! -->
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-18671401-1']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="main-container">
+      <div id="page-header">
+        <a href="index.html">Android Asset Studio</a>
+        <h1>Menu Icon Generator (pre-Android 3.0)</h1>
+      </div>
+      <div id="inputs">
+        <div id="inputs-form"></div>
+      </div>
+      <div id="outputs">
+        <h3>
+          <div id="zip-button-stub"></div>
+        </h3>
+      </div>
+      <div id="footer">
+        <p>See the source at the <a href="http://code.google.com/p/android-ui-utils">android-ui-utils</a> Google Code project.</p>
+        <p>All generated art is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>. <a href="attribution.html">Attribution info</a></p>
+      </div>
+    </div>
+
+    <script>
+      $(studio.checkBrowser);
+      imagelib.ALLOW_MANUAL_RESCALE = true;
+
+      var zipper = studio.zip.createDownloadifyZipButton($('#zip-button-stub'));
+
+      // Create image output slots
+      var group = studio.ui.createImageOutputGroup({
+        container: $('#outputs')
+      });
+      for (var density in {'xhdpi':1, 'hdpi':1, 'mdpi':1})
+        studio.ui.createImageOutputSlot({
+          container: group,
+          id: 'out-icon-' + density,
+          label: density
+        });
+
+      var PARAM_RESOURCES = {
+        'iconSize': { w: 48, h: 48 },
+        'targetRect': { x: 8, y: 8, w: 32, h: 32 },
+      };
+
+      /**
+       * Main image generation routine.
+       */
+      function regenerate() {
+        var values = form.getValues();
+        var sourceName = values['source'].name;
+
+        var iconName = 'ic_menu_' + values['name'];
+        zipper.clear();
+        zipper.setZipFilename(iconName + '.zip');
+
+        if (!values['source'].ctx) {
+          return;
+        }
+
+        var srcCtx = values['source'].ctx;
+        var srcSize = { w: srcCtx.canvas.width, h: srcCtx.canvas.height };
+        var srcRect = { x: 0, y: 0, w: srcSize.w, h: srcSize.h };
+
+        for (var density in {'xhdpi':1, 'hdpi':1, 'mdpi':1}) {
+          var mult = studio.util.getMultBaseMdpi(density);
+          var iconSize = studio.util.multRound(
+              PARAM_RESOURCES['iconSize'], mult);
+          var targetRect = studio.util.multRound(
+              PARAM_RESOURCES['targetRect'], mult);
+
+          var outCtx = imagelib.drawing.context(iconSize);
+          var tmpCtx = imagelib.drawing.context(iconSize);
+
+          imagelib.drawing.drawCenterInside(tmpCtx, srcCtx, targetRect, srcRect);
+
+          imagelib.drawing.fx([
+            {
+              effect: 'inner-shadow',
+              color: '#000',
+              opacity: 0.2,
+              blur: 3 * mult,
+              translate: { y: 3 * mult }
+            },
+            {
+              effect: 'inner-shadow',
+              color: '#000',
+              opacity: 0.35,
+              translate: { y: 1 }
+            },
+            {
+              effect: 'inner-shadow',
+              color: '#fff',
+              opacity: 0.35,
+              translate: { y: -1 }
+            },
+            {
+              effect: 'fill-lineargradient',
+              from: { x: 0, y: 0 },
+              to: { x: 0, y: iconSize.h },
+              colors: [
+                { offset: 0, color: '#a3a3a3' },
+                { offset: 1.0, color: '#787878' }
+              ]
+            }
+          ], outCtx, tmpCtx, iconSize);
+
+          var continue_ = function(outCtx) {
+            zipper.add({
+              name: 'res/drawable-' + density + '/' + iconName + '.png',
+              base64data: outCtx.canvas.toDataURL().match(/;base64,(.+)/)[1]
+            });
+
+            imagelib.loadFromUri(outCtx.canvas.toDataURL(), function(density) {
+              return function(img) {
+                $('#out-icon-' + density).attr('src', img.src);
+              };
+            }(density));
+          };
+
+          if (values['recenter'] != 'none') {
+            imagelib.drawing.getCenterOfMass(outCtx, iconSize, 1, function(massCenter) {
+              var recenteredOutCtx = imagelib.drawing.context(iconSize);
+              recenteredOutCtx.drawImage(outCtx.canvas, 0, 0, iconSize.w, iconSize.h,
+                  (values['recenter'] == 'horz' || values['recenter'] == 'both')
+                      ? (iconSize.w / 2 - massCenter.x) : 0,
+                  (values['recenter'] == 'vert' || values['recenter'] == 'both')
+                      ? (iconSize.h / 2 - massCenter.y) : 0,
+                  iconSize.w, iconSize.h);
+              continue_(recenteredOutCtx);
+            });
+          } else {
+            continue_(outCtx);
+          }
+        }
+      }
+
+      var form = new studio.forms.Form('iconform', {
+        onChange: regenerate,
+        fields: [
+          new studio.forms.ImageField('source', {
+            title: 'Source',
+            helpText: 'Must be transparent',
+            defaultValueTrim: 1
+          }),
+          new studio.forms.TextField('name', {
+            title: 'Name',
+            helpText: 'Used when generating ZIP files. Becomes <code>ic_menu_&lt;name&gt;</code>.',
+            defaultValue: 'example'
+          })
+        ]
+      });
+      form.createUI($('#inputs-form').get(0));
+      studio.hash.bindFormToDocumentHash(form);
+    </script>
+  </body>
+</html>

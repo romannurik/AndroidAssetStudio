@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="96px"
+	 height="96px" viewBox="0 0 96 96" enable-background="new 0 0 96 96" xml:space="preserve">
+<g id="_x31_0_device_access_mic">
+	<path fill-rule="evenodd" clip-rule="evenodd" fill="#333333" d="M36.656,45.439V23.345
+		c0-6.262,5.08-11.338,11.341-11.338s11.338,5.076,11.338,11.338v22.094c0,6.264-5.077,11.338-11.338,11.338
+		S36.656,51.703,36.656,45.439z M74.432,45.844h-7.764c0,10.312-8.355,18.668-18.671,18.668s-18.671-8.355-18.671-18.668h-7.792
+		c0,13.324,9.854,24.346,22.671,26.18v11.982h7.854V71.982C64.734,70.02,74.432,59.068,74.432,45.844z"/>
+</g>
+</svg>

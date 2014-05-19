@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="96px"
+	 height="96px" viewBox="0 0 96 96" enable-background="new 0 0 96 96" xml:space="preserve">
+<g id="_x31_2_hardware_mouse">
+	<g display="inline">
+		<g>
+			<path fill="#333333" d="M72.904,45.025H23.213c-0.266,3.433-0.352,5.27-0.352,8.611c0,18.669,0,31.804,25.111,31.804
+				s25.111-13.135,25.111-31.804C73.084,50.295,73.289,48.458,72.904,45.025z M51.002,10.562v28.578h21.826
+				C70.846,24.314,66.116,11.129,51.002,10.562z M45.006,10.56c-17.081,0.505-20.24,13.721-21.653,28.581h21.653V10.56z"/>
+		</g>
+	</g>
+</g>
+</svg>

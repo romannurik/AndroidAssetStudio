@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <!--
+    Copyright 2010 Google Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+  -->
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Android Asset Studio - Icon Generator - Action bar and tab icons</title>
+
+    <link rel="stylesheet" href="lib/cssreset-3.4.1.min.css">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:regular,medium,thin,italic,mediumitalic,bold" title="roboto">
+    <link rel="stylesheet" href="css/studio.css">
+
+    <script src="lib/jquery.min.js"></script>
+
+    <!-- canvg used to work around <img src=SVG> toDataURL security issues -->
+    <!-- see code.google.com/p/chromium/issues/detail?id=54204 -->
+    <script src="lib/canvg/rgbcolor.js"></script> 
+    <script src="lib/canvg/canvg.js"></script>
+
+    <!-- prereq. for asset studio lib -->
+    <link rel="stylesheet" href="lib/spectrum/spectrum-assetstudio.css">
+    <script src="lib/spectrum/spectrum.js"></script>
+    <script src="lib/jszip/jszip.js"></script>
+
+    <script src="js/asset-studio.pack.js"></script>
+
+    <!-- TODO: remove Analytics tracking if you're building the tools locally! -->
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-18671401-1']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="main-container">
+      <div id="page-header">
+        <a href="index.html">Android Asset Studio</a>
+        <h1>Action Bar and Tab Icon Generator</h1>
+      </div>
+      <div id="inputs">
+        <div id="inputs-form"></div>
+      </div>
+      <div id="outputs">
+        <h3>
+          <div id="zip-button-stub"></div>
+        </h3>
+      </div>
+      <div id="footer">
+        <p>See the source at the <a href="http://code.google.com/p/android-ui-utils">android-ui-utils</a> Google Code project.</p>
+        <p>All generated art is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>. <a href="attribution.html">Attribution info</a></p>
+      </div>
+    </div>
+
+    <script>
+      $(studio.checkBrowser);
+      studio.AUTO_TRIM = true;
+      imagelib.ALLOW_MANUAL_RESCALE = true;
+
+      var zipper = studio.zip.createDownloadifyZipButton($('#zip-button-stub'));
+
+      // Create image output slots
+      var group = studio.ui.createImageOutputGroup({
+        container: $('#outputs')
+      });
+      for (var density in {'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1})
+        studio.ui.createImageOutputSlot({
+          container: group,
+          id: 'out-icon-' + density,
+          label: density
+        });
+
+      var PARAM_RESOURCES = {
+        'iconSize': { w: 32, h: 32 },
+        'targetRect-noclipart': { x: 4, y: 4, w: 24, h: 24 },
+        'targetRect-clipart': { x: 0, y: 0, w: 32, h: 32 }
+      };
+
+      /**
+       * Main image generation routine.
+       */
+      function regenerate() {
+        var values = form.getValues();
+        var sourceName = values['source'].name;
+
+        // TODO: poor abstraction here
+        $('.out-image-group').toggleClass('dark', values['theme'] == 'dark');
+
+        var iconName = values['name'];
+        zipper.clear();
+        zipper.setZipFilename(iconName + '.zip');
+
+        if (!values['source'].ctx) {
+          return;
+        }
+
+        var srcCtx = values['source'].ctx;
+        var srcSize = { w: srcCtx.canvas.width, h: srcCtx.canvas.height };
+        var srcRect = { x: 0, y: 0, w: srcSize.w, h: srcSize.h };
+
+        for (var density in {'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1}) {
+          var mult = studio.util.getMultBaseMdpi(density);
+          var iconSize = studio.util.multRound(
+              PARAM_RESOURCES['iconSize'], mult);
+          var targetRect;
+          if (values['source'].type == 'clipart') {
+            targetRect = studio.util.multRound(PARAM_RESOURCES['targetRect-clipart'], mult);
+          } else {
+            targetRect = studio.util.multRound(PARAM_RESOURCES['targetRect-noclipart'], mult);
+          }
+
+          var outCtx = imagelib.drawing.context(iconSize);
+          var tmpCtx = imagelib.drawing.context(iconSize);
+
+          imagelib.drawing.drawCenterInside(tmpCtx, srcCtx, targetRect, srcRect);
+
+          if (values['theme'] == 'light') {
+            imagelib.drawing.fx([
+              {
+                effect: 'fill-color',
+                color: '#333333',
+                opacity: 0.6
+              }
+            ], outCtx, tmpCtx, iconSize);
+          } else if (values['theme'] == 'dark') {
+            imagelib.drawing.fx([
+              {
+                effect: 'fill-color',
+                color: '#ffffff',
+                opacity: 0.8
+              }
+            ], outCtx, tmpCtx, iconSize);
+          } else {
+            imagelib.drawing.fx([
+              {
+                effect: 'fill-color',
+                color: values['color'].color,
+                opacity: values['color'].alpha / 100
+              }
+            ], outCtx, tmpCtx, iconSize);
+          }
+
+          zipper.add({
+            name: 'res/drawable-' + density + '/' + iconName + '.png',
+            base64data: outCtx.canvas.toDataURL().match(/;base64,(.+)/)[1]
+          });
+
+          imagelib.loadFromUri(outCtx.canvas.toDataURL(), function(density) {
+            return function(img) {
+              $('#out-icon-' + density).attr('src', img.src);
+            };
+          }(density));
+        }
+      }
+
+      var nameField;
+      var form = new studio.forms.Form('iconform', {
+        onChange: function(field) {
+          var values = form.getValues();
+          if ((!field || field.id_ == 'source')
+              && values['source'] && values['source'].name) {
+            var name = values['source'].name.split('.')[0];
+            name = 'ic_action_' + studio.util.sanitizeResourceName(name);
+            if (name != nameField.getValue()) {
+              nameField.setValue(name);
+            }
+          }
+          customColorField.setEnabled(values['theme'] == 'custom');
+
+          regenerate();
+        },
+        fields: [
+          new studio.forms.ImageField('source', {
+            title: 'Source',
+            helpText: 'Must be transparent',
+            defaultValueTrim: 1
+          }),
+          (nameField = new studio.forms.TextField('name', {
+            title: 'Name',
+            helpText: 'Used when generating ZIP files.',
+            defaultValue: 'ic_action_example'
+          })),
+          new studio.forms.EnumField('theme', {
+            title: 'Theme',
+            buttons: true,
+            options: [
+              { id: 'light', title: 'Holo Light' },
+              { id: 'dark', title: 'Holo Dark' },
+              { id: 'custom', title: 'Custom' }
+            ],
+            defaultValue: 'light'
+          }),
+          (customColorField = new studio.forms.ColorField('color', {
+            title: 'Custom color',
+            defaultValue: '#33b5e5',
+            alpha: true,
+            defaultAlpha: 60
+          }))
+        ]
+      });
+      form.createUI($('#inputs-form').get(0));
+      studio.hash.bindFormToDocumentHash(form);
+    </script>
+  </body>
+</html>

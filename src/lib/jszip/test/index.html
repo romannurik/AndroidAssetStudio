@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JavaScript Zip Testing</title>
+<link media="screen" href="qunit.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="../jszip.js"></script>
+<script type="text/javascript" src="../jszip-deflate.js"></script>
+<script type="text/javascript" src="qunit.js"></script>
+<script type="text/javascript">
+
+function similar(actual, expected, mistakes)
+{
+   if (actual.length !== expected.length) mistakes--;
+
+   for (var i = 0; i < Math.min(actual.length, expected.length); i++)
+   {
+      if (actual[i] !== expected[i]) mistakes--;
+   }
+
+   if (mistakes < 0)
+      return false;
+   else
+      return true;
+}
+
+   var refZips = [];
+   refZips["text"]=JSZipBase64.decode("UEsDBAoDAAAAAJx08Trj5ZWwDAAAAAwAAAAJAAAASGVsbG8udHh0SGVsbG8gV29ybGQKUEsBAhQDCgMAAAAAnHTxOuPllbAMAAAADAAAAAkAAAAAAAAAAAAggKSBAAAAAEhlbGxvLnR4dFBLBQYAAAAAAQABADcAAAAzAAAAAAA=");
+   refZips["utf8"]=JSZipBase64.decode("UEsDBAoAAAAAAJp95Tx8M2u8CgAAAAoAAAAKAAAAYW1vdW50LnR4dMOi4oCawqwxNQpQSwECFAAKAAAAAACafeU8fDNrvAoAAAAKAAAACgAAAAAAAAAAAAAAAAAAAAAAYW1vdW50LnR4dFBLBQYAAAAAAQABADgAAAAyAAAAAAA=");
+   refZips["image"]=JSZipBase64.decode("UEsDBAoDAAAAABVv6jo8P+uKKQAAACkAAAAJAAAAc21pbGUuZ2lmR0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADtQSwECFAMKAwAAAAAVb+o6PD/riikAAAApAAAACQAAAAAAAAAAACCApIEAAAAAc21pbGUuZ2lmUEsFBgAAAAABAAEANwAAAFAAAAAAAA==");
+   refZips["folder"]=JSZipBase64.decode("UEsDBAoDAAAAAANt8zoAAAAAAAAAAAAAAAAHAAAAZm9sZGVyL1BLAQIUAwoDAAAAAANt8zoAAAAAAAAAAAAAAAAHAAAAAAAAAAAAEIDtQQAAAABmb2xkZXIvUEsFBgAAAAABAAEANQAAACUAAAAAAA==");
+   refZips["all"]=JSZipBase64.decode("UEsDBAoDAAAAAJxs8Trj5ZWwDAAAAAwAAAAJAAAASGVsbG8udHh0SGVsbG8gV29ybGQKUEsDBAoDAAAAALFs8ToAAAAAAAAAAAAAAAAHAAAAaW1hZ2VzL1BLAwQKAwAAAAAVZ+o6PD/riikAAAApAAAAEAAAAGltYWdlcy9zbWlsZS5naWZHSUY4N2EFAAUAgAIAAAAA/94ALAAAAAAFAAUAAAIIjA+RZ6sKUgEAO1BLAQIUAwoDAAAAAJxs8Trj5ZWwDAAAAAwAAAAJAAAAAAAAAAAAIICkgQAAAABIZWxsby50eHRQSwECFAMKAwAAAACxbPE6AAAAAAAAAAAAAAAABwAAAAAAAAAAABCA7UEzAAAAaW1hZ2VzL1BLAQIUAwoDAAAAABVn6jo8P+uKKQAAACkAAAAQAAAAAAAAAAAAIICkgVgAAABpbWFnZXMvc21pbGUuZ2lmUEsFBgAAAAADAAMAqgAAAK8AAAAAAA==");
+   refZips["STORE-text"]=JSZipBase64.decode("UEsDBAoAAAAAANRxmDyTTw7hXgAAAF4AAAAJAAAASGVsbG8udHh0VGhpcyBhIGxvb29uZyBmaWxlIDogd2UgbmVlZCB0byBzZWUgdGhlIGRpZmZlcmVuY2UgYmV0d2VlbiB0aGUgZGlmZmVyZW50IGNvbXByZXNzaW9uIG1ldGhvZHMuClBLAQIeAwoAAAAAANRxmDyTTw7hXgAAAF4AAAAJAAAAAAAAAAAAAACkgQAAAABIZWxsby50eHRQSwUGAAAAAAEAAQA3AAAAhQAAAAAA");
+   refZips["DEFLATE-text"]=JSZipBase64.decode("UEsDBBQAAAAIANRxmDyTTw7hSQAAAF4AAAAJAAAASGVsbG8udHh0VcixDYAwDATAnil+AgZgDhaA+EMsJTaKLWV9aq68s2ngQnd3e1C1EwcWYaQgHUEiGyFaKyetEDdzkfbrRPHxTkaoGwazucS+fVBLAQIeAxQAAAAIANRxmDyTTw7hSQAAAF4AAAAJAAAAAAAAAAEAAACkgQAAAABIZWxsby50eHRQSwUGAAAAAAEAAQA3AAAAcAAAAAAA");
+
+   test("JSZip", function(){
+      ok(JSZip, "JSZip exists");
+
+      var zip = new JSZip();
+      ok(zip, "Constructor works");
+   });
+
+   module("Essential");
+
+   test("Zip text file", function()
+   {
+      // If anyone can work out how to get binary data over AJAX without it
+      // being mangled by UTF-8 transforms, I would be very grateful
+      var expected = refZips["text"];
+
+      var zip = new JSZip();
+      zip.add("Hello.txt", "Hello World\n");
+      content = zip.generate();
+
+      var actual = JSZipBase64.decode(content);
+
+      /*
+      Expected differing bytes:
+      2  version number
+      4  date/time
+      4  central dir version numbers
+      4  central dir date/time
+      4  external file attributes
+
+      18 Total
+      */
+      ok(similar(actual, expected, 18) , "Generated ZIP matches reference ZIP");
+
+   });
+
+   test("Zip text file with UTF-8 characters", function()
+   {
+      var expected = refZips["utf8"];
+
+      var zip = new JSZip();
+      zip.add("amount.txt", "€15\n");
+      content = zip.generate();
+
+      var actual = JSZipBase64.decode(content);
+
+      ok(similar(actual, expected, 18) , "Generated ZIP matches reference ZIP");
+
+   });
+
+   test("Zip text file with date", function()
+   {
+      var expected = refZips["text"];
+
+      var zip = new JSZip();
+	  zip.add("Hello.txt", "Hello World\n", {date : new Date("July 17, 2009 14:36:57")});
+      content = zip.generate();
+
+      var actual = JSZipBase64.decode(content);
+
+      /*
+      Expected differing bytes:
+      2  version number
+      4  central dir version numbers
+      4  external file attributes
+
+      10 Total
+      */
+      ok(similar(actual, expected, 10) , "Generated ZIP matches reference ZIP");
+
+   });
+
+
+   test("Zip image file", function()
+   {
+      var expected = refZips["image"];
+
+      var zip = new JSZip();
+      zip.add("smile.gif", "R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=", {base64: true});
+      content = zip.generate();
+
+      actual = JSZipBase64.decode(content);
+
+      ok(similar(actual, expected, 18) , "Generated ZIP matches reference ZIP");
+
+   });
+
+   test("Zip empty folder", function()
+   {
+      var expected = refZips["folder"];
+
+      var zip = new JSZip();
+      zip.folder("folder");
+      content = zip.generate();
+
+      actual = JSZipBase64.decode(content);
+
+      ok(similar(actual, expected, 18) , "Generated ZIP matches reference ZIP");
+
+   });
+
+   test("Zip text, folder and image", function()
+   {
+      var expected = refZips["all"];
+
+      var zip = new JSZip();
+      zip.add("Hello.txt", "Hello World\n");
+      zip.folder("images").add("smile.gif", "R0lGODdhBQAFAIACAAAAAP/eACwAAAAABQAFAAACCIwPkWerClIBADs=", {base64: true});
+      content = zip.generate();
+
+      actual = JSZipBase64.decode(content);
+
+      /*
+      Expected differing bytes:
+      2  version number
+      4  date/time
+      4  central dir version numbers
+      4  central dir date/time
+      4  external file attributes
+
+      18 * 3 files
+      54 Total
+      */
+
+      //console.log("data:application/zip;base64,"+content);
+      ok(similar(actual, expected, 54) , "Generated ZIP matches reference ZIP");
+   });
+
+   test("Finding a file", function()
+   {
+      var zip = new JSZip();
+      zip.add("Readme", "Hello World!\n");
+      zip.add("Readme.French", "Bonjour tout le monde!\n");
+      zip.add("Readme.Pirate", "Ahoy m'hearty!\n");
+
+      ok(1 === zip.find("Readme").length, "Exact match found");
+      ok(0 === zip.find("French").length, "Match exactly nothing");
+      ok(2 === zip.find(/Readme\../).length, "Match regex free text");
+   });
+
+   module("More advanced");
+
+   test("Delete file", function()
+   {
+      var expected = refZips["text"];
+
+      var zip = new JSZip();
+      zip.add("Remove.txt", "This file should be deleted\n");
+      zip.add("Hello.txt", "Hello World\n");
+      zip.remove("Remove.txt");
+      content = zip.generate();
+
+      actual = JSZipBase64.decode(content);
+
+      ok(similar(actual, expected, 18) , "Generated ZIP matches reference ZIP");
+
+   });
+
+   test("Delete folder", function()
+   {
+      var expected = refZips["text"];
+
+      var zip = new JSZip();
+      zip.folder("remove").add("Remove.txt", "This folder and file should be deleted\n");
+      zip.add("Hello.txt", "Hello World\n");
+      zip.remove("remove");
+      content = zip.generate();
+
+      actual = JSZipBase64.decode(content);
+
+      ok(similar(actual, expected, 18) , "Generated ZIP matches reference ZIP");
+
+   });
+
+   test("Delete nested folders", function()
+   {
+      var expected = refZips["text"];
+
+      var zip = new JSZip();
+      zip.folder("remove").add("Remove.txt", "This folder and file should be deleted\n");
+      zip.folder("remove/second").add("Sub.txt", "This should be removed");
+      zip.add("remove/second/another.txt", "Another file");
+      zip.add("Hello.txt", "Hello World\n");
+      zip.remove("remove");
+      content = zip.generate();
+
+      actual = JSZipBase64.decode(content);
+
+      ok(similar(actual, expected, 18) , "Generated ZIP matches reference ZIP");
+
+   });
+
+   test("Byte string output", function()
+   {
+      var expected = refZips["text"];
+
+      var zip = new JSZip();
+      zip.add("Hello.txt", "Hello World\n");
+      content = zip.generate(true);
+
+      var actual = content;
+      ok(similar(actual, expected, 18) , "Generated ZIP matches reference ZIP");
+   });
+
+   test("STORE is the default method", function()
+   {
+      var expected = refZips["text"];
+
+      var zip = new JSZip("STORE");
+      zip.add("Hello.txt", "Hello World\n");
+      content = zip.generate();
+
+      actual = JSZipBase64.decode(content);
+
+	  // no difference with the "Zip text file" test.
+      ok(similar(actual, expected, 18) , "Generated ZIP matches reference ZIP");
+   });
+
+   test("STORE doesn't compress", function()
+   {
+      var expected = refZips["STORE-text"]; // zip -0 -X store.zip Hello.txt
+
+      var zip = new JSZip("STORE");
+      zip.add("Hello.txt", "This a looong file : we need to see the difference between the different compression methods.\n");
+      content = zip.generate();
+
+      actual = JSZipBase64.decode(content);
+
+      ok(similar(actual, expected, 18) , "Generated ZIP matches reference ZIP");
+   });
+
+
+   test("DEFLATE compress", function()
+   {
+      var expected = refZips["DEFLATE-text"]; // zip -6 -X deflate.zip Hello.txt
+
+      var zip = new JSZip("DEFLATE");
+      zip.add("Hello.txt", "This a looong file : we need to see the difference between the different compression methods.\n");
+      content = zip.generate();
+
+      actual = JSZipBase64.decode(content);
+
+      ok(similar(actual, expected, 18) , "Generated ZIP matches reference ZIP");
+   });
+
+
+
+</script>
+</head>
+<body>
+
+	<h1 id="qunit-header">JSZip Testing</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+</body>
+</html>

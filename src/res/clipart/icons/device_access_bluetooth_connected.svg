@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="96px"
+	 height="96px" viewBox="0 0 96 96" enable-background="new 0 0 96 96" xml:space="preserve">
+<g id="_x31_0_device_access_bluetooth_connected">
+	<g display="inline">
+		<g>
+			<polygon fill="#333333" points="63.889,47.995 77.592,60.314 77.592,35.688 			"/>
+		</g>
+		<g>
+			<path fill="#333333" d="M67.09,34.149L45.08,12.604V44.09L31.723,31.687l-3.138,3.387L42.509,48L28.585,60.93l3.138,3.383
+				L45.08,51.914v31.482l22.01-21.545L53.238,46.461L67.09,34.149z M50.93,24.829l9.234,9.32l-9.234,7.695V24.829z M60.164,61.852
+				l-9.234,9.32V51.848L60.164,61.852z"/>
+		</g>
+		<g>
+			<polygon fill="#333333" points="18.408,35.688 18.408,60.314 32.105,48.004 			"/>
+		</g>
+	</g>
+</g>
+</svg>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="96px"
+	 height="96px" viewBox="0 0 96 96" enable-background="new 0 0 96 96" xml:space="preserve">
+<g id="_x31_0_device_access_dial_pad">
+	<g display="inline">
+		<g>
+			<path fill="#333333" d="M20.943,25.326h13.806V11.967H20.943V25.326z M40.929,25.396H54.97V11.967H40.929V25.396z M20.943,45.12
+				h13.806V31.598H20.943V45.12z M40.742,44.979H54.97V31.598H40.742V44.979z M75.057,11.967H61.18v13.452h13.877V11.967z
+				 M61.18,31.598v13.382h13.947V31.598H61.18z M20.873,64.502h13.876V50.979H20.873V64.502z M40.742,64.432H54.97v-13.34H40.742
+				V64.432z M61.18,64.432h13.877V51.049H61.18V64.432z M40.742,84.033H54.97V70.482H40.742V84.033z"/>
+		</g>
+	</g>
+</g>
+</svg>

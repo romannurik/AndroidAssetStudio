@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="96px"
+	 height="96px" viewBox="0 0 96 96" enable-background="new 0 0 96 96" xml:space="preserve">
+<g id="_x31_0_device_access_screen_locked_to_portrait">
+	<g display="inline">
+		<path fill-rule="evenodd" clip-rule="evenodd" fill="#333333" d="M31.226,43.098c0-3.941,3.211-7.151,7.151-7.151
+			c3.952,0,7.162,3.21,7.162,7.151v5.151H31.226V43.098z M50.031,48.249v-5.151c0-6.422-5.232-11.643-11.654-11.643
+			s-11.652,5.221-11.652,11.643v5.151h-5.271v17.636h33.859V48.249H50.031z"/>
+		<polygon fill="#333333" points="36.736,79.059 36.736,70.446 40.519,70.446 40.519,75.207 70.768,75.207 70.768,20.792 
+			40.519,20.792 40.519,27.124 36.736,27.124 36.736,16.941 74.547,16.941 74.547,79.059 		"/>
+	</g>
+</g>
+</svg>

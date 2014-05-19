@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="96px"
+	 height="96px" viewBox="0 0 96 96" enable-background="new 0 0 96 96" xml:space="preserve">
+<g id="_x39__av_pause_over_video">
+	<g display="inline">
+		<rect x="32.531" y="32.53" fill="#333333" width="12.376" height="30.939"/>
+		<rect x="51.094" y="32.53" fill="#333333" width="12.375" height="30.939"/>
+	</g>
+	<g display="inline">
+		<path fill-rule="evenodd" clip-rule="evenodd" fill="#333333" d="M47.998,10.926c-20.439,0-37.069,16.632-37.069,37.075
+			c0,20.442,16.63,37.073,37.069,37.073c20.442,0,37.073-16.631,37.073-37.073C85.071,27.558,68.44,10.926,47.998,10.926z
+			 M47.998,81.165c-18.285,0-33.16-14.876-33.16-33.164s14.875-33.167,33.16-33.167c18.287,0,33.164,14.879,33.164,33.167
+			S66.285,81.165,47.998,81.165z"/>
+	</g>
+</g>
+</svg>

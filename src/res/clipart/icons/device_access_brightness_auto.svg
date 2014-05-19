@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="96px"
+	 height="96px" viewBox="0 0 96 96" enable-background="new 0 0 96 96" xml:space="preserve">
+<g id="_x31_0_device_access_brightness_auto">
+	<g display="inline">
+		<g>
+			<path fill="#333333" d="M47.927,40.047l-3.607,10.678h7.34l-3.607-10.678H47.927z M72.819,48.002l7.854-7.458L70.364,37.23
+				L74.2,27.105l-10.725,1.491L62.54,17.81l-9.014,5.993l-5.525-9.314l-5.521,9.314l-9.02-5.993l-0.936,10.787L21.8,27.105
+				l3.84,10.125l-10.312,3.313l7.854,7.458l-7.854,7.458l10.312,3.311L21.8,68.895l10.725-1.489l0.936,10.787l9.02-5.993
+				l5.521,9.312l5.525-9.312l9.014,5.993l0.936-10.787L74.2,68.895l-3.836-10.124l10.309-3.311L72.819,48.002z M55.31,61.549
+				l-2.115-6.262h-10.41l-2.115,6.262h-6.055L45.065,32.52h5.908l10.41,29.029H55.31z"/>
+		</g>
+	</g>
+</g>
+</svg>

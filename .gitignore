@@ -1,0 +1,9 @@
+.DS_Store
+Thumbs.db
+*.pyc
+*.iws
+_sandbox
+local.properties
+gen
+bin
+out

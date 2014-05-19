@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html>
+  <!--
+    Copyright 2011 Google Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+  -->
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Android Asset Studio - Simple Nine-patch Generator</title>
+
+    <link rel="stylesheet" href="lib/cssreset-3.4.1.min.css">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:regular,medium,thin,italic,mediumitalic,bold" title="roboto">
+    <link rel="stylesheet" href="css/studio.css">
+
+    <script src="lib/jquery.min.js"></script>
+
+    <!-- prereq. for asset studio lib -->
+    <script src="lib/jszip/jszip.js"></script>
+
+    <script src="js/asset-studio.pack.js"></script>
+    
+    <style>
+      #main-container {
+        width: 1000px;
+      }
+
+      #instage-container {
+        width: 100%;
+        display: box;
+        box-orient: horizontal;
+        box-pack: justify;
+        box-align: justify;
+
+        display: -webkit-box;
+        -webkit-box-orient: horizontal;
+        -webkit-box-pack: justify;
+        -webkit-box-align: justify;
+
+        display: -moz-box;
+        -moz-box-orient: horizontal;
+        -moz-box-pack: justify;
+        -moz-box-align: justify;
+      }
+
+      #inputs {
+                box-flex: 1;
+        -webkit-box-flex: 1;
+           -moz-box-flex: 1;
+      }
+
+      #stage {
+        padding: 24px;
+        border-left: 4px solid #eee;
+        width: 500px;
+      }
+
+      #stage-which,
+      #stage-grid-color {
+        display: inline-block;
+      }
+
+      #stage-bottom-controls {
+        position: relative;
+      }
+      #stage-bottom-right-controls {
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+
+      #stage canvas {
+        margin: 16px 0 16px 0;
+        border: 1px solid #ccc;
+
+        image-rendering: optimizeSpeed;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: -moz-crisp-edges;
+        -ms-interpolation-mode: nearest-neighbor;
+      }
+
+      .canvas-label {
+        position: absolute;
+        background: rgba(255,0,0,0.4);
+        padding: 4px 6px;
+        font-weight: bold;
+        font-family: roboto;
+        color: #fff;
+        pointer-events: none;
+        font-size: 10px;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+        line-height: 10px;
+      }
+
+      .form-field-buttonset label small {
+        font-weight: normal;
+        text-transform: none;
+      }
+
+      #preview-area-container {
+        background: #f0f0f0;
+      }
+
+      .expando {
+        position: relative;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+      .expando:before {
+        display: block;
+        content: '';
+        position: absolute;
+        left: -10px;
+        top: 50%;
+        width: 10px;
+        height: 5px;
+        margin-top: -2px;
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAFCAYAAAB8ZH1oAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAG4nAABzrwABBrIAAHktAABO7AABBcsAADBmAAASE4PB1CMAAABSSURBVHjabM2xDYAwDETRh2CekAqyBXOTCsZgBkCicREQXzrZ8p3OPUYsOHF4k8K7+jBvzJ9wQsGKfYjjFrM0bQUVO3SfVxlT7LUp+CWHXjwDALRTDyPvWAMbAAAAAElFTkSuQmCC);
+      }
+      .expando.expanded:before {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAFCAYAAAB8ZH1oAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAG4nAABzrwABBrIAAHktAABO7AABBcsAADBmAAASE4PB1CMAAABGSURBVHjaYmDABAZQjAJYsCgyQ+JfwKYQpugElG+BrJgFi6JLSJotGBgY/jMwMFxkZmBg0GdgYDDHouglAwPDb6jiP4ABAPZgDPwY9BFaAAAAAElFTkSuQmCC);
+      }
+
+      #preview-area-expando {
+        padding: 8px 24px;
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 12px;
+        color: #888;
+      }
+      #preview-area-expando:before {
+        left: 8px;
+      }
+      #preview-area {
+        position: relative;
+        height: 0;
+        overflow: hidden;
+        cursor: se-resize;
+        transition: height 0.3s ease;
+
+        background: #fff;
+
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+      #preview-area.dark {
+        background: rgba(0,0,0,0.5);
+      }
+      #preview-area #text-preview {
+        position: absolute;
+        overflow: hidden;
+        width: 0;
+        height: 0;
+        display: none;
+      }
+      #preview-area canvas {
+        pointer-events: none;
+      }
+      #preview-area.expanded {
+        height: 500px;
+      }
+      #preview-stage > div {
+        position: relative;
+      }
+      #preview-area label[for="preview-with-content"] {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+      }
+      #preview-area.dark label {
+        color: #eee;
+      }
+      #preview-stage {
+        height: 100%;
+        display: box;
+        box-pack: center;
+        box-align: center;
+
+        display: -webkit-box;
+        -webkit-box-pack: center;
+        -webkit-box-align: center;
+
+        display: -moz-box;
+        -moz-box-pack: center;
+        -moz-box-align: center;
+      }
+
+      .dropdown-button {
+        position: relative;
+        padding-right: 32px;
+      }
+      .dropdown-button:before {
+        content: '';
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAFCAYAAAB8ZH1oAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAEdJREFUeNpi+P//fwkQnwDiYiBmQMPFULkSmEA5FsVwRSA+CwMEdELpUAYEALHXA3EPmIdmFczkE1A2XI6FARV04mAzAAQYAIr2ZmzRk+bFAAAAAElFTkSuQmCC);
+        display: block;
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        margin-top: -2px;
+        width: 10px;
+        height: 5px;
+      }
+      .dropdown-button[disabled]:before {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAFCAYAAAB8ZH1oAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAG4nAABzrwABBrIAAHktAABO7AABBcsAADBmAAASE4PB1CMAAABSSURBVHjabM2xDYAwDETRh2CekAqyBXOTCsZgBkCicREQXzrZ8p3OPUYsOHF4k8K7+jBvzJ9wQsGKfYjjFrM0bQUVO3SfVxlT7LUp+CWHXjwDALRTDyPvWAMbAAAAAElFTkSuQmCC);
+      }
+      .dropdown-list-shade {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 999;
+      }
+      .dropdown-list {
+        background: rgba(0,0,0,0.85);
+        color: #fff;
+        position: absolute;
+        height: 0;
+        transition: height 0.1s ease;
+        z-index: 1000;
+        border-bottom-right-radius: 4px;
+        border-bottom-left-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+        overflow: hidden;
+      }
+      .dropdown-list li {
+        height: 32px;
+        font-size: 12px;
+        line-height: 32px;
+        padding: 0 8px;
+        color: #eee;
+        cursor: pointer;
+      }
+      .dropdown-list li:hover {
+        color: #fff;
+        background-color: rgba(255,255,255,0.2);
+      }
+    </style>
+
+    <!-- TODO: remove Analytics tracking if you're building the tools locally! -->
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-18671401-1']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="main-container">
+      <div id="page-header">
+        <a href="index.html">Android Asset Studio</a>
+        <h1>Simple Nine-patch Generator</h1>
+        <p id="page-intro">
+          The nine-patch generator allows you to quickly generate simple nine-patches
+          at different screen densities, based on the specified source artwork.
+        </p>
+      </div>
+      <div id="instage-container">
+        <div id="inputs">
+          <div id="inputs-form"></div>
+        </div>
+        <div id="stage">
+          Edit Mode &nbsp;
+          <div id="stage-which" class="form-field-buttonset">
+            <input id="stage-stretch" name="stage-which" type="radio" value="stretch" checked><label for="stage-stretch">Stretch<br>Regions</label><!--
+            --><input id="stage-padding" name="stage-which" type="radio" value="padding"><label for="stage-padding">Content<br>Padding</label><!--
+            --><input id="stage-opticalbounds" name="stage-which" type="radio" value="opticalbounds"><label for="stage-opticalbounds">Optical<br>Bounds (4.3+)<br></label>
+          </div>
+          <div id="stage-canvas-container">
+            <div style="margin: 24px 0; color: #888">
+              Select a <strong>Source Graphic</strong> to the left to get started. You can also drag
+              a source image in from your desktop into the Source Graphic box.
+            </div>
+          </div>
+          <div id="stage-bottom-controls">
+            <button id="find-region-button" class="editor-button" disabled>Auto-stretch</button>
+            <button id="trim-button" class="editor-button dropdown-button" disabled>Trim</button>
+            <ul id="trim-dropdown" class="dropdown-list" data-anchor="trim-button">
+              <li id="trim-edge-item">Edge transparency</li>
+              <li id="trim-stretch-item">Stretch region</li>
+            </ul>
+            <div id="stage-bottom-right-controls">
+              Grid &nbsp;
+              <div id="stage-grid-color" class="form-field-buttonset">
+                <input id="grid-light" name="stage-grid-color" type="radio" value="light" checked><label for="grid-light">Light</label><!--
+                --><input id="grid-dark" name="stage-grid-color" type="radio" value="dark"><label for="grid-dark">Dark</label>
+              </div>
+            </div>
+          </div>
+
+          <div id="stage-examples-container">
+            <!--p><strong>Examples</strong></p-->
+          </div>
+        </div>
+      </div>
+      <div id="preview-area-container">
+        <div class="expando" id="preview-area-expando">Interactive preview</div>
+        <div id="preview-area">
+          <input type="checkbox" id="preview-with-content" class="form-field-checkbutton">
+          <label for="preview-with-content">With Content</label>
+          <div id="preview-stage">
+            <div>
+              <canvas></canvas>
+              <div id="text-preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque auctor auctor purus, a iaculis neque pharetra in. Curabitur in eleifend erat, sit amet facilisis augue. In hendrerit lectus sit amet purus auctor, at condimentum arcu consectetur. Suspendisse nisl massa, condimentum sit amet luctus ut, euismod id lacus. Pellentesque pretium consectetur urna, non vehicula massa tincidunt in. Nam lacus ante, euismod vel purus eget, faucibus dapibus lectus. Sed mi augue, pulvinar in sodales a, laoreet suscipit magna. Maecenas mollis nisl a nisl auctor venenatis. Praesent id tempor nulla. Cras viverra vulputate ligula. Interdum et malesuada fames ac ante ipsum primis in faucibus.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="outputs">
+        <h3><div id="zip-button-stub"></div></h3>
+      </div>
+      <div id="footer">
+        <p>See the source at the <a href="http://code.google.com/p/android-ui-utils">android-ui-utils</a> Google Code project.</p>
+        <p>All generated art is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>. <a href="attribution.html">Attribution info</a></p>
+      </div>
+    </div>
+
+    <script>
+    $(studio.checkBrowser);
+    imagelib.ALLOW_MANUAL_RESCALE = true;
+
+    var GRID_SIZE_PIXELS = 4;
+    var SLOP_PIXELS = 10;
+
+    var stage = {
+      zoom: 1,
+      gridColor: 'light',
+      editMode: 'stretch',
+      stretchRect: {
+        x: 0,
+        y: 0,
+        w: 0,
+        h: 0
+      },
+      contentRect: {
+        x: 0,
+        y: 0,
+        w: 0,
+        h: 0
+      },
+      opticalBoundsRect: {
+        x: 0,
+        y: 0,
+        w: 0,
+        h: 0
+      },
+      name: 'default'
+    };
+
+    // Set up zipper and image output slots
+    var zipper = studio.zip.createDownloadifyZipButton($('#zip-button-stub'));
+    var group = studio.ui.createImageOutputGroup({ container: $('#outputs') });
+    for (var density in {'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1})
+      studio.ui.createImageOutputSlot({
+        container: group,
+        id: 'out-patch-' + density,
+        label: density
+      });
+
+    // Stage code
+    $tlLabel = $('<div>').addClass('canvas-label top-left').hide().appendTo('body');
+    $brLabel = $('<div>').addClass('canvas-label bottom-right').hide().appendTo('body');
+
+    $('#stage-which input').change(function() {
+      stage.editMode = $(this).val();
+      $('#trim-button').toggle(stage.editMode == 'stretch');
+      if ('stretch' == stage.editMode) {
+        $('#find-region-button').text('Auto-stretch');
+      } else if ('padding' == stage.editMode) {
+        $('#find-region-button').text('Auto-padding');
+      } else if ('opticalbounds' == stage.editMode) {
+        $('#find-region-button').text('Auto-bounds');
+      } else {
+        $('#find-region-button').text('Error');
+      }
+      redrawStage();
+    });
+    $('#stage-grid-color input').change(function() {
+      stage.gridColor = $(this).val();
+      $('.out-image-group').toggleClass('dark half', stage.gridColor == 'dark');
+      $('#preview-area').toggleClass('dark', stage.gridColor == 'dark');
+      redrawStage();
+    });
+    function resetStage(srcCtx, initStage) {
+      $('#stage-canvas-container').empty();
+      $('.editor-button').attr('disabled', srcCtx ? null : 'disabled');
+      initStage = initStage || {};
+
+      if (!srcCtx) {
+        return;
+      }
+
+      stage.srcCtx = srcCtx;
+
+      // Update the stage source size
+      var srcSizeChanged = false;
+      var newSrcSize = { w: stage.srcCtx.canvas.width, h: stage.srcCtx.canvas.height };
+      srcSizeChanged = !stage.srcSize
+          || stage.srcSize.w != newSrcSize.w
+          || stage.srcSize.h != newSrcSize.h;
+      stage.srcSize = newSrcSize;
+
+      // Compute a zoom level that'll show the stage as large as possible
+      stage.zoom = Math.max(1, Math.floor(500 / Math.max(stage.srcSize.w, stage.srcSize.h)));
+      stage.size = {
+        w: stage.srcSize.w * stage.zoom,
+        h: stage.srcSize.h * stage.zoom
+      };
+
+      // Create a nearest-neighbor scaled-up copy of the source image for the stage
+      stage.previewCtx = imagelib.drawing.context(stage.size);
+      var srcData = stage.srcCtx.getImageData(0, 0, stage.srcSize.w, stage.srcSize.h);
+      var previewData = stage.previewCtx.createImageData(stage.size.w, stage.size.h);
+      var sx, sy;
+      for (var y = 0; y < stage.size.h; y++) {
+        for (var x = 0; x < stage.size.w; x++) {
+          sx = Math.floor(x * stage.srcSize.w / stage.size.w);
+          sy = Math.floor(y * stage.srcSize.h / stage.size.h);
+          previewData.data[(y * stage.size.w + x) * 4 + 0] =
+              srcData.data[(sy * stage.srcSize.w + sx) * 4 + 0];
+          previewData.data[(y * stage.size.w + x) * 4 + 1] =
+              srcData.data[(sy * stage.srcSize.w + sx) * 4 + 1];
+          previewData.data[(y * stage.size.w + x) * 4 + 2] =
+              srcData.data[(sy * stage.srcSize.w + sx) * 4 + 2];
+          previewData.data[(y * stage.size.w + x) * 4 + 3] =
+              srcData.data[(sy * stage.srcSize.w + sx) * 4 + 3];
+        }
+      }
+      stage.previewCtx.putImageData(previewData, 0, 0);
+
+      // Reset the stretch, padding/content, and optical bounds regions
+      if (srcSizeChanged) {
+        stage.stretchRect = initStage.stretchRect || {
+          x: Math.floor(stage.srcSize.w / 3),
+          y: Math.floor(stage.srcSize.h / 3),
+          w: Math.ceil(stage.srcSize.w / 3),
+          h: Math.ceil(stage.srcSize.h / 3)
+        };
+
+        stage.contentRect = initStage.contentRect || { x: 0, y: 0, w: stage.srcSize.w, h: stage.srcSize.h };
+        stage.opticalBoundsRect = initStage.opticalBoundsRect || { x: 0, y: 0, w: stage.srcSize.w, h: stage.srcSize.h };
+      }
+
+      if (!initStage.stretchRect) {
+        loadStage();
+      }
+
+      // Create the stage canvas
+      stage.canvas = $('<canvas>')
+          .attr('width', stage.size.w)
+          .attr('height', stage.size.h)
+          .get(0);
+      $('#stage-canvas-container').append(stage.canvas);
+
+      // Set up events on the stage
+      $(stage.canvas)
+          .bind('mousedown', function(evt) {
+            stage.dragging = true;
+            redrawStage();
+          })
+          .bind('mousemove', function(evt) {
+            var editRect = stage.stretchRect;
+            if (stage.editMode == 'padding') {
+              editRect = stage.contentRect;
+            } else if (stage.editMode == 'opticalbounds') {
+              editRect = stage.opticalBoundsRect;
+            }
+
+            var offs = $(this).offset();
+            var offsetX = evt.pageX - offs.left;
+            var offsetY = evt.pageY - offs.top;
+
+            if (!stage.dragging) {
+              stage.editLeft = stage.editRight = stage.editTop = stage.editBottom = false;
+
+              if (offsetX >= editRect.x * stage.zoom - SLOP_PIXELS &&
+                  offsetX <= editRect.x * stage.zoom + SLOP_PIXELS) {
+                stage.editLeft = true;
+              } else if (offsetX >= (editRect.x + editRect.w) * stage.zoom - SLOP_PIXELS &&
+                         offsetX <= (editRect.x + editRect.w) * stage.zoom + SLOP_PIXELS) {
+                stage.editRight = true;
+              }
+
+              if (offsetY >= editRect.y * stage.zoom - SLOP_PIXELS &&
+                  offsetY <= editRect.y * stage.zoom + SLOP_PIXELS) {
+                stage.editTop = true;
+              } else if (offsetY >= (editRect.y + editRect.h) * stage.zoom - SLOP_PIXELS &&
+                         offsetY <= (editRect.y + editRect.h) * stage.zoom + SLOP_PIXELS) {
+                stage.editBottom = true;
+              }
+
+              var cursor = 'default';
+              if (stage.editLeft) {
+                if (stage.editTop) {
+                  cursor = 'nw-resize';
+                } else if (stage.editBottom) {
+                  cursor = 'sw-resize';
+                } else {
+                  cursor = 'w-resize';
+                }
+              } else if (stage.editRight) {
+                if (stage.editTop) {
+                  cursor = 'ne-resize';
+                } else if (stage.editBottom) {
+                  cursor = 'se-resize';
+                } else {
+                  cursor = 'e-resize';
+                }
+              } else if (stage.editTop) {
+                cursor = 'n-resize';
+              } else if (stage.editBottom) {
+                cursor = 's-resize';
+              }
+              $(stage.canvas).css('cursor', cursor);
+            } else {
+              if (stage.editLeft) {
+                var newX = Math.min(editRect.x + editRect.w - 1, Math.round(offsetX / stage.zoom));
+                editRect.w = editRect.w + editRect.x - newX;
+                editRect.x = newX;
+              }
+              if (stage.editTop) {
+                var newY = Math.min(editRect.y + editRect.h - 1, Math.round(offsetY / stage.zoom));
+                editRect.h = editRect.h + editRect.y - newY;
+                editRect.y = newY;
+              }
+              if (stage.editRight) {
+                editRect.w = Math.min(stage.srcSize.w - editRect.x,
+                    Math.max(1, Math.round(offsetX / stage.zoom) - editRect.x));
+              }
+              if (stage.editBottom) {
+                editRect.h = Math.min(stage.srcSize.h - editRect.y,
+                    Math.max(1, Math.round(offsetY / stage.zoom) - editRect.y));
+              }
+              redrawStage();
+              regenerate();
+            }
+          })
+
+      redrawStage();
+      regenerate();
+    }
+
+    $(document).bind('mouseup', function(evt) {
+      if (stage.dragging) {
+        stage.dragging = false;
+        redrawStage();
+        saveStage();
+      }
+      if (preview.dragging) {
+        preview.dragging = false;
+      }
+    });
+
+    function redrawStage() {
+      if (!stage.srcCtx) {
+        return;
+      }
+
+      var editingStretch = (stage.editMode == 'stretch');
+      var editRect = stage.stretchRect;
+      if (stage.editMode == 'padding') {
+        editRect = stage.contentRect;
+      } else if (stage.editMode == 'opticalbounds') {
+        editRect = stage.opticalBoundsRect;
+      }
+
+      var ctx = stage.canvas.getContext('2d');
+      ctx.clearRect(0, 0, stage.size.w, stage.size.h);
+
+      // draw grid
+      var cellSize = GRID_SIZE_PIXELS * stage.zoom;
+      var gridColorEven = (stage.gridColor == 'light') ? '#eee' : '#555';
+      var gridColorOdd  = (stage.gridColor == 'light') ? '#ddd' : '#444';
+      for (var y = 0; y < stage.srcSize.h / GRID_SIZE_PIXELS; y++) {
+        for (var x = 0; x < stage.srcSize.w / GRID_SIZE_PIXELS; x++) {
+          ctx.fillStyle = ((x + y) % 2 == 0) ? gridColorEven : gridColorOdd;
+          ctx.fillRect(x * cellSize, y * cellSize, (x + 1) * cellSize, (y + 1) * cellSize);
+        }
+      }
+
+      // draw source graphic
+      ctx.drawImage(stage.previewCtx.canvas, 0, 0);
+
+      // draw current edit region
+      ctx.fillStyle = 'rgba(0,0,0,0.25)';
+      if (editingStretch) {
+        ctx.fillRect(0, editRect.y * stage.zoom,
+                     stage.size.w, editRect.h * stage.zoom);
+        ctx.fillRect(editRect.x * stage.zoom, 0,
+                     editRect.w * stage.zoom, stage.size.h);
+      }
+      ctx.fillRect(editRect.x * stage.zoom, editRect.y * stage.zoom,
+                   editRect.w * stage.zoom, editRect.h * stage.zoom);
+
+      ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+      ctx.lineWidth = 1;
+      if (editingStretch) {
+        ctx.strokeRect(-20, 0.5 + editRect.y * stage.zoom,
+                       stage.size.w + 20, editRect.h * stage.zoom - 1);
+        ctx.strokeRect(0.5 + editRect.x * stage.zoom, -20,
+                       editRect.w * stage.zoom - 1, stage.size.h + 20);
+      }
+      if (stage.dragging) {
+        ctx.strokeStyle = 'rgba(255,0,0,0.75)';
+        ctx.lineWidth = 2;
+      } else {
+        ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+        ctx.lineWidth = 1;
+      }
+      ctx.strokeRect(0.5 + editRect.x * stage.zoom, 0.5 + editRect.y * stage.zoom,
+                     editRect.w * stage.zoom - 1, editRect.h * stage.zoom - 1);
+
+      // draw distance labels
+      if (stage.dragging) {
+        var stageOffset = $(stage.canvas).offset();
+        stageOffset.left++; // account for 1px border
+        stageOffset.top++;
+
+        $tlLabel.text('(' + editRect.x + ', ' + editRect.y + ')');
+        $tlLabel
+            .css({left: '-1000px', top: '-1000px'})
+            .show();
+        $tlLabel.css({
+          left: (editRect.x * stage.zoom + stageOffset.left - $tlLabel.get(0).offsetWidth) + 'px',
+          top: (editRect.y * stage.zoom + stageOffset.top - $tlLabel.get(0).offsetHeight) + 'px'
+        });
+
+        $brLabel.text('(' + (stage.srcSize.w - editRect.x - editRect.w) + ', '
+            + (stage.srcSize.h - editRect.y - editRect.h) + ')');
+        $brLabel
+            .css({
+              left: ((editRect.x + editRect.w) * stage.zoom + stageOffset.left) + 'px',
+              top: ((editRect.y + editRect.h) * stage.zoom + stageOffset.top) + 'px'
+            })
+            .show();
+      } else {
+        $tlLabel.hide();
+        $brLabel.hide();
+      }
+    }
+
+    function saveStage() {
+      if (localStorage && JSON) {
+        localStorage['sc-' + stage.name] = JSON.stringify({
+          stretchRect: stage.stretchRect,
+          contentRect: stage.contentRect,
+          opticalBoundsRect: stage.opticalBoundsRect
+        });
+      }
+    }
+
+    function loadStage() {
+      try {
+        var store = JSON.parse(localStorage['sc-' + stage.name]);
+        if (store.stretchRect && store.contentRect && store.opticalBoundsRect) {
+          stage.stretchRect = fitRect(store.stretchRect, stage.srcSize);
+          stage.contentRect = fitRect(store.contentRect, stage.srcSize);
+          stage.opticalBoundsRect = fitRect(store.opticalBoundsRect, stage.srcSize);
+        }
+      } catch (e) {}
+    }
+ 
+    function fitRect(rect, size) {
+      var newRect = {};
+      newRect.x = Math.max(0, rect.x);
+      newRect.y = Math.max(0, rect.y);
+      newRect.w = Math.min(size.w - rect.x, rect.w);
+      newRect.h = Math.min(size.h - rect.y, rect.h);
+      return newRect;
+    }
+
+    function loadNinePatch(ctx) {
+      var srcSize = { w: ctx.canvas.width, h: ctx.canvas.height };
+      var imgData = ctx.getImageData(0, 0, srcSize.w, srcSize.h);
+      var size = { w: srcSize.w - 2, h: srcSize.h - 2 };
+      var initStage = {
+        contentRect: { x: 0, y: 0, w: size.w, h: size.h },
+        stretchRect: { x: 0, y: 0, w: size.w, h: size.h },
+        opticalBoundsRect: { x: 0, y: 0, w: size.w, h: size.h }
+      };
+
+      function _rgba(r,g,b,a){ return (r << 16) + (g << 8) + (b << 0) + (a << 24); }
+
+      function _getPixel(x, y) {
+        return (imgData.data[(y * srcSize.w + x) * 4 + 0] << 16) // r
+            + (imgData.data[(y * srcSize.w + x) * 4 + 1] << 8) // g
+            + (imgData.data[(y * srcSize.w + x) * 4 + 2] << 0) // b
+            + (imgData.data[(y * srcSize.w + x) * 4 + 3] << 24); // a
+      }
+
+      var BLACK = _rgba(0,0,0,255);
+      var RED = _rgba(255,0,0,255);
+
+      var inRegion;
+
+      // Read stretch rect
+      inRegion = false;
+      for (var x = 0; x < size.w; x++) {
+        var p = _getPixel(x + 1, 0);
+        if (!inRegion && p == BLACK) {
+          initStage.stretchRect.x = x;
+          inRegion = true;
+        } else if (inRegion && p != BLACK) {
+          initStage.stretchRect.w = x - initStage.stretchRect.x;
+          inRegion = false;
+        }
+      }
+      inRegion = false;
+      for (var y = 0; y < size.h; y++) {
+        var p = _getPixel(0, y + 1);
+        if (!inRegion && p == BLACK) {
+          initStage.stretchRect.y = y;
+          inRegion = true;
+        } else if (inRegion && p != BLACK) {
+          initStage.stretchRect.h = y - initStage.stretchRect.y;
+          inRegion = false;
+        }
+      }
+
+      // Read content rect
+      inRegion = false;
+      for (var x = 0; x < size.w; x++) {
+        var p = _getPixel(x + 1, srcSize.h - 1);
+        if (!inRegion && p == BLACK) {
+          initStage.contentRect.x = x;
+          inRegion = true;
+        } else if (inRegion && p != BLACK) {
+          initStage.contentRect.w = x - initStage.contentRect.x;
+          inRegion = false;
+        }
+      }
+      inRegion = false;
+      for (var y = 0; y < size.h; y++) {
+        var p = _getPixel(srcSize.w - 1, y + 1);
+        if (!inRegion && p == BLACK) {
+          initStage.contentRect.y = y;
+          inRegion = true;
+        } else if (inRegion && p != BLACK) {
+          initStage.contentRect.h = y - initStage.contentRect.y;
+          inRegion = false;
+        }
+      }
+
+      // Read optical bounds rect
+      inRegion = false;
+      for (var x = 0; x < size.w; x++) {
+        var p = _getPixel(x + 1, srcSize.h - 1);
+        if (!inRegion && p != RED) {
+          initStage.opticalBoundsRect.x = x;
+          inRegion = true;
+        } else if (inRegion && p == RED) {
+          initStage.opticalBoundsRect.w = x - initStage.opticalBoundsRect.x;
+          inRegion = false;
+        }
+      }
+      for (var y = 0; y < size.h; y++) {
+        var p = _getPixel(srcSize.w - 1, y + 1);
+        if (!inRegion && p != RED) {
+          initStage.opticalBoundsRect.y = y;
+          inRegion = true;
+        } else if (inRegion && p == RED) {
+          initStage.opticalBoundsRect.h = y - initStage.opticalBoundsRect.y;
+          inRegion = false;
+        }
+      }
+
+      // Inset the context
+      var newCtx = imagelib.drawing.context(size);
+      newCtx.drawImage(ctx.canvas, 1, 1, size.w, size.h, 0, 0, size.w, size.h);
+      resetStage(newCtx, initStage);
+    }
+
+    // Set up preview area
+    var preview = {
+      width: 200,
+      height: 200
+    };
+    $(document).ready(function() {
+      var $expando = $('#preview-area-expando');
+      $expando.click(function() {
+        $expando.toggleClass('expanded');
+        $('#preview-area').toggleClass('expanded', $expando.hasClass('expanded'));
+      })
+
+      updatePreviewCanvas();
+      $('#preview-area')
+          .bind('mousedown', function(evt) {
+            preview.dragging = true;
+            preview.startWidth = preview.width;
+            preview.startHeight = preview.height;
+            preview.startX = evt.pageX;
+            preview.startY = evt.pageY;
+          })
+          .bind('mousemove', function(evt) {
+            if (preview.dragging) {
+              preview.width = Math.max(1, preview.startWidth + (evt.pageX - preview.startX) * 2);
+              preview.height = Math.max(1, preview.startHeight + (evt.pageY - preview.startY) * 2);
+              updatePreviewCanvas();
+            }
+          })
+          .bind('mouseup', function() {
+            preview.dragging = false;
+          })
+
+      $('#preview-with-content').click(function() {
+        $('#text-preview').toggle($(this).is(':checked'));
+      });
+    });
+    function updatePreviewCanvas() {
+      var canvas = $('#preview-area canvas').get(0);
+      canvas.width = preview.width;
+      canvas.height = preview.height;
+
+      if (stage.srcCtx) {
+        var ctx = canvas.getContext('2d');
+
+        var fixed = {
+          l: stage.stretchRect.x,
+          t: stage.stretchRect.y,
+          r: stage.srcSize.w - stage.stretchRect.x - stage.stretchRect.w,
+          b: stage.srcSize.h - stage.stretchRect.y - stage.stretchRect.h
+        };
+
+        // TL
+        if (fixed.l && fixed.t)
+          ctx.drawImage(stage.srcCtx.canvas,
+              0, 0, fixed.l, fixed.t,
+              0, 0, fixed.l, fixed.t);
+
+        // BL
+        if (fixed.l && fixed.b)
+          ctx.drawImage(stage.srcCtx.canvas,
+              0, stage.srcSize.h - fixed.b, fixed.l, fixed.b,
+              0, preview.height - fixed.b, fixed.l, fixed.b);
+
+        // TR
+        if (fixed.r && fixed.t)
+          ctx.drawImage(stage.srcCtx.canvas,
+              stage.srcSize.w - fixed.r, 0, fixed.r, fixed.t,
+              preview.width - fixed.r, 0, fixed.r, fixed.t);
+
+        // BR
+        if (fixed.r && fixed.b)
+          ctx.drawImage(stage.srcCtx.canvas,
+              stage.srcSize.w - fixed.r, stage.srcSize.h - fixed.b, fixed.r, fixed.b,
+              preview.width - fixed.r, preview.height - fixed.b, fixed.r, fixed.b);
+
+        // Top
+        if (fixed.t)
+          ctx.drawImage(stage.srcCtx.canvas,
+              fixed.l, 0, stage.stretchRect.w, fixed.t,
+              fixed.l, 0, preview.width - fixed.l - fixed.r, fixed.t);
+
+        // Left
+        if (fixed.l)
+          ctx.drawImage(stage.srcCtx.canvas,
+              0, fixed.t, fixed.l, stage.stretchRect.h,
+              0, fixed.t, fixed.l, preview.height - fixed.t - fixed.b);
+
+        // Right
+        if (fixed.r)
+          ctx.drawImage(stage.srcCtx.canvas,
+              stage.srcSize.w - fixed.r, fixed.t, fixed.r, stage.stretchRect.h,
+              preview.width - fixed.r, fixed.t, fixed.r, preview.height - fixed.t - fixed.b);
+
+        // Bottom
+        if (fixed.b)
+          ctx.drawImage(stage.srcCtx.canvas,
+              fixed.l, stage.srcSize.h - fixed.b, stage.stretchRect.w, fixed.b,
+              fixed.l, preview.height - fixed.b, preview.width - fixed.l - fixed.r, fixed.b);
+
+        // Middle
+        ctx.drawImage(stage.srcCtx.canvas,
+            fixed.l, fixed.t, stage.stretchRect.w, stage.stretchRect.h,
+            fixed.l, fixed.t, preview.width - fixed.l - fixed.r, preview.height - fixed.t - fixed.b);
+
+        // preview content
+        var $textPreview = $('#preview-area #text-preview');
+        $textPreview.css({
+          left: stage.contentRect.x + "px",
+          top: stage.contentRect.y + "px",
+          width: (preview.width - stage.srcSize.w + stage.contentRect.w ) + "px",
+          height: (preview.height - stage.srcSize.h + stage.contentRect.h) + "px"
+        });
+      }
+    }
+
+    // Find regions functionality
+    $('#find-region-button').click(function() {
+      if (!stage.srcCtx) {
+        return;
+      }
+
+      // TODO: backup stage?
+
+      var srcData = stage.srcCtx.getImageData(0, 0, stage.srcSize.w, stage.srcSize.h);
+
+      function _getPixel(x, y) {
+        return (srcData.data[(y * stage.srcSize.w + x) * 4 + 0] << 16) // r
+            + (srcData.data[(y * stage.srcSize.w + x) * 4 + 1] << 8) // g
+            + (srcData.data[(y * stage.srcSize.w + x) * 4 + 2] << 0) // b
+            + (srcData.data[(y * stage.srcSize.w + x) * 4 + 3] << 24); // a
+      }
+
+      // Finds ranges of equal values within an array
+      function _getEqualRanges(arr) {
+        var equalRanges = [];
+        var start = -1;
+        var startVal = 0;
+        for (var i = 0; i < arr.length; i++) {
+          if (start < 0) {
+            start = i;
+            startVal = arr[i];
+          } else if (arr[i] != startVal) {
+            if (start != i - 1) {
+              equalRanges.push({start: start, length: i - start});
+            }
+
+            start = i;
+            startVal = arr[i];
+          }
+        }
+        if (start != arr.length - 1) {
+          equalRanges.push({start: start, length: arr.length - start});
+        }
+        return equalRanges.sort(function(x, y){ return y.length - x.length; });
+      }
+
+      var x, y;
+
+      // First find optical bounds
+      // This works by taking an alpha value histogram and finding two maxima to determine
+      // low and high alphas.
+      var alphaHistogram = [];
+      for (x = 0; x < stage.srcSize.w; x++) {
+        for (y = 0; y < stage.srcSize.h; y++) {
+          var alpha = srcData.data[(y * stage.srcSize.w + x) * 4 + 3];
+          alphaHistogram[alpha] = alphaHistogram[alpha] ? alphaHistogram[alpha] + 1 : 1;
+        }
+      }
+      var max1 = 0, max1Freq = 0, max2 = 0, max2Freq = 0;
+      for (var i = 0; i < 256; i++) {
+        if (alphaHistogram[i] > max1Freq) {
+          max2 = max1;
+          max2Freq = max1Freq;
+          max1 = i;
+          max1Freq = alphaHistogram[i];
+        } else if (alphaHistogram[i] > max2Freq) {
+          max2 = i;
+          max2Freq = alphaHistogram[i];
+        }
+      }
+      var alphaMin = (max1 < max2) ? max1 : max2;
+      var alphaMax = (max1 > max2) ? max1 : max2;
+      var ALPHA_THRESHOLD = 5;
+      window.alphaHistogram = alphaHistogram;
+
+      var opticalBoundsRect = {l:-1, r:-1, t:-1, b:-1};
+      // Find left optical bound
+      obrLeft:
+      for (x = 0; x < stage.srcSize.w; x++) {
+        for (y = 0; y < stage.srcSize.h; y++) {
+          var alpha = srcData.data[(y * stage.srcSize.w + x) * 4 + 3];
+          if (alpha >= alphaMax - ALPHA_THRESHOLD) {
+            opticalBoundsRect.l = x;
+            break obrLeft;
+          }
+        }
+      }
+      // Find right optical bound
+      obrRight:
+      for (x = stage.srcSize.w - 1; x >= 0; x--) {
+        for (y = 0; y < stage.srcSize.h; y++) {
+          var alpha = srcData.data[(y * stage.srcSize.w + x) * 4 + 3];
+          if (alpha >= alphaMax - ALPHA_THRESHOLD) {
+            opticalBoundsRect.r = x;
+            break obrRight;
+          }
+        }
+      }
+      // Find top optical bound
+      obrTop:
+      for (y = 0; y < stage.srcSize.h; y++) {
+        for (x = 0; x < stage.srcSize.w; x++) {
+          var alpha = srcData.data[(y * stage.srcSize.w + x) * 4 + 3];
+          if (alpha >= alphaMax - ALPHA_THRESHOLD) {
+            opticalBoundsRect.t = y;
+            break obrTop;
+          }
+        }
+      }
+      // Find bottom optical bound
+      obrBottom:
+      for (y = stage.srcSize.h - 1; y >= 0; y--) {
+        for (x = 0; x < stage.srcSize.w; x++) {
+          var alpha = srcData.data[(y * stage.srcSize.w + x) * 4 + 3];
+          if (alpha >= alphaMax - ALPHA_THRESHOLD) {
+            opticalBoundsRect.b = y;
+            break obrBottom;
+          }
+        }
+      }
+      if (opticalBoundsRect.l >= 0 && opticalBoundsRect.r > opticalBoundsRect.l
+          && opticalBoundsRect.t >= 0 && opticalBoundsRect.b > opticalBoundsRect.t) {
+        var rect = {
+          x: opticalBoundsRect.l,
+          y: opticalBoundsRect.t,
+          w: opticalBoundsRect.r - opticalBoundsRect.l + 1,
+          h: opticalBoundsRect.b - opticalBoundsRect.t + 1
+        };
+        if (stage.editMode == 'opticalbounds') {
+          stage.opticalBoundsRect = rect;
+        } else if (stage.editMode == 'padding') {
+          stage.contentRect = rect;
+        }
+      }
+
+      // Next find stretch regions. Only use them if they're within the optical bounds
+      if (stage.editMode == 'stretch') {
+        var summer = new imagelib.util.Summer();
+        var sums = [];
+        for (y = 0; y < stage.srcSize.h; y++) {
+          // Compute row
+          summer.reset();
+          for (var x = 0; x < stage.srcSize.w; x++) {
+            summer.addNext(_getPixel(x, y));
+          }
+          sums.push(summer.compute());
+        }
+        var ranges = _getEqualRanges(sums);
+        for (var i = 0; i < ranges.length; i++) {
+          var range = ranges[i];
+          var passesThreshold = false;
+          // Check if this row has a minimum alpha
+          for (x = 0; x < stage.srcSize.w; x++) {
+            var alpha = srcData.data[(range.start * stage.srcSize.w + x) * 4 + 3];
+            if (alpha >= alphaMax - ALPHA_THRESHOLD) {
+              passesThreshold = true;
+              break;
+            }
+          }
+          if (passesThreshold) {
+            stage.stretchRect.y = range.start;
+            stage.stretchRect.h = range.length;
+            if (range.length >= 4) {
+              // inset a bit to prevent scaling artifacts
+              stage.stretchRect.y++;
+              stage.stretchRect.h -= 2;
+            }
+            break;
+          }
+        }
+
+        summer.reset();
+        sums = [];
+        for (x = 0; x < stage.srcSize.w; x++) {
+          // Compute column
+          summer.reset();
+          for (y = 0; y < stage.srcSize.h; y++) {
+            summer.addNext(_getPixel(x, y));
+          }
+          sums.push(summer.compute());
+        }
+        ranges = _getEqualRanges(sums);
+        for (var i = 0; i < ranges.length; i++) {
+          var range = ranges[i];
+          var passesThreshold = false;
+          // Check if this column has a minimum alpha
+          for (y = 0; y < stage.srcSize.h; y++) {
+            var alpha = srcData.data[(y * stage.srcSize.w + range.start) * 4 + 3];
+            if (alpha >= alphaMax - ALPHA_THRESHOLD) {
+              passesThreshold = true;
+              break;
+            }
+          }
+          if (passesThreshold) {
+            stage.stretchRect.x = range.start;
+            stage.stretchRect.w = range.length;
+            if (range.length >= 4) {
+              // inset a bit to prevent scaling artifacts
+              stage.stretchRect.x++;
+              stage.stretchRect.w -= 2;
+            }
+            break;
+          }
+        }
+      }
+
+      redrawStage();
+      regenerate();
+      saveStage();
+    });
+
+    // Set up dropdowns
+    function _hideList() {
+      $('.dropdown-list').css('height', 0);
+      $('.dropdown-list-shade').remove();
+    }
+    $('.dropdown-list').on('click', _hideList).appendTo('body');
+    $(document).ready(function() {
+      $('.dropdown-button').click(function() {
+        var $list = $('ul[data-anchor="' + $(this).attr('id') + '"]');
+        var offset = $(this).offset();
+        $list
+            .offset({
+              left: offset.left,
+              top: offset.top + $(this).get(0).offsetHeight,
+            })
+            .height(($list.find('li').length * 32) + 'px');
+        $('<div>')
+            .addClass('dropdown-list-shade')
+            .appendTo('body')
+            .click(_hideList);
+      })
+    });
+    // Trim edges
+    $('#trim-edge-item').click(function() {
+      if (!stage.srcCtx) {
+        return;
+      }
+
+      // TODO: backup stage?
+
+      var srcData = stage.srcCtx.getImageData(0, 0, stage.srcSize.w, stage.srcSize.h);
+
+      function _getPixel(x, y) {
+        return (srcData.data[(y * stage.srcSize.w + x) * 4 + 0] << 16) // r
+            + (srcData.data[(y * stage.srcSize.w + x) * 4 + 1] << 8) // g
+            + (srcData.data[(y * stage.srcSize.w + x) * 4 + 2] << 0) // b
+            + (srcData.data[(y * stage.srcSize.w + x) * 4 + 3] << 24); // a
+      }
+
+      // Always trim by top-left pixel
+      var trimPixel = _getPixel(0, 0);
+      var insetRect = {l:0, t:0, r:0, b:0};
+      var x, y;
+
+      // Trim top
+      trimTop:
+      for (y = 0; y < stage.srcSize.h; y++) {
+        for (x = 0; x < stage.srcSize.w; x++) {
+          if (_getPixel(x, y) != trimPixel) {
+            break trimTop;
+          }
+        }
+      }
+      insetRect.t = y;
+      // Trim left
+      trimLeft:
+      for (x = 0; x < stage.srcSize.w; x++) {
+        for (y = 0; y < stage.srcSize.h; y++) {
+          if (_getPixel(x, y) != trimPixel) {
+            break trimLeft;
+          }
+        }
+      }
+      insetRect.l = x;
+      // Trim bottom
+      trimBottom:
+      for (y = stage.srcSize.h - 1; y >= 0; y--) {
+        for (x = 0; x < stage.srcSize.w; x++) {
+          if (_getPixel(x, y) != trimPixel) {
+            break trimBottom;
+          }
+        }
+      }
+      insetRect.b = stage.srcSize.h - y - 1;
+      // Trim right
+      trimRight:
+      for (x = stage.srcSize.w - 1; x >= 0; x--) {
+        for (y = 0; y < stage.srcSize.h; y++) {
+          if (_getPixel(x, y) != trimPixel) {
+            break trimRight;
+          }
+        }
+      }
+      insetRect.r = stage.srcSize.w - x - 1;
+
+      if (insetRect.l <= 0 && insetRect.t <= 0 && insetRect.r <= 0 && insetRect.b <= 0) {
+        // No-op
+        return;
+      }
+
+      // Build a new stage with inset values
+      var size = {
+        w: stage.srcSize.w - insetRect.l - insetRect.r,
+        h: stage.srcSize.h - insetRect.t - insetRect.b
+      };
+
+      function _constrain(rect) {
+        if (rect.x < 0) {
+          rect.w += rect.x;
+          rect.x += -rect.x;
+        }
+        if (rect.x + rect.w > size.w) {
+          rect.w = size.w - rect.x;
+        }
+        if (rect.y < 0) {
+          rect.h += rect.y;
+          rect.y += -rect.y;
+        }
+        if (rect.y + rect.h > size.h) {
+          rect.h = size.h - rect.y;
+        }
+        return rect;
+      }
+
+      var initStage = {
+        contentRect: _constrain({
+          x: stage.contentRect.x - insetRect.l,
+          y: stage.contentRect.y - insetRect.t,
+          w: stage.contentRect.w,
+          h: stage.contentRect.h
+        }),
+        stretchRect: _constrain({
+          x: stage.stretchRect.x - insetRect.l,
+          y: stage.stretchRect.y - insetRect.t,
+          w: stage.stretchRect.w,
+          h: stage.stretchRect.h
+        }),
+        opticalBoundsRect: _constrain({
+          x: stage.opticalBoundsRect.x - insetRect.l,
+          y: stage.opticalBoundsRect.y - insetRect.t,
+          w: stage.opticalBoundsRect.w,
+          h: stage.opticalBoundsRect.h
+        })
+      };
+
+      stage.name = stage.name + '-EDGES_TRIMMED';
+
+      var newCtx = imagelib.drawing.context(size);
+      newCtx.drawImage(stage.srcCtx.canvas,
+          insetRect.l, insetRect.t, size.w, size.h,
+          0, 0, size.w, size.h);
+      resetStage(newCtx, initStage);
+    });
+
+    // Trim stretch
+    $('#trim-stretch-item').click(function() {
+      if (!stage.srcCtx) {
+        return;
+      }
+
+      // TODO: backup stage?
+
+      var srcData = stage.srcCtx.getImageData(0, 0, stage.srcSize.w, stage.srcSize.h);
+
+      function _getPixel(x, y) {
+        return (srcData.data[(y * stage.srcSize.w + x) * 4 + 0] << 16) // r
+            + (srcData.data[(y * stage.srcSize.w + x) * 4 + 1] << 8) // g
+            + (srcData.data[(y * stage.srcSize.w + x) * 4 + 2] << 0) // b
+            + (srcData.data[(y * stage.srcSize.w + x) * 4 + 3] << 24); // a
+      }
+
+      var collapseX = stage.stretchRect.w > 4; // generally going to start as true
+      var collapseY = stage.stretchRect.h > 4; // generally going to start as true
+      var x, y;
+
+      // See if collapse is possible in either direction by comparing row/column sums.
+      var summer = new imagelib.util.Summer();
+
+      // See if can be horizontally collapsed.
+      var first = true;
+      var firstSum = -1;
+      for (x = stage.stretchRect.x; x < (stage.stretchRect.x + stage.stretchRect.w); x++) {
+        // Compute column
+        summer.reset();
+        for (y = 0; y < stage.srcSize.h; y++) {
+          summer.addNext(_getPixel(x, y));
+        }
+        if (first) {
+          firstSum = summer.compute();
+          first = false;
+        } else if (summer.compute() != firstSum) {
+          collapseX = false;
+          break;
+        }
+      }
+      first = true;
+      for (y = stage.stretchRect.y; y < (stage.stretchRect.y + stage.stretchRect.h); y++) {
+        // Compute row
+        summer.reset();
+        for (x = 0; x < stage.srcSize.w; x++) {
+          summer.addNext(_getPixel(x, y));
+        }
+        if (first) {
+          firstSum = summer.compute();
+          first = false;
+        } else if (summer.compute() != firstSum) {
+          collapseY = false;
+          break;
+        }
+      }
+
+      if (!collapseX && !collapseY) {
+        // No-op
+        return;
+      }
+
+      var fixed = {
+        l: stage.stretchRect.x,
+        t: stage.stretchRect.y,
+        r: stage.srcSize.w - stage.stretchRect.x - stage.stretchRect.w,
+        b: stage.srcSize.h - stage.stretchRect.y - stage.stretchRect.h
+      };
+
+      var middle = {
+        w: collapseX ? 4 : stage.stretchRect.w,
+        h: collapseY ? 4 : stage.stretchRect.h
+      };
+
+      var size = {
+        w: fixed.l + middle.w + fixed.r,
+        h: fixed.t + middle.h + fixed.b
+      };
+
+      // Redraw components
+      var ctx = imagelib.drawing.context(size);
+
+      // TL
+      if (fixed.l && fixed.t)
+        ctx.drawImage(stage.srcCtx.canvas,
+            0, 0, fixed.l, fixed.t,
+            0, 0, fixed.l, fixed.t);
+
+      // BL
+      if (fixed.l && fixed.b)
+        ctx.drawImage(stage.srcCtx.canvas,
+            0, stage.srcSize.h - fixed.b, fixed.l, fixed.b,
+            0, size.h - fixed.b, fixed.l, fixed.b);
+
+      // TR
+      if (fixed.r && fixed.t)
+        ctx.drawImage(stage.srcCtx.canvas,
+            stage.srcSize.w - fixed.r, 0, fixed.r, fixed.t,
+            size.w - fixed.r, 0, fixed.r, fixed.t);
+
+      // BR
+      if (fixed.r && fixed.b)
+        ctx.drawImage(stage.srcCtx.canvas,
+            stage.srcSize.w - fixed.r, stage.srcSize.h - fixed.b, fixed.r, fixed.b,
+            size.w - fixed.r, size.h - fixed.b, fixed.r, fixed.b);
+
+      // Top
+      if (fixed.t)
+        ctx.drawImage(stage.srcCtx.canvas,
+            fixed.l, 0, stage.stretchRect.w, fixed.t,
+            fixed.l, 0, size.w - fixed.l - fixed.r, fixed.t);
+
+      // Left
+      if (fixed.l)
+        ctx.drawImage(stage.srcCtx.canvas,
+            0, fixed.t, fixed.l, stage.stretchRect.h,
+            0, fixed.t, fixed.l, size.h - fixed.t - fixed.b);
+
+      // Right
+      if (fixed.r)
+        ctx.drawImage(stage.srcCtx.canvas,
+            stage.srcSize.w - fixed.r, fixed.t, fixed.r, stage.stretchRect.h,
+            size.w - fixed.r, fixed.t, fixed.r, size.h - fixed.t - fixed.b);
+
+      // Bottom
+      if (fixed.b)
+        ctx.drawImage(stage.srcCtx.canvas,
+            fixed.l, stage.srcSize.h - fixed.b, stage.stretchRect.w, fixed.b,
+            fixed.l, size.h - fixed.b, size.w - fixed.l - fixed.r, fixed.b);
+
+      // Middle
+      ctx.drawImage(stage.srcCtx.canvas,
+          fixed.l, fixed.t, stage.stretchRect.w, stage.stretchRect.h,
+          fixed.l, fixed.t, size.w - fixed.l - fixed.r, size.h - fixed.t - fixed.b);
+
+      var initStage = {
+        stretchRect: {
+          x: stage.stretchRect.x,
+          y: stage.stretchRect.y,
+          w: middle.w,
+          h: middle.h
+        },
+        contentRect: {
+          x: stage.contentRect.x,
+          y: stage.contentRect.y,
+          w: stage.contentRect.w + middle.w - stage.stretchRect.w,
+          h: stage.contentRect.h + middle.h - stage.stretchRect.h
+        },
+        opticalBoundsRect: {
+          x: stage.opticalBoundsRect.x,
+          y: stage.opticalBoundsRect.y,
+          w: stage.opticalBoundsRect.w + middle.w - stage.stretchRect.w,
+          h: stage.opticalBoundsRect.h + middle.h - stage.stretchRect.h
+        }
+      };
+
+      stage.name = stage.name + '-STRETCH_TRIMMED';
+
+      resetStage(ctx, initStage);
+    });
+
+    /**
+     * Main nine patch generation routine.
+     */
+    function regenerate() {
+      updatePreviewCanvas();
+
+      if (!stage.srcCtx) {
+        return;
+      }
+
+      var values = form.getValues();
+      var resourceName = values['name'];
+      var sourceDensity = values['sourceDensity'];
+
+      zipper.clear();
+      zipper.setZipFilename(resourceName + '.9.zip');
+
+      for (var densityStr in {'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1}) {
+        var density;
+        switch (densityStr) {
+          case 'xxhdpi': density = 480; break;
+          case  'xhdpi': density = 320; break;
+          case   'hdpi': density = 240; break;
+          case   'mdpi': density = 160; break;
+        }
+
+        // scale source graphic
+        // TODO: support better-smoothing option
+        var scale = density / sourceDensity;
+        var outSize = {
+          w: Math.ceil(stage.srcSize.w * scale) + 2,
+          h: Math.ceil(stage.srcSize.h * scale) + 2
+        };
+        var outCtx = imagelib.drawing.context(outSize);
+        // outCtx.drawImage(stage.srcCtx.canvas,
+        //     0, 0, stage.srcSize.w, stage.srcSize.h,
+        //     1, 1, outSize.w - 2, outSize.h - 2);
+        imagelib.drawing.drawImageScaled(outCtx, stage.srcCtx,
+            0, 0, stage.srcSize.w, stage.srcSize.h,
+            1, 1, outSize.w - 2, outSize.h - 2);
+
+        // draw Android 4.3 optical bounds
+        outCtx.strokeStyle = '#f00';
+        outCtx.lineWidth = 1;
+        outCtx.beginPath();
+
+        outCtx.moveTo(1, outSize.h - 0.5);
+        outCtx.lineTo(1 + Math.floor(scale * stage.opticalBoundsRect.x), outSize.h - 0.5);
+        outCtx.stroke();
+
+        outCtx.moveTo(Math.ceil(scale * (stage.opticalBoundsRect.x + stage.opticalBoundsRect.w)) + 1, outSize.h - 0.5);
+        outCtx.lineTo(outSize.w - 1, outSize.h - 0.5);
+        outCtx.stroke();
+
+        outCtx.moveTo(outSize.w - 0.5, 1);
+        outCtx.lineTo(outSize.w - 0.5, 1 + Math.floor(scale * stage.opticalBoundsRect.y));
+        outCtx.stroke();
+
+        outCtx.moveTo(outSize.w - 0.5, Math.ceil(scale * (stage.opticalBoundsRect.y + stage.opticalBoundsRect.h)) + 1);
+        outCtx.lineTo(outSize.w - 0.5, outSize.h - 1);
+        outCtx.stroke();
+
+        outCtx.closePath();
+
+        // draw nine-patch tick marks
+        outCtx.strokeStyle = '#000';
+        outCtx.beginPath();
+
+        outCtx.moveTo(1 + Math.floor(scale * stage.stretchRect.x), 0.5);
+        outCtx.lineTo(1 + Math.ceil(scale * (stage.stretchRect.x + stage.stretchRect.w)), 0.5);
+        outCtx.stroke();
+
+        outCtx.moveTo(0.5, 1 + Math.floor(scale * stage.stretchRect.y));
+        outCtx.lineTo(0.5, 1 + Math.ceil(scale * (stage.stretchRect.y + stage.stretchRect.h)));
+        outCtx.stroke();
+
+        outCtx.moveTo(1 + Math.floor(scale * stage.contentRect.x), outSize.h - 0.5);
+        outCtx.lineTo(1 + Math.ceil(scale * (stage.contentRect.x + stage.contentRect.w)), outSize.h - 0.5);
+        outCtx.stroke();
+
+        outCtx.moveTo(outSize.w - 0.5, 1 + Math.floor(scale * stage.contentRect.y));
+        outCtx.lineTo(outSize.w - 0.5, 1 + Math.ceil(scale * (stage.contentRect.y + stage.contentRect.h)));
+        outCtx.stroke();
+
+        outCtx.closePath();
+
+        // add to zip and show preview
+
+        zipper.add({
+          name: 'res/drawable-' + densityStr + '/' + resourceName + '.9.png',
+          base64data: outCtx.canvas.toDataURL().match(/;base64,(.+)/)[1]
+        });
+
+        imagelib.loadFromUri(outCtx.canvas.toDataURL(), function(densityStr) {
+          return function(img) {
+            $('#out-patch-' + densityStr).attr('src', img.src);
+          };
+        }(densityStr));
+      }
+    }
+
+    // Input form code
+    var nameField;
+    var form = new studio.forms.Form('ninepatchform', {
+      onChange: function(field) {
+        var values = form.getValues();
+        if (!field || field.id_ == 'source') {
+          if (values['source']) {
+            if (!values['source'].ctx) {
+              return;
+            }
+            var src = values['source'];
+            var size = { w: src.ctx.canvas.width, h: src.ctx.canvas.height };
+            stage.name = src.name + '-' + size.w + 'x' + size.h;
+            if (src.name && src.name.match(/\.9\.png$/i)) {
+              loadNinePatch(src.ctx);
+            } else {
+              resetStage(src.ctx);
+            }
+            if (src.name) {
+              var name = src.name.split('.')[0];
+              name = studio.util.sanitizeResourceName(name);
+              if (name != nameField.getValue()) {
+                nameField.setValue(name);
+              }
+            }
+          } else {
+            resetStage(null);
+          }
+        } else {
+          regenerate();
+        }
+      },
+      fields: [
+        new studio.forms.ImageField('source', {
+          title: 'Source graphic',
+          imageOnly: true,
+          noTrimForm: true,
+          noPreview: true
+        }),
+        new studio.forms.EnumField('sourceDensity', {
+          title: 'Source density',
+          buttons: true,
+          options: [
+            { id: '160', title:   'mdpi<br><small>(160)</small>' },
+            { id: '240', title:   'hdpi<br><small>(240)</small>' },
+            { id: '320', title:  'xhdpi<br><small>(320)</small>' },
+            { id: '480', title: 'xxhdpi<br><small>(480)</small>' }
+          ],
+          defaultValue: '320'
+        }),
+        (nameField = new studio.forms.TextField('name', {
+          title: 'Drawable name',
+          helpText: 'Used when generating ZIP files. Becomes <code>&lt;name&gt;.9.png</code>.',
+          defaultValue: 'example'
+        }))
+      ]
+    });
+    form.createUI($('#inputs-form').get(0));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="96px"
+	 height="96px" viewBox="0 0 96 96" enable-background="new 0 0 96 96" xml:space="preserve">
+<g id="_x34__collections_go_to_today">
+	<g display="inline">
+		<path fill-rule="evenodd" clip-rule="evenodd" fill="#333333" d="M20,76h56V24H20V76z M78,80H18c-1.109,0-2-0.89-2-2V22
+			c0-1.109,0.891-2,2-2h60c1.109,0,2,0.891,2,2v56C80,79.11,79.109,80,78,80z"/>
+		<rect x="30" y="16" fill-rule="evenodd" clip-rule="evenodd" fill="#333333" width="8" height="12"/>
+		<rect x="58" y="16" fill-rule="evenodd" clip-rule="evenodd" fill="#333333" width="8" height="12"/>
+		<rect x="38" y="36" fill-rule="evenodd" clip-rule="evenodd" fill="#333333" width="8" height="8"/>
+		<rect x="50" y="36" fill-rule="evenodd" clip-rule="evenodd" fill="#333333" width="8" height="8"/>
+		<rect x="62" y="36" fill-rule="evenodd" clip-rule="evenodd" fill="#333333" width="8" height="8"/>
+		<rect x="38" y="48" fill-rule="evenodd" clip-rule="evenodd" fill="#333333" width="8" height="8"/>
+		<rect x="26" y="48" fill-rule="evenodd" clip-rule="evenodd" fill="#333333" width="8" height="8"/>
+		<rect x="48" y="46" fill-rule="evenodd" clip-rule="evenodd" fill="#333333" width="12" height="12"/>
+		<rect x="62" y="48" fill-rule="evenodd" clip-rule="evenodd" fill="#333333" width="8" height="8"/>
+		<rect x="38" y="60" fill-rule="evenodd" clip-rule="evenodd" fill="#333333" width="8" height="8"/>
+		<rect x="26" y="60" fill-rule="evenodd" clip-rule="evenodd" fill="#333333" width="8" height="8"/>
+		<rect x="50" y="60" fill-rule="evenodd" clip-rule="evenodd" fill="#333333" width="8" height="8"/>
+	</g>
+</g>
+</svg>

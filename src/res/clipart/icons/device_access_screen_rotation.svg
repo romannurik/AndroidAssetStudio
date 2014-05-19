@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="96px"
+	 height="96px" viewBox="0 0 96 96" enable-background="new 0 0 96 96" xml:space="preserve">
+<g id="_x31_0_device_access_screen_rotation">
+	<g display="inline">
+		<path fill-rule="evenodd" clip-rule="evenodd" fill="#333333" d="M19.118,40.042l20.744-20.745l36.671,36.66L55.777,76.703
+			L19.118,40.042z M39.862,14.105L13.936,40.042l41.842,41.853l25.938-25.938L39.862,14.105z"/>
+		<path fill="#333333" d="M53.929,15.975l-0.593,0.74l9.624,10.874l1.5-6.412c8.281,3.491,14.113,11.693,14.113,21.235h3.491
+			c0-14.604-11.863-26.486-26.457-26.527l-0.06-0.02l-0.01,0.02l0,0L53.929,15.975z"/>
+		<path fill="#333333" d="M43.944,81.143l0.6-0.74l-9.623-10.871l-1.5,6.412c-8.282-3.492-14.113-11.695-14.113-21.236h-3.492
+			c0,14.604,11.864,26.486,26.448,26.525l0.06,0.02l0.022-0.02L43.944,81.143z"/>
+	</g>
+</g>
+</svg>

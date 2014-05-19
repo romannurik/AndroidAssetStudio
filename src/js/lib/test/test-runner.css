@@ -1,0 +1,97 @@
+/*
+Copyright 2010 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+#test-table {
+  margin-top: 40px;
+  border: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
+  padding: 0;
+}
+
+#test-table th,
+#test-table td {
+  margin: 0;
+  padding: 3px 8px;
+  vertical-align: top;
+  font-family: helvetica, arial, sans-serif;
+  font-size: 10pt;
+}
+
+#test-table th {
+  border-bottom: 2px solid #000;
+}
+
+#test-table td {
+  border-bottom: 1px solid #888;
+  border-left: 1px dotted #ccc;
+  border-right: 1px dotted #ccc;
+}
+
+#test-table .test-number {
+  text-align: center;
+}
+
+#test-table .pass {
+  background-color: #cfc;
+}
+
+#test-table .fail {
+  background-color: #fcc;
+}
+
+.test-status {
+  width: 400px;
+}
+
+.test-status .other-info {
+  border: 1px solid #000;
+  background-color: #eee;
+  padding: 3px;
+  margin: 0;
+  list-style: none;
+}
+
+.test-status .other-info li {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.test-status .other-info li {
+  color: #000;
+  margin-bottom: 5px;
+}
+
+.test-status .other-info li span {
+  color: #888;
+  font-weight: normal;
+  padding-right: 10px;
+}
+
+.test-status .other-info li span:after {
+  content: ':';
+}
+
+.pass td {
+  font-weight: bold;
+  color: #888;
+}
+
+.fail td {
+  font-weight: bold;
+  color: #f00;
+}
