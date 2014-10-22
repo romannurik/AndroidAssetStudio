@@ -28,8 +28,8 @@
 
     <!-- canvg used to work around <img src=SVG> toDataURL security issues -->
     <!-- see code.google.com/p/chromium/issues/detail?id=54204 -->
-    <script src="lib/canvg/rgbcolor.js"></script> 
-    <script src="lib/canvg/canvg.js"></script>
+    <!-- <script src="lib/canvg/rgbcolor.js"></script> -->
+    <!-- <script src="lib/canvg/canvg.js"></script> -->
 
     <!-- prereq. for asset studio lib -->
     <link rel="stylesheet" href="lib/spectrum/spectrum-assetstudio.css">
@@ -91,7 +91,7 @@
       var PARAM_RESOURCES = {
         'iconSize': { w: 32, h: 32 },
         'targetRect-noclipart': { x: 4, y: 4, w: 24, h: 24 },
-        'targetRect-clipart': { x: 0, y: 0, w: 32, h: 32 }
+        'targetRect-clipart': { x: 4, y: 4, w: 24, h: 24 }
       };
 
       /**
@@ -191,6 +191,7 @@
           new studio.forms.ImageField('source', {
             title: 'Source',
             helpText: 'Must be transparent',
+            maxFinalSize: { w: 72, h: 72 }, // max render size, for SVGs
             defaultValueTrim: 1
           }),
           (nameField = new studio.forms.TextField('name', {

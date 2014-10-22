@@ -28,8 +28,8 @@
 
     <!-- canvg used to work around <img src=SVG> toDataURL security issues -->
     <!-- see code.google.com/p/chromium/issues/detail?id=54204 -->
-    <script src="lib/canvg/rgbcolor.js"></script> 
-    <script src="lib/canvg/canvg.js"></script>
+    <!-- <script src="lib/canvg/rgbcolor.js"></script> -->
+    <!-- <script src="lib/canvg/canvg.js"></script> -->
 
     <!-- prereq. for asset studio lib -->
     <link rel="stylesheet" href="lib/spectrum/spectrum-assetstudio.css">
@@ -365,6 +365,7 @@
         fields: [
           new studio.forms.ImageField('foreground', {
             title: 'Foreground',
+            maxFinalSize: { w: 720, h: 720 }, // max render size, for SVGs
             defaultValueTrim: 1
           }),
           new studio.forms.ColorField('foreColor', {
