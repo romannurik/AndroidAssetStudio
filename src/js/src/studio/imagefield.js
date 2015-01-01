@@ -181,8 +181,8 @@ studio.forms.ImageField = studio.forms.Field.extend({
         .addClass('form-image-clipart-attribution')
         .html([
             'For clipart sources, visit ',
-            '<a href="http://developer.android.com/design/downloads/">',
-                'Android Design: Downloads',
+            '<a href="https://github.com/google/material-design-icons">',
+                'Material Design Icons on GitHub',
             '</a>.<br>',
             'Additional icons can be found at ',
             '<a href="http://www.androidicons.com">androidicons.com</a>.'
@@ -333,7 +333,7 @@ studio.forms.ImageField = studio.forms.Field.extend({
 
     $('img.form-image-clipart-item', this.el_.parent()).removeClass('selected');
     $('img[src="' + clipartSrc + '"]').addClass('selected');
-    
+
     this.imageParams_ = {
       isSvg: isSvg,
       canvgSvgUri: useCanvg ? clipartSrc : null,
@@ -947,7 +947,6 @@ studio.forms.ImageField.clipartList_ = [
 'icons/file_folder.svg',
 'icons/file_folder_open.svg',
 'icons/file_folder_shared.svg',
-'icons/foo',
 'icons/hardware_cast.svg',
 'icons/hardware_cast_connected.svg',
 'icons/hardware_computer.svg',
