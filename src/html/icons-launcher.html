@@ -62,7 +62,7 @@
       }
 
       .out-image-group {
-        background-image: url(https://docs.google.com/uc?export=download&id=0BxEWAcbuDzg1dFRmYnZScWpfNU0);
+        background-image: url(https://docs.google.com/uc?export=download&id=0B328pHcnJU0QaVhOQnNqR3A1NDg);
         background-size: cover;
       }
     </style>
@@ -83,7 +83,6 @@
         </h3>
       </div>
       <div id="footer">
-        <p>Based on the launcher boilerplates from <a href="http://www.androidicons.com/">androidicons.com</a>, with permission.</p>
         <p>See the <a href="https://github.com/romannurik/AndroidAssetStudio">source on GitHub</a>.</p>
         <p>All generated art is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>. <a href="attribution.html">Attribution info</a></p>
       </div>
@@ -116,8 +115,8 @@
       // Load image resources (stencils)
       var resList = {};
       for (var density in DENSITIES)
-        for (var backgroundShape in {'square':1, 'circle':1})
-          for (var type in {'back':1, 'fore1':1, 'mask':1, 'mask_inner':1})
+        for (var backgroundShape in {'square':1, 'circle':1, 'vrect':1, 'hrect':1, 'square-dogear':1, 'vrect-dogear':1, 'hrect-dogear':1})
+          for (var type in {'back':1, 'fore1':1, 'mask':1})
             resList[backgroundShape + '-' + density + '-' + type] = (
               'res/launcher-stencil/' + backgroundShape + '/' + density + '/' + type + '.png');
 
@@ -142,13 +141,33 @@
         'hdpi-none-targetRect': { x:  4, y:  4, w:  64, h:  64 },
         'mdpi-none-targetRect': { x:  3, y:  3, w:  42, h:  42 },
 
-         'web-circle-targetRect': { x: 32, y: 43, w: 448, h: 448 },
-        'hdpi-circle-targetRect': { x:  4, y:  6, w:  64, h:  64 },
-        'mdpi-circle-targetRect': { x:  3, y:  4, w:  42, h:  42 },
+         'web-circle-targetRect': { x: 21, y: 21, w: 470, h: 470 },
+        'hdpi-circle-targetRect': { x:  3, y:  3, w:  66, h:  66 },
+        'mdpi-circle-targetRect': { x:  2, y:  2, w:  44, h:  44 },
 
-         'web-square-targetRect': { x: 32, y: 53, w: 448, h: 427 },
-        'hdpi-square-targetRect': { x:  4, y:  8, w:  64, h:  60 },
-        'mdpi-square-targetRect': { x:  3, y:  5, w:  42, h:  40 }
+         'web-square-targetRect': { x: 53, y: 53, w: 406, h: 406 },
+        'hdpi-square-targetRect': { x:  7, y:  7, w:  57, h:  57 },
+        'mdpi-square-targetRect': { x:  5, y:  5, w:  38, h:  38 },
+
+         'web-vrect-targetRect': { x: 85, y: 21, w: 342, h: 470 },
+        'hdpi-vrect-targetRect': { x: 12, y:  3, w:  48, h:  66 },
+        'mdpi-vrect-targetRect': { x:  8, y:  2, w:  32, h:  44 },
+
+         'web-hrect-targetRect': { x: 21, y: 85, w: 470, h: 342 },
+        'hdpi-hrect-targetRect': { x:  3, y: 12, w:  66, h:  48 },
+        'mdpi-hrect-targetRect': { x:  2, y:  8, w:  44, h:  32 },
+
+        'web-square-dogear-targetRect': { x: 53, y: 149, w: 406, h: 312 },
+       'hdpi-square-dogear-targetRect': { x:  7, y:  21, w:  57, h:  43 },
+       'mdpi-square-dogear-targetRect': { x:  5, y:  14, w:  38, h:  29 },
+
+        'web-vrect-dogear-targetRect': { x: 85, y: 117, w: 342, h: 374 },
+       'hdpi-vrect-dogear-targetRect': { x: 12, y:  17, w:  48, h:  52 },
+       'mdpi-vrect-dogear-targetRect': { x:  8, y:  11, w:  32, h:  35 },
+
+        'web-hrect-dogear-targetRect': { x: 21, y: 85, w: 374, h: 342 },
+       'hdpi-hrect-dogear-targetRect': { x:  3, y: 12, w:  52, h:  48 },
+       'mdpi-hrect-dogear-targetRect': { x:  2, y:  8, w:  35, h:  32 }
       };
 
       /**
@@ -176,6 +195,11 @@
 
         var continue_ = function(foreCtx) {
           var backgroundShape = values['backgroundShape'];
+          if (values['effects'] == 'dogear' &&
+             (backgroundShape == 'square' || backgroundShape == 'hrect' || backgroundShape == 'vrect')) {
+            backgroundShape = backgroundShape + '-dogear';
+          }
+
           for (var density in DENSITIES) {
             var mult = studio.util.getMultBaseMdpi(density);
             if (density == 'web') {
@@ -298,11 +322,6 @@
               if (foreCtx) {
                 var tmpCtx2 = imagelib.drawing.context(iconSize);
                 tmpCtx2.save();
-                tmpCtx2.globalCompositeOperation = 'source-over';
-                imagelib.drawing.copy(tmpCtx2, IMAGE_RESOURCES[backgroundShape + '-' + density + '-mask_inner'], iconSize);
-                tmpCtx2.globalCompositeOperation = 'source-atop';
-                tmpCtx2.fillStyle = values['backColor'].color;
-                tmpCtx2.fillRect(0, 0, iconSize.w, iconSize.h);
 
                 var copyFrom = foreCtx;
                 var foreSize = {
@@ -320,6 +339,20 @@
                   tmpCtx.globalAlpha = values['foreColor'].alpha / 100;
                 }
 
+                if (values['effects'] == 'shadow') {
+                  // Render at the target size for performance reasons.
+                  // Apply it separately from the foreground to avoid
+                  // edge aliasing artifacts.
+                  var tmpCtx4 = imagelib.drawing.context(iconSize);
+                  imagelib.drawing[values['crop'] ? 'drawCenterCrop' : 'drawCenterInside']
+                    (tmpCtx4, copyFrom, targetRect, {
+                      x: 0, y: 0,
+                      w: foreSize.w, h: foreSize.h
+                    });
+                  imagelib.effects.renderLongShadow(tmpCtx4, iconSize.w, iconSize.h);
+                  imagelib.drawing.copy(tmpCtx2, tmpCtx4, iconSize);
+                }
+
                 imagelib.drawing[values['crop'] ? 'drawCenterCrop' : 'drawCenterInside']
                   (tmpCtx2, copyFrom, targetRect, {
                     x: 0, y: 0,
@@ -327,6 +360,13 @@
                   });
 
                 imagelib.drawing.copy(tmpCtx, tmpCtx2, iconSize);
+
+                if (values['effects'] == 'score') {
+                  var tmpCtx5 = imagelib.drawing.context(iconSize);
+                  imagelib.effects.renderScore(tmpCtx5, iconSize.w, iconSize.h);
+                  imagelib.drawing.copy(tmpCtx, tmpCtx5, iconSize);
+                }
+
               }
               tmpCtx.restore();
 
@@ -339,7 +379,7 @@
             zipper.add({
               name: (density == 'web') ?
                   ('web_hi_res_512.png') :
-                  ('res/drawable-' + density + '/ic_launcher.png'),
+                  ('res/mipmap-' + density + '/ic_launcher.png'),
               base64data: outCtx.canvas.toDataURL().match(/;base64,(.+)/)[1]
             });
 
@@ -371,7 +411,7 @@
           new studio.forms.ColorField('foreColor', {
             title: 'Color',
             helpText: 'For transparent foregrounds',
-            defaultValue: '#33b5e5',
+            defaultValue: '#607d8b',
             alpha: true,
             defaultAlpha: 0
           }),
@@ -388,13 +428,26 @@
               { id: 'none', title: 'None' },
               { id: 'bevel', title: 'Bevel' },
               { id: 'square', title: 'Square' },
-              { id: 'circle', title: 'Circle' }
+              { id: 'circle', title: 'Circle' },
+              { id: 'vrect', title: 'Vertical Rectangle' },
+              { id: 'hrect', title: 'Horizontal Rectangle' }
             ],
-            defaultValue: 'bevel'
+            defaultValue: 'square'
           }),
           new studio.forms.ColorField('backColor', {
             title: 'Background',
             defaultValue: '#ffffff'
+          }),
+          new studio.forms.EnumField('effects', {
+            title: 'Effect',
+            buttons: true,
+            options: [
+              { id: 'none', title: 'None' },
+              { id: 'shadow', title: 'Long Shadow' },
+              { id: 'score', title: 'Score' },
+              { id: 'dogear', title: 'Dog-Ear' }
+            ],
+            defaultValue: 'none'
           })
           // new studio.forms.EnumField('recenter', {
           //   title: 'Recentering',
