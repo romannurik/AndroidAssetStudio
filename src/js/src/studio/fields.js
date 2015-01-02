@@ -220,12 +220,16 @@ studio.forms.ColorField = studio.forms.Field.extend({
       showInput: true,
       showPalette: true,
       palette: [
-        ['#fff', '#000'],
-        ['#33b5e5', '#09c'],
-        ['#a6c', '#93c'],
-        ['#9c0', '#690'],
-        ['#fb3', '#f80'],
-        ['#f44', '#c00']
+        ['#ffffff', '#000000'],
+        ['#f44336', '#e91e63'],
+        ['#9c27b0', '#673ab7'],
+        ['#3f51b5', '#2196f3'],
+        ['#03a9f4', '#00bcd4'],
+        ['#009688', '#4caf50'],
+        ['#8bc34a', '#cddc39'],
+        ['#ffeb3b', '#ffc107'],
+        ['#ff9800', '#ff5722'],
+        ['#9e9e9e', '#607d8b']
       ],
       localStorageKey: 'recentcolors',
       showInitial: true,
