@@ -353,6 +353,17 @@
                   imagelib.drawing.copy(tmpCtx2, tmpCtx4, iconSize);
                 }
 
+								if(values['elevation']){
+									var tmpCtx6 = imagelib.drawing.context(iconSize);
+                  imagelib.drawing[values['crop'] ? 'drawCenterCrop' : 'drawCenterInside']
+                    (tmpCtx6, copyFrom, targetRect, {
+                      x: 0, y: 0,
+                      w: foreSize.w, h: foreSize.h
+                    });
+                  imagelib.effects.renderDropShadow(tmpCtx6, iconSize.w, iconSize.h);
+                  imagelib.drawing.copy(tmpCtx2, tmpCtx6, iconSize);
+								}
+
                 imagelib.drawing[values['crop'] ? 'drawCenterCrop' : 'drawCenterInside']
                   (tmpCtx2, copyFrom, targetRect, {
                     x: 0, y: 0,
@@ -448,6 +459,12 @@
               { id: 'dogear', title: 'Dog-Ear' }
             ],
             defaultValue: 'none'
+          }),
+					new studio.forms.BooleanField('elevation', {
+            title: 'Elevation',
+            defaultValue: false,
+            offText: 'Off',
+            onText: 'On'
           })
           // new studio.forms.EnumField('recenter', {
           //   title: 'Recentering',

@@ -15,11 +15,13 @@ limitations under the License.
 */
 
 //#REQUIRE "includes.js"
+//#REQUIRE "stackblur.js"
 
 imagelib.effects = {};
 
 imagelib.effects.renderLongShadow = function(ctx, w, h) {
   var imgData = ctx.getImageData(0, 0, w, h);
+
   for(var y = 0; y < imgData.height; y++) {
     for(var x = 0; x < imgData.width; x++) {
       if (imagelib.effects.isInShade(imgData, x, y)) {
@@ -29,6 +31,25 @@ imagelib.effects.renderLongShadow = function(ctx, w, h) {
   }
   ctx.putImageData(imgData, 0, 0);
 };
+
+imagelib.effects.renderDropShadow = function(ctx, w, h) {
+	var imgData = ctx.getImageData(0, 0, w, h);
+  for(var y = 0; y < imgData.height; y++) {
+    for(var x = 0; x < imgData.width; x++) {
+      if (imagelib.effects.isUnderImage(imgData, x, y)) {
+				var color = [0, 0, 0, 50];
+        // Change the image color to semi-transparent black for the shadow
+        // Opacity of 20% per material design guidelines
+      	imagelib.effects.setColor(imgData, x, y, color);
+      }
+    }
+  }
+  ctx.putImageData(imgData, 0, 0);
+  // Blur amount must be multiple of size to accommodate different icon sizes
+	var blurRadius = w / 20;
+  // Blur the shadow
+	stackBlurImage(ctx, blurRadius, w, h);
+}
 
 imagelib.effects.renderScore = function(ctx, w, h) {
   var imgData = ctx.getImageData(0, 0, w, h);
@@ -58,10 +79,20 @@ imagelib.effects.isInShade = function(imgData, x, y) {
   }
 };
 
+imagelib.effects.isUnderImage = function(imgData, x, y) {
+  var data = imgData.data;
+	return imagelib.effects.getAlpha(imgData, x, y);
+};
+
 imagelib.effects.castShade = function(imgData, x, y) {
-  var n = 32;
+  // Material recommended opacity of 20%
+  var n = 50;
   var step = n / (imgData.width + imgData.height);
   var alpha = n - ((x + y) * step);
+  // Alternate radial shade casting
+  //var step = n / (Math.sqrt(Math.pow(imgData.width, 2) + Math.pow(imgData.height, 2)));
+  //var dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+  //var alpha = n - ((dist) * step);
   var color = [0, 0, 0, alpha];
   //if (imgData.width == 48) console.log('shade alpha = ' + alpha + ' for ' + x + ',' + y);
   return imagelib.effects.setColor(imgData, x, y, color);
