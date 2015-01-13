@@ -86,12 +86,14 @@ imagelib.effects.isUnderImage = function(imgData, x, y) {
 
 imagelib.effects.castShade = function(imgData, x, y, shade) {
   var n = shade;
-  var step = n / (imgData.width + imgData.height);
-  var alpha = n - ((x + y) * step);
+  // Old linear shade casting
+  //var step = n / (imgData.width + imgData.height);
+  //var alpha = n - ((x + y) * step);
+  
   // Alternate radial shade casting
-  //var step = n / (Math.sqrt(Math.pow(imgData.width, 2) + Math.pow(imgData.height, 2)));
-  //var dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-  //var alpha = n - ((dist) * step);
+  var step = n / (Math.sqrt(Math.pow(imgData.width, 2) + Math.pow(imgData.height, 2)));
+  var dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+  var alpha = n - ((dist) * step);
   var color = [0, 0, 0, alpha];
   //if (imgData.width == 48) console.log('shade alpha = ' + alpha + ' for ' + x + ',' + y);
   return imagelib.effects.setColor(imgData, x, y, color);
