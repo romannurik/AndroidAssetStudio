@@ -19,27 +19,26 @@ limitations under the License.
 
 imagelib.effects = {};
 
-imagelib.effects.renderLongShadow = function(ctx, w, h) {
+imagelib.effects.renderLongShadow = function(ctx, w, h, shade) {
   var imgData = ctx.getImageData(0, 0, w, h);
 
   for(var y = 0; y < imgData.height; y++) {
     for(var x = 0; x < imgData.width; x++) {
       if (imagelib.effects.isInShade(imgData, x, y)) {
-        imagelib.effects.castShade(imgData, x, y);
+        imagelib.effects.castShade(imgData, x, y, shade);
       }
     }
   }
   ctx.putImageData(imgData, 0, 0);
 };
 
-imagelib.effects.renderDropShadow = function(ctx, w, h) {
+imagelib.effects.renderDropShadow = function(ctx, w, h, shade) {
 	var imgData = ctx.getImageData(0, 0, w, h);
   for(var y = 0; y < imgData.height; y++) {
     for(var x = 0; x < imgData.width; x++) {
       if (imagelib.effects.isUnderImage(imgData, x, y)) {
-				var color = [0, 0, 0, 50];
+				var color = [0, 0, 0, shade];
         // Change the image color to semi-transparent black for the shadow
-        // Opacity of 20% per material design guidelines
       	imagelib.effects.setColor(imgData, x, y, color);
       }
     }
@@ -51,11 +50,12 @@ imagelib.effects.renderDropShadow = function(ctx, w, h) {
 	stackBlurImage(ctx, blurRadius, w, h);
 }
 
-imagelib.effects.renderScore = function(ctx, w, h) {
+imagelib.effects.renderScore = function(ctx, w, h, shade) {
+  var scoreShade = shade / 2;
   var imgData = ctx.getImageData(0, 0, w, h);
   for(var y = 0; y < imgData.height/2; y++) {
     for(var x = 0; x < imgData.width; x++) {
-      var color = [0, 0, 0, 24];
+      var color = [0, 0, 0, scoreShade];
       imagelib.effects.setColor(imgData, x, y, color);
     }
   }
@@ -84,9 +84,8 @@ imagelib.effects.isUnderImage = function(imgData, x, y) {
 	return imagelib.effects.getAlpha(imgData, x, y);
 };
 
-imagelib.effects.castShade = function(imgData, x, y) {
-  // Material recommended opacity of 20%
-  var n = 50;
+imagelib.effects.castShade = function(imgData, x, y, shade) {
+  var n = shade;
   var step = n / (imgData.width + imgData.height);
   var alpha = n - ((x + y) * step);
   // Alternate radial shade casting
