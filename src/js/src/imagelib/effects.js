@@ -33,21 +33,21 @@ imagelib.effects.renderLongShadow = function(ctx, w, h, shade) {
 };
 
 imagelib.effects.renderDropShadow = function(ctx, w, h, shade) {
-	var imgData = ctx.getImageData(0, 0, w, h);
+  var imgData = ctx.getImageData(0, 0, w, h);
   for(var y = 0; y < imgData.height; y++) {
     for(var x = 0; x < imgData.width; x++) {
       if (imagelib.effects.isUnderImage(imgData, x, y)) {
-				var color = [0, 0, 0, shade];
+        var color = [0, 0, 0, shade];
         // Change the image color to semi-transparent black for the shadow
-      	imagelib.effects.setColor(imgData, x, y, color);
+        imagelib.effects.setColor(imgData, x, y, color);
       }
     }
   }
   ctx.putImageData(imgData, 0, 0);
   // Blur amount must be multiple of size to accommodate different icon sizes
-	var blurRadius = w / 20;
+  var blurRadius = w / 20;
   // Blur the shadow
-	stackBlurImage(ctx, blurRadius, w, h);
+  stackBlurImage(ctx, blurRadius, w, h);
 }
 
 imagelib.effects.renderScore = function(ctx, w, h, shade) {
@@ -81,7 +81,7 @@ imagelib.effects.isInShade = function(imgData, x, y) {
 
 imagelib.effects.isUnderImage = function(imgData, x, y) {
   var data = imgData.data;
-	return imagelib.effects.getAlpha(imgData, x, y);
+  return imagelib.effects.getAlpha(imgData, x, y);
 };
 
 imagelib.effects.castShade = function(imgData, x, y, shade) {

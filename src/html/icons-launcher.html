@@ -355,8 +355,8 @@
                   imagelib.drawing.copy(tmpCtx2, tmpCtx4, iconSize);
                 }
 
-								if(values['elevation']){
-									var tmpCtx6 = imagelib.drawing.context(iconSize);
+                if(values['elevation']){
+                  var tmpCtx6 = imagelib.drawing.context(iconSize);
                   imagelib.drawing[values['crop'] ? 'drawCenterCrop' : 'drawCenterInside']
                     (tmpCtx6, copyFrom, targetRect, {
                       x: 0, y: 0,
@@ -364,7 +364,7 @@
                     });
                   imagelib.effects.renderDropShadow(tmpCtx6, iconSize.w, iconSize.h, shadowIntensity);
                   imagelib.drawing.copy(tmpCtx2, tmpCtx6, iconSize);
-								}
+                }
 
                 imagelib.drawing[values['crop'] ? 'drawCenterCrop' : 'drawCenterInside']
                   (tmpCtx2, copyFrom, targetRect, {
@@ -462,7 +462,7 @@
             ],
             defaultValue: 'none'
           }),
-					new studio.forms.BooleanField('elevation', {
+          new studio.forms.BooleanField('elevation', {
             title: 'Elevation',
             defaultValue: false,
             offText: 'Off',
