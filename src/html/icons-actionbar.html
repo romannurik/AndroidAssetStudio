@@ -81,7 +81,7 @@
       var group = studio.ui.createImageOutputGroup({
         container: $('#outputs')
       });
-      for (var density in {'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1})
+      for (var density in {'xxxhdpi':1, 'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1})
         studio.ui.createImageOutputSlot({
           container: group,
           id: 'out-icon-' + density,
@@ -116,7 +116,7 @@
         var srcSize = { w: srcCtx.canvas.width, h: srcCtx.canvas.height };
         var srcRect = { x: 0, y: 0, w: srcSize.w, h: srcSize.h };
 
-        for (var density in {'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1}) {
+        for (var density in {'xxxhdpi':1, 'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1}) {
           var mult = studio.util.getMultBaseMdpi(density);
           var iconSize = studio.util.multRound(
               PARAM_RESOURCES['iconSize'], mult);
@@ -191,7 +191,7 @@
           new studio.forms.ImageField('source', {
             title: 'Source',
             helpText: 'Must be transparent',
-            maxFinalSize: { w: 72, h: 72 }, // max render size, for SVGs
+            maxFinalSize: { w: 256, h: 256 }, // max render size, for SVGs
             defaultValueTrim: 1
           }),
           (nameField = new studio.forms.TextField('name', {
