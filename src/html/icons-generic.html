@@ -81,7 +81,7 @@
       var group = studio.ui.createImageOutputGroup({
         container: $('#outputs')
       });
-      for (var density in {'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1})
+      for (var density in {'xxxhdpi':1, 'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1})
         studio.ui.createImageOutputSlot({
           container: group,
           id: 'out-icon-' + density,
@@ -110,7 +110,7 @@
         var srcSize = { w: srcCtx.canvas.width, h: srcCtx.canvas.height };
         var srcRect = { x: 0, y: 0, w: srcSize.w, h: srcSize.h };
 
-        for (var density in {'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1}) {
+        for (var density in {'xxxhdpi':1, 'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1}) {
           var opticalSize = values['size'];
           var padding = values['padding'];
           var totalSize = opticalSize + padding * 2;

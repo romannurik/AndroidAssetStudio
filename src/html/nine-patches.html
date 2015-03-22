@@ -368,7 +368,7 @@
     // Set up zipper and image output slots
     var zipper = studio.zip.createDownloadifyZipButton($('#zip-button-stub'));
     var group = studio.ui.createImageOutputGroup({ container: $('#outputs') });
-    for (var density in {'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1})
+    for (var density in {'xxxhdpi':1, 'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1})
       studio.ui.createImageOutputSlot({
         container: group,
         id: 'out-patch-' + density,
@@ -1431,9 +1431,10 @@
       zipper.clear();
       zipper.setZipFilename(resourceName + '.9.zip');
 
-      for (var densityStr in {'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1}) {
+      for (var densityStr in {'xxxhdpi':1, 'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1}) {
         var density;
         switch (densityStr) {
+          case 'xxxhdpi': density = 640; break;
           case 'xxhdpi': density = 480; break;
           case  'xhdpi': density = 320; break;
           case   'hdpi': density = 240; break;
@@ -1561,7 +1562,8 @@
             { id: '160', title:   'mdpi<br><small>(160)</small>' },
             { id: '240', title:   'hdpi<br><small>(240)</small>' },
             { id: '320', title:  'xhdpi<br><small>(320)</small>' },
-            { id: '480', title: 'xxhdpi<br><small>(480)</small>' }
+            { id: '480', title: 'xxhdpi<br><small>(480)</small>' },
+            { id: '640', title: 'xxxhdpi<br><small>(640)</small>' }
           ],
           defaultValue: '320'
         }),
