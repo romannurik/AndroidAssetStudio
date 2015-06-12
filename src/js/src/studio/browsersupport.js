@@ -31,10 +31,9 @@ studio.checkBrowser = function() {
       .append($('<span class="ui-icon ui-icon-alert" ' +
                 'style="float:left; margin:0 7px 50px 0;">'))
       .append($('<p>')
-        .html('Currently only ' +
+        .html('目前仅推荐、支持 ' +
               '<a href="http://www.google.com/chrome">Google Chrome</a> ' +
-              'is recommended and supported. Your mileage may vary with ' +
-              'other browsers.'))
+              '浏览器。使用其他浏览器可能导致异常的结果。'))
       .prependTo('body');
   }
 };

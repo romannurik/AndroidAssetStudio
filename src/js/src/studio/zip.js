@@ -72,7 +72,7 @@ studio.zip = {};
         .addClass('dragout')
         .addClass('form-button')
         .attr('disabled', 'disabled')
-        .text('Download .ZIP')
+        .text('下载ZIP包')
         .get(0);
 
     $(element).replaceWith(link);

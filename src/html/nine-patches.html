@@ -18,7 +18,7 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Android Asset Studio - Simple Nine-patch Generator</title>
+    <title>Android Asset Studio - 简单.9图片生成器</title>
 
     <link rel="stylesheet" href="lib/cssreset-3.4.1.min.css">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:regular,medium,thin,italic,mediumitalic,bold" title="roboto">
@@ -267,10 +267,9 @@
     <div id="main-container">
       <div id="page-header">
         <a href="index.html">Android Asset Studio</a>
-        <h1>Simple Nine-patch Generator</h1>
+        <h1>简单.9图片生成器</h1>
         <p id="page-intro">
-          The nine-patch generator allows you to quickly generate simple nine-patches
-          at different screen densities, based on the specified source artwork.
+          简单.9图片生成器可以从源图快速生成简单的支持不同屏幕密度的.9图片资源。
         </p>
       </div>
       <div id="instage-container">
@@ -278,30 +277,29 @@
           <div id="inputs-form"></div>
         </div>
         <div id="stage">
-          Edit Mode &nbsp;
+          编辑模式 &nbsp;
           <div id="stage-which" class="form-field-buttonset">
-            <input id="stage-stretch" name="stage-which" type="radio" value="stretch" checked><label for="stage-stretch">Stretch<br>Regions</label><!--
-            --><input id="stage-padding" name="stage-which" type="radio" value="padding"><label for="stage-padding">Content<br>Padding</label><!--
-            --><input id="stage-opticalbounds" name="stage-which" type="radio" value="opticalbounds"><label for="stage-opticalbounds">Optical<br>Bounds (4.3+)<br></label>
+            <input id="stage-stretch" name="stage-which" type="radio" value="stretch" checked><label for="stage-stretch">拉伸区域</label><!--
+            --><input id="stage-padding" name="stage-which" type="radio" value="padding"><label for="stage-padding">内容填充</label><!--
+            --><input id="stage-opticalbounds" name="stage-which" type="radio" value="opticalbounds"><label for="stage-opticalbounds">视觉边界(4.3+)<br></label>
           </div>
           <div id="stage-canvas-container">
             <div style="margin: 24px 0; color: #888">
-              Select a <strong>Source Graphic</strong> to the left to get started. You can also drag
-              a source image in from your desktop into the Source Graphic box.
+              请先点击左边的“选择图片”按钮选择一张<strong>源图片</strong>。也可以从桌面拖拽源图片到左边的图片选择框中。
             </div>
           </div>
           <div id="stage-bottom-controls">
-            <button id="find-region-button" class="editor-button" disabled>Auto-stretch</button>
-            <button id="trim-button" class="editor-button dropdown-button" disabled>Trim</button>
+            <button id="find-region-button" class="editor-button" disabled>自动拉伸</button>
+            <button id="trim-button" class="editor-button dropdown-button" disabled>裁剪</button>
             <ul id="trim-dropdown" class="dropdown-list" data-anchor="trim-button">
-              <li id="trim-edge-item">Edge transparency</li>
-              <li id="trim-stretch-item">Stretch region</li>
+              <li id="trim-edge-item">边缘透明</li>
+              <li id="trim-stretch-item">拉伸区域</li>
             </ul>
             <div id="stage-bottom-right-controls">
-              Grid &nbsp;
+              背景网格 &nbsp;
               <div id="stage-grid-color" class="form-field-buttonset">
-                <input id="grid-light" name="stage-grid-color" type="radio" value="light" checked><label for="grid-light">Light</label><!--
-                --><input id="grid-dark" name="stage-grid-color" type="radio" value="dark"><label for="grid-dark">Dark</label>
+                <input id="grid-light" name="stage-grid-color" type="radio" value="light" checked><label for="grid-light">明</label><!--
+                --><input id="grid-dark" name="stage-grid-color" type="radio" value="dark"><label for="grid-dark">暗</label>
               </div>
             </div>
           </div>
@@ -312,14 +310,15 @@
         </div>
       </div>
       <div id="preview-area-container">
-        <div class="expando" id="preview-area-expando">Interactive preview</div>
+        <div class="expando" id="preview-area-expando">交互预览</div>
         <div id="preview-area">
           <input type="checkbox" id="preview-with-content" class="form-field-checkbutton">
-          <label for="preview-with-content">With Content</label>
+          <label for="preview-with-content">显示内容</label>
           <div id="preview-stage">
             <div>
               <canvas></canvas>
-              <div id="text-preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque auctor auctor purus, a iaculis neque pharetra in. Curabitur in eleifend erat, sit amet facilisis augue. In hendrerit lectus sit amet purus auctor, at condimentum arcu consectetur. Suspendisse nisl massa, condimentum sit amet luctus ut, euismod id lacus. Pellentesque pretium consectetur urna, non vehicula massa tincidunt in. Nam lacus ante, euismod vel purus eget, faucibus dapibus lectus. Sed mi augue, pulvinar in sodales a, laoreet suscipit magna. Maecenas mollis nisl a nisl auctor venenatis. Praesent id tempor nulla. Cras viverra vulputate ligula. Interdum et malesuada fames ac ante ipsum primis in faucibus.</div>
+              <div id="text-preview">Android（读音：英 ['ændrɔɪd] 美 [ˈænˌdrɔɪd]），中文俗称安卓，是一个以Linux为基础的开放源代码移动设备操作系统，主要用于智能手机和平板电脑，由Google成立的Open Handset Alliance（OHA，开放手持设备联盟）持续领导与开发中。目前Google发布Android的最新正式版本为Android 5.1.1(Lollipop)与测试版本Android M Preview 。
+              Android系统最初由安迪·鲁宾（Andy Rubin）等人开发制作[6]，最初开发这个系统的目的是创建一个数码相机的先进操作系统；但是后来发现市场需求不够大，加上智能手机市场快速成长，于是Android被改造为一款面向智能手机的操作系统。于2005年8月被美国科技企业Google收购[7]。2007年11月，Google与84家硬件制造商、软件开发商及电信营运商成立开放手持设备联盟来共同研发改良Android系统，随后，Google以Apache免费开放源代码许可证的授权方式，发布了Android的源代码[8]，让生产商推出搭载Android的智能手机[9][10][11][12]，Android操作系统后来更逐渐拓展到平板电脑及其他领域上[13]。</div>
             </div>
           </div>
         </div>
@@ -328,8 +327,8 @@
         <h3><div id="zip-button-stub"></div></h3>
       </div>
       <div id="footer">
-        <p>See the <a href="https://github.com/romannurik/AndroidAssetStudio">source on GitHub</a>.</p>
-        <p>All generated art is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>. <a href="attribution.html">Attribution info</a></p>
+        <p>详见 <a href="https://github.com/romannurik/AndroidAssetStudio">GitHub 开源</a>.</p>
+        <p>由 <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a> 许可  <a href="attribution.html">署名信息</a></p>
       </div>
     </div>
 
@@ -383,11 +382,11 @@
       stage.editMode = $(this).val();
       $('#trim-button').toggle(stage.editMode == 'stretch');
       if ('stretch' == stage.editMode) {
-        $('#find-region-button').text('Auto-stretch');
+        $('#find-region-button').text('自动拉伸');
       } else if ('padding' == stage.editMode) {
-        $('#find-region-button').text('Auto-padding');
+        $('#find-region-button').text('自动填充');
       } else if ('opticalbounds' == stage.editMode) {
-        $('#find-region-button').text('Auto-bounds');
+        $('#find-region-button').text('自动边缘');
       } else {
         $('#find-region-button').text('Error');
       }
@@ -1550,13 +1549,13 @@
       },
       fields: [
         new studio.forms.ImageField('source', {
-          title: 'Source graphic',
+          title: '源图片',
           imageOnly: true,
           noTrimForm: true,
           noPreview: true
         }),
         new studio.forms.EnumField('sourceDensity', {
-          title: 'Source density',
+          title: '源图片素密度',
           buttons: true,
           options: [
             { id: '160', title:   'mdpi<br><small>(160)</small>' },
@@ -1568,8 +1567,8 @@
           defaultValue: '320'
         }),
         (nameField = new studio.forms.TextField('name', {
-          title: 'Drawable name',
-          helpText: 'Used when generating ZIP files. Becomes <code>&lt;name&gt;.9.png</code>.',
+          title: '命名图片',
+          helpText: '生成ZIP包文件时作为图片文件名：<code>&lt;name&gt;.9.png</code>',
           defaultValue: 'example'
         }))
       ]
