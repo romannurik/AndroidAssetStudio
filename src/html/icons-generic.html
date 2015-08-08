@@ -160,7 +160,10 @@
           if ((!field || field.id_ == 'source')
               && values['source'] && values['source'].name) {
             var name = values['source'].name.split('.')[0];
-            name = 'ic_' + studio.util.sanitizeResourceName(name);
+            if (name.substring(0, 3).localeCompare('ic_') != 0)
+              name = 'ic_' + studio.util.sanitizeResourceName(name);
+            else
+              name =  studio.util.sanitizeResourceName(name);
             if (name != nameField.getValue()) {
               nameField.setValue(name);
             }
