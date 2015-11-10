@@ -348,6 +348,7 @@ studio.forms.ImageField = studio.forms.Field.extend({
     this.valueType_ = null;
     this.valueFilename_ = null;
     this.valueCtx_ = null;
+    this.valueOrigImg_ = null;
     this.fileEl_.val('');
     if (this.imagePreview_) {
       this.imagePreview_.hide();
@@ -357,6 +358,7 @@ studio.forms.ImageField = studio.forms.Field.extend({
   getValue: function() {
     return {
       ctx: this.valueCtx_,
+      origImg: this.valueOrigImg_,
       type: this.valueType_,
       name: this.valueFilename_
     };
@@ -366,6 +368,7 @@ studio.forms.ImageField = studio.forms.Field.extend({
   renderValueAndNotifyChanged_: function() {
     if (!this.valueType_) {
       this.valueCtx_ = null;
+      this.valueOrigImg_ = null;
     }
 
     var me = this;
@@ -400,6 +403,7 @@ studio.forms.ImageField = studio.forms.Field.extend({
           document.body.removeChild(canvas);
         } else if (this.imageParams_.uri) {
           imagelib.loadFromUri(this.imageParams_.uri, function(img) {
+            me.valueOrigImg_ = img;
             var size = {
               w: img.naturalWidth,
               h: img.naturalHeight

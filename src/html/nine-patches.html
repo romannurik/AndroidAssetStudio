@@ -404,16 +404,17 @@
       $('#preview-area').toggleClass('dark', stage.gridColor == 'dark');
       redrawStage();
     });
-    function resetStage(srcCtx, initStage) {
+    function resetStage(srcCtx, srcSvgImg, initStage) {
       $('#stage-canvas-container').empty();
       $('.editor-button').attr('disabled', srcCtx ? null : 'disabled');
+      $('#trim-button').attr('disabled', srcSvgImg ? 'disabled' : null);
       initStage = initStage || {};
-
       if (!srcCtx) {
         return;
       }
 
       stage.srcCtx = srcCtx;
+      stage.srcSvgImg = srcSvgImg;
 
       // Update the stage source size
       var srcSizeChanged = false;
@@ -790,7 +791,7 @@
       // Inset the context
       var newCtx = imagelib.drawing.context(size);
       newCtx.drawImage(ctx.canvas, 1, 1, size.w, size.h, 0, 0, size.w, size.h);
-      resetStage(newCtx, initStage);
+      resetStage(newCtx, null, initStage);
     }
 
     // Set up preview area
@@ -1255,7 +1256,7 @@
       newCtx.drawImage(stage.srcCtx.canvas,
           insetRect.l, insetRect.t, size.w, size.h,
           0, 0, size.w, size.h);
-      resetStage(newCtx, initStage);
+      resetStage(newCtx, null, initStage);
     });
 
     // Trim stretch
@@ -1416,7 +1417,7 @@
 
       stage.name = stage.name + '-STRETCH_TRIMMED';
 
-      resetStage(ctx, initStage);
+      resetStage(ctx, null, initStage);
     });
 
     /**
@@ -1456,12 +1457,15 @@
           h: Math.ceil(stage.srcSize.h * scale) + 2
         };
         var outCtx = imagelib.drawing.context(outSize);
-        // outCtx.drawImage(stage.srcCtx.canvas,
-        //     0, 0, stage.srcSize.w, stage.srcSize.h,
-        //     1, 1, outSize.w - 2, outSize.h - 2);
-        imagelib.drawing.drawImageScaled(outCtx, stage.srcCtx,
-            0, 0, stage.srcSize.w, stage.srcSize.h,
-            1, 1, outSize.w - 2, outSize.h - 2);
+        if (stage.srcSvgImg) {
+          outCtx.drawImage(stage.srcSvgImg,
+              0, 0, stage.srcSize.w, stage.srcSize.h,
+              1, 1, outSize.w - 2, outSize.h - 2);
+        } else {
+          imagelib.drawing.drawImageScaled(outCtx, stage.srcCtx,
+              0, 0, stage.srcSize.w, stage.srcSize.h,
+              1, 1, outSize.w - 2, outSize.h - 2);
+        }
 
         // draw Android 4.3 optical bounds
         outCtx.strokeStyle = '#f00';
@@ -1551,10 +1555,11 @@
             var src = values['source'];
             var size = { w: src.ctx.canvas.width, h: src.ctx.canvas.height };
             stage.name = src.name + '-' + size.w + 'x' + size.h;
+            var isSvg = !!src.name.match(/\.svg$/i);
             if (src.name && src.name.match(/\.9\.png$/i)) {
               loadNinePatch(src.ctx);
             } else {
-              resetStage(src.ctx);
+              resetStage(src.ctx, isSvg ? src.origImg : null);
             }
             if (src.name) {
               var name = src.name.split('.')[0];
