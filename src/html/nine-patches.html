@@ -337,6 +337,11 @@
     $(studio.checkBrowser);
     imagelib.ALLOW_MANUAL_RESCALE = true;
 
+    var DENSITIES = {'xxxhdpi':1, 'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1};
+    if (document.location.search.indexOf('extradensities') >= 0) {
+      DENSITIES.ldpi = DENSITIES.tvdpi = 1;
+    }
+
     var GRID_SIZE_PIXELS = 4;
     var SLOP_PIXELS = 10;
 
@@ -368,7 +373,7 @@
     // Set up zipper and image output slots
     var zipper = studio.zip.createDownloadifyZipButton($('#zip-button-stub'));
     var group = studio.ui.createImageOutputGroup({ container: $('#outputs') });
-    for (var density in {'xxxhdpi':1, 'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1})
+    for (var density in DENSITIES)
       studio.ui.createImageOutputSlot({
         container: group,
         id: 'out-patch-' + density,
@@ -1431,14 +1436,16 @@
       zipper.clear();
       zipper.setZipFilename(resourceName + '.9.zip');
 
-      for (var densityStr in {'xxxhdpi':1, 'xxhdpi':1, 'xhdpi':1, 'hdpi':1, 'mdpi':1}) {
+      for (var densityStr in DENSITIES) {
         var density;
         switch (densityStr) {
           case 'xxxhdpi': density = 640; break;
           case 'xxhdpi': density = 480; break;
           case  'xhdpi': density = 320; break;
           case   'hdpi': density = 240; break;
+          case  'tvdpi': density = 213; break;
           case   'mdpi': density = 160; break;
+          case   'ldpi': density = 120; break;
         }
 
         // scale source graphic
@@ -1517,6 +1524,21 @@
     }
 
     // Input form code
+    var SOURCE_DENSITY_OPTIONS = [
+      { id: '160', title:   'mdpi<br><small>(160)</small>' },
+      { id: '240', title:   'hdpi<br><small>(240)</small>' },
+      { id: '320', title:  'xhdpi<br><small>(320)</small>' },
+      { id: '480', title: 'xxhdpi<br><small>(480)</small>' },
+      { id: '640', title: 'xxxhdpi<br><small>(640)</small>' }
+    ];
+
+    if (document.location.search.indexOf('extradensities') >= 0) {
+      SOURCE_DENSITY_OPTIONS = SOURCE_DENSITY_OPTIONS.concat([
+        { id: '120', title:   'ldpi<br><small>(120)</small>' },
+        { id: '213', title:  'tvdpi<br><small>(213)</small>' },
+      ]);
+    }
+
     var nameField;
     var form = new studio.forms.Form('ninepatchform', {
       onChange: function(field) {
@@ -1558,13 +1580,7 @@
         new studio.forms.EnumField('sourceDensity', {
           title: 'Source density',
           buttons: true,
-          options: [
-            { id: '160', title:   'mdpi<br><small>(160)</small>' },
-            { id: '240', title:   'hdpi<br><small>(240)</small>' },
-            { id: '320', title:  'xhdpi<br><small>(320)</small>' },
-            { id: '480', title: 'xxhdpi<br><small>(480)</small>' },
-            { id: '640', title: 'xxxhdpi<br><small>(640)</small>' }
-          ],
+          options: SOURCE_DENSITY_OPTIONS,
           defaultValue: '320'
         }),
         (nameField = new studio.forms.TextField('name', {

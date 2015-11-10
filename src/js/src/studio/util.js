@@ -22,6 +22,7 @@ studio.util.getMultBaseMdpi = function(density) {
     case  'xxhdpi': return 3.00;
     case   'xhdpi': return 2.00;
     case    'hdpi': return 1.50;
+    case   'tvdpi': return 1.33125;
     case    'mdpi': return 1.00;
     case    'ldpi': return 0.75;
   }
