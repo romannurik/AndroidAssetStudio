@@ -319,6 +319,8 @@
               tmpCtx.fillStyle = values['backColor'].color;
               tmpCtx.fillRect(0, 0, iconSize.w, iconSize.h);
 
+              var shadowIntensity = values['shadowIntensity'];
+
               if (foreCtx) {
                 var tmpCtx2 = imagelib.drawing.context(iconSize);
                 tmpCtx2.save();
@@ -349,8 +351,19 @@
                       x: 0, y: 0,
                       w: foreSize.w, h: foreSize.h
                     });
-                  imagelib.effects.renderLongShadow(tmpCtx4, iconSize.w, iconSize.h);
+                  imagelib.effects.renderLongShadow(tmpCtx4, iconSize.w, iconSize.h, shadowIntensity);
                   imagelib.drawing.copy(tmpCtx2, tmpCtx4, iconSize);
+                }
+
+                if(values['elevation']){
+                  var tmpCtx6 = imagelib.drawing.context(iconSize);
+                  imagelib.drawing[values['crop'] ? 'drawCenterCrop' : 'drawCenterInside']
+                    (tmpCtx6, copyFrom, targetRect, {
+                      x: 0, y: 0,
+                      w: foreSize.w, h: foreSize.h
+                    });
+                  imagelib.effects.renderDropShadow(tmpCtx6, iconSize.w, iconSize.h, shadowIntensity);
+                  imagelib.drawing.copy(tmpCtx2, tmpCtx6, iconSize);
                 }
 
                 imagelib.drawing[values['crop'] ? 'drawCenterCrop' : 'drawCenterInside']
@@ -363,7 +376,7 @@
 
                 if (values['effects'] == 'score') {
                   var tmpCtx5 = imagelib.drawing.context(iconSize);
-                  imagelib.effects.renderScore(tmpCtx5, iconSize.w, iconSize.h);
+                  imagelib.effects.renderScore(tmpCtx5, iconSize.w, iconSize.h, shadowIntensity);
                   imagelib.drawing.copy(tmpCtx, tmpCtx5, iconSize);
                 }
 
@@ -448,6 +461,20 @@
               { id: 'dogear', title: 'Dog-Ear' }
             ],
             defaultValue: 'none'
+          }),
+          new studio.forms.BooleanField('elevation', {
+            title: 'Elevation',
+            defaultValue: false,
+            offText: 'Off',
+            onText: 'On'
+          }), new studio.forms.RangeField('shadowIntensity', {
+            title: 'Shadow Intensity',
+            helpText: 'For elevation, score, and long shadow',
+            min: 0,
+            max: 100,
+            step: 5,
+            showText: true,
+            defaultValue: 50
           })
           // new studio.forms.EnumField('recenter', {
           //   title: 'Recentering',

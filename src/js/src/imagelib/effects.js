@@ -15,26 +15,47 @@ limitations under the License.
 */
 
 //#REQUIRE "includes.js"
+//#REQUIRE "stackblur.js"
 
 imagelib.effects = {};
 
-imagelib.effects.renderLongShadow = function(ctx, w, h) {
+imagelib.effects.renderLongShadow = function(ctx, w, h, shade) {
   var imgData = ctx.getImageData(0, 0, w, h);
+
   for(var y = 0; y < imgData.height; y++) {
     for(var x = 0; x < imgData.width; x++) {
       if (imagelib.effects.isInShade(imgData, x, y)) {
-        imagelib.effects.castShade(imgData, x, y);
+        imagelib.effects.castShade(imgData, x, y, shade);
       }
     }
   }
   ctx.putImageData(imgData, 0, 0);
 };
 
-imagelib.effects.renderScore = function(ctx, w, h) {
+imagelib.effects.renderDropShadow = function(ctx, w, h, shade) {
+  var imgData = ctx.getImageData(0, 0, w, h);
+  for(var y = 0; y < imgData.height; y++) {
+    for(var x = 0; x < imgData.width; x++) {
+      if (imagelib.effects.isUnderImage(imgData, x, y)) {
+        var color = [0, 0, 0, shade];
+        // Change the image color to semi-transparent black for the shadow
+        imagelib.effects.setColor(imgData, x, y, color);
+      }
+    }
+  }
+  ctx.putImageData(imgData, 0, 0);
+  // Blur amount must be multiple of size to accommodate different icon sizes
+  var blurRadius = w / 20;
+  // Blur the shadow
+  stackBlurImage(ctx, blurRadius, w, h);
+}
+
+imagelib.effects.renderScore = function(ctx, w, h, shade) {
+  var scoreShade = shade / 2;
   var imgData = ctx.getImageData(0, 0, w, h);
   for(var y = 0; y < imgData.height/2; y++) {
     for(var x = 0; x < imgData.width; x++) {
-      var color = [0, 0, 0, 24];
+      var color = [0, 0, 0, scoreShade];
       imagelib.effects.setColor(imgData, x, y, color);
     }
   }
@@ -58,10 +79,21 @@ imagelib.effects.isInShade = function(imgData, x, y) {
   }
 };
 
-imagelib.effects.castShade = function(imgData, x, y) {
-  var n = 32;
-  var step = n / (imgData.width + imgData.height);
-  var alpha = n - ((x + y) * step);
+imagelib.effects.isUnderImage = function(imgData, x, y) {
+  var data = imgData.data;
+  return imagelib.effects.getAlpha(imgData, x, y);
+};
+
+imagelib.effects.castShade = function(imgData, x, y, shade) {
+  var n = shade;
+  // Old linear shade casting
+  //var step = n / (imgData.width + imgData.height);
+  //var alpha = n - ((x + y) * step);
+  
+  // Alternate radial shade casting
+  var step = n / (Math.sqrt(Math.pow(imgData.width, 2) + Math.pow(imgData.height, 2)));
+  var dist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+  var alpha = n - ((dist) * step);
   var color = [0, 0, 0, alpha];
   //if (imgData.width == 48) console.log('shade alpha = ' + alpha + ' for ' + x + ',' + y);
   return imagelib.effects.setColor(imgData, x, y, color);
