@@ -18,7 +18,7 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Android Asset Studio - Icon Generator - Generic icons</title>
+    <title>Android Asset Studio - 图标生成器 - 通用图标</title>
 
     <link rel="stylesheet" href="lib/cssreset-3.4.1.min.css">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:regular,medium,thin,italic,mediumitalic,bold" title="roboto">
@@ -41,7 +41,7 @@
     <!-- TODO: remove Analytics tracking if you're building the tools locally! -->
     <script type="text/javascript">
       var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-18671401-1']);
+      _gaq.push(['_setAccount', 'UA-64117634-1']);
       _gaq.push(['_trackPageview']);
       (function() {
         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -54,7 +54,7 @@
     <div id="main-container">
       <div id="page-header">
         <a href="index.html">Android Asset Studio</a>
-        <h1>Generic Icon Generator</h1>
+        <h1>通用图标生成器</h1>
       </div>
       <div id="inputs">
         <div id="inputs-form"></div>
@@ -65,8 +65,8 @@
         </h3>
       </div>
       <div id="footer">
-        <p>See the <a href="https://github.com/romannurik/AndroidAssetStudio">source on GitHub</a>.</p>
-        <p>All generated art is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>. <a href="attribution.html">Attribution info</a></p>
+        <p>详见 <a href="https://github.com/romannurik/AndroidAssetStudio">source on GitHub</a>.</p>
+        <p>由 <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>许可. <a href="attribution.html">署名信息</a></p>
       </div>
     </div>
 
@@ -173,14 +173,14 @@
         },
         fields: [
           new studio.forms.ImageField('source', {
-            title: 'Source',
-            helpText: 'Must be transparent',
+            title: '资源',
+            helpText: '必须透明',
             maxFinalSize: { w: 720, h: 720 }, // max render size, for SVGs
             defaultValueTrim: 1
           }),
           new studio.forms.RangeField('size', {
-            title: 'Size',
-            helpText: 'Optical icon size.',
+            title: '尺寸',
+            helpText: '可见图标尺寸',
             min: 4,
             max: 200,
             defaultValue: 24,
@@ -189,23 +189,23 @@
             }
           }),
           new studio.forms.RangeField('padding', {
-            title: 'Padding',
-            helpText: 'Padding around the optical icon.',
+            title: '内边距',
+            helpText: '设置可见图标的内边距',
             defaultValue: 8,
             textFn: function(d) {
               return d + ' dip';
             }
           }),
           new studio.forms.ColorField('color', {
-            title: 'Color',
-            helpText: 'Flat foreground color (optional).',
+            title: '颜色',
+            helpText: '设置图标前景色(可选)',
             defaultValue: '#33b5e5',
             alpha: true,
             defaultAlpha: 100
           }),
           (nameField = new studio.forms.TextField('name', {
-            title: 'Name',
-            helpText: 'Used when generating ZIP files as the resource name.',
+            title: '命名',
+            helpText: '用作生成ZIP文件作为资源名',
             defaultValue: 'ic_example'
           }))
         ]

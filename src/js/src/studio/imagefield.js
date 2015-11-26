@@ -74,13 +74,13 @@ studio.forms.ImageField = studio.forms.Field.extend({
     var types;
     if (this.params_.imageOnly) {
       types = [
-        'image', 'Select Image'
+        'image', '选择图片'
       ];
     } else {
       types = [
-        'image', 'Image',
-        'clipart', 'Clipart',
-        'text', 'Text'
+        'image', '图片',
+        'clipart', '剪贴板',
+        'text', '文本'
       ];
     }
 
@@ -141,7 +141,7 @@ studio.forms.ImageField = studio.forms.Field.extend({
 
       var clipartFilterEl = $('<input>')
         .addClass('form-image-clipart-filter')
-        .attr('placeholder', 'Find clipart')
+        .attr('placeholder', '选择剪贴板')
         .keydown(function() {
           var $this = $(this);
           setTimeout(function() {
@@ -180,11 +180,11 @@ studio.forms.ImageField = studio.forms.Field.extend({
       var clipartAttributionEl = $('<div>')
         .addClass('form-image-clipart-attribution')
         .html([
-            'For clipart sources, visit ',
+            '关于剪贴板资源，请访问 ',
             '<a href="https://github.com/google/material-design-icons">',
                 'Material Design Icons on GitHub',
             '</a>.<br>',
-            'Additional icons can be found at ',
+            '额外的图标可以在这里找到 ',
             '<a href="http://www.androidicons.com">androidicons.com</a>.'
           ].join(''))
         .appendTo(clipartParamsEl);
@@ -219,10 +219,10 @@ studio.forms.ImageField = studio.forms.Field.extend({
           },
           fields: [
             new studio.forms.TextField('text', {
-              title: 'Text',
+              title: '文字',
             }),
             new studio.forms.AutocompleteTextField('font', {
-              title: 'Font',
+              title: '字体',
               items: studio.forms.ImageField.fontList_
             })
           ]
@@ -249,13 +249,13 @@ studio.forms.ImageField = studio.forms.Field.extend({
           },
           fields: [
             (this.spaceFormTrimField_ = new studio.forms.BooleanField('trim', {
-              title: 'Trim',
+              title: '裁剪',
               defaultValue: this.params_.defaultValueTrim || false,
-              offText: 'Don\'t Trim',
-              onText: 'Trim'
+              offText: '不裁剪',
+              onText: '裁剪'
             })),
             new studio.forms.RangeField('pad', {
-              title: 'Padding',
+              title: '内边距',
               defaultValue: 0,
               min: -0.1,
               max: 0.5, // 1/2 of min(width, height)

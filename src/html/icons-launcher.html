@@ -18,7 +18,7 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Android Asset Studio - Icon Generator - Launcher icons</title>
+    <title>Android Asset Studio - 图标生成器 - 启动器图标</title>
 
     <link rel="stylesheet" href="lib/cssreset-3.4.1.min.css">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:regular,medium,thin,italic,mediumitalic,bold" title="roboto">
@@ -41,7 +41,7 @@
     <!-- TODO: remove Analytics tracking if you're building the tools locally! -->
     <script type="text/javascript">
       var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-18671401-1']);
+      _gaq.push(['_setAccount', 'UA-64117634-1']);
       _gaq.push(['_trackPageview']);
       (function() {
         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -71,7 +71,7 @@
     <div id="main-container">
       <div id="page-header">
         <a href="index.html">Android Asset Studio</a>
-        <h1>Launcher Icon Generator</h1>
+        <h1>启动器图标生成器</h1>
       </div>
       <div id="inputs">
         <div id="inputs-form"></div>
@@ -79,12 +79,12 @@
       <div id="outputs">
         <h3>
           <div id="zip-button-stub"></div>
-          <button id="generate-web-button">Generate Web Icon</button>
+          <button id="generate-web-button">生成网络图标</button>
         </h3>
       </div>
       <div id="footer">
-        <p>See the <a href="https://github.com/romannurik/AndroidAssetStudio">source on GitHub</a>.</p>
-        <p>All generated art is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>. <a href="attribution.html">Attribution info</a></p>
+        <p>详见 <a href="https://github.com/romannurik/AndroidAssetStudio">source on GitHub</a>.</p>
+        <p>由 <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a> 许可. <a href="attribution.html">署名信息</a></p>
       </div>
     </div>
 
@@ -404,48 +404,48 @@
         },
         fields: [
           new studio.forms.ImageField('foreground', {
-            title: 'Foreground',
+            title: '前景',
             maxFinalSize: { w: 720, h: 720 }, // max render size, for SVGs
             defaultValueTrim: 1
           }),
           new studio.forms.ColorField('foreColor', {
-            title: 'Color',
-            helpText: 'For transparent foregrounds',
+            title: '颜色',
+            helpText: '仅透明前景适用',
             defaultValue: '#607d8b',
             alpha: true,
             defaultAlpha: 0
           }),
           new studio.forms.BooleanField('crop', {
-            title: 'Scaling',
+            title: '缩放',
             defaultValue: false,
-            offText: 'Center',
-            onText: 'Crop'
+            offText: '居中',
+            onText: '裁剪'
           }),
           new studio.forms.EnumField('backgroundShape', {
-            title: 'Shape',
+            title: '形状',
             buttons: true,
             options: [
-              { id: 'none', title: 'None' },
-              { id: 'bevel', title: 'Bevel' },
-              { id: 'square', title: 'Square' },
-              { id: 'circle', title: 'Circle' },
-              { id: 'vrect', title: 'Vertical Rectangle' },
-              { id: 'hrect', title: 'Horizontal Rectangle' }
+              { id: 'none', title: '无' },
+              { id: 'bevel', title: '斜角' },
+              { id: 'square', title: '方形' },
+              { id: 'circle', title: '圆形' },
+              { id: 'vrect', title: '纵向矩形' },
+              { id: 'hrect', title: '横向矩形' }
             ],
             defaultValue: 'square'
           }),
           new studio.forms.ColorField('backColor', {
-            title: 'Background',
+            title: '背景',
             defaultValue: '#ffffff'
           }),
           new studio.forms.EnumField('effects', {
-            title: 'Effect',
+            title: '效果',
             buttons: true,
             options: [
-              { id: 'none', title: 'None' },
-              { id: 'shadow', title: 'Long Shadow' },
-              { id: 'score', title: 'Score' },
-              { id: 'dogear', title: 'Dog-Ear' }
+              { id: 'none', title: '无' },
+              { id: 'shadow', title: '长阴影' },
+              { id: 'score', title: '折痕' },
+              { id: 'dogear', title: '折耳' }
             ],
             defaultValue: 'none'
           })
