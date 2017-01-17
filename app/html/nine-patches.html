@@ -1,0 +1,78 @@
+---
+title: Simple nine-patch generator
+intro:
+    The nine-patch generator allows you to quickly generate simple nine-patches
+    at different screen densities, based on the specified source artwork.
+bodyClasses: page-nine-patch-generator
+---
+
+{% extends '_generator-base.html' %}
+
+{% block generator-body %}
+<div class="inputs-panel">
+  <div id="inputs-form"></div>
+</div>
+<div class="nine-patch-editor-area">
+  <div class="stage-top-toolbar">
+    <label class="field-label">Edit mode</label>
+    <div class="stage-which form-field-buttonset">
+      <input id="stage-stretch" name="stage-which" type="radio" value="stretch" checked><label for="stage-stretch">Stretch region</label>
+      <input id="stage-padding" name="stage-which" type="radio" value="padding"><label for="stage-padding">Content padding</label>
+      <input id="stage-opticalbounds" name="stage-which" type="radio" value="opticalbounds"><label for="stage-opticalbounds">Optical bounds<br></label>
+    </div>
+  </div>
+  <div class="nine-patch-stage">
+    <div class="stage-canvas-container">
+      <div class="empty">
+        Drag or select a source graphic to get started.
+      </div>
+    </div>
+  </div>
+  <div class="stage-bottom-toolbar">
+    <button class="form-field-button find-region-button editor-button" disabled>Auto-stretch</button>
+    <button class="form-field-button trim-button trim-edge-button">Trim edge transparency</button>
+    <button class="form-field-button trim-button trim-stretch-button">Trim stretch region</button>
+    <div class="flex"></div>
+    <label class="field-label">Matte</label>
+    <div class="stage-matte-color form-field-buttonset">
+      <input id="matte-light" name="stage-matte-color" type="radio" value="light" checked><label for="matte-light">Light</label>
+      <input id="matte-dark" name="stage-matte-color" type="radio" value="dark"><label for="matte-dark">Dark</label>
+    </div>
+  </div>
+</div>
+<div class="outputs-preview-sidebar" data-view="preview">
+  <div class="outputs-preview-tabs tabs">
+    <input id="tab-preview" name="outputs-preview-tabs" type="radio" value="preview" checked><label for="tab-preview">Preview</label>
+    <input id="tab-outputs" name="outputs-preview-tabs" type="radio" value="output"><label for="tab-outputs">Assets</label>
+  </div>
+  <button id="download-zip-button" class="fab-button">
+    <i class="material-icons">file_download</i>
+    <span class="tooltip">Download ZIP</span>
+  </button>
+  <div class="nine-patch-preview-area-container">
+    <div class="preview-area">
+      <label id="preview-with-content-container" class="checkbox">
+        <input id="preview-with-content" type="checkbox">
+        With content
+      </label>
+      <div class="preview-stage">
+        <div>
+          <canvas></canvas>
+          <div class="text-preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque auctor auctor purus, a iaculis neque pharetra in. Curabitur in eleifend erat, sit amet facilisis augue. In hendrerit lectus sit amet purus auctor, at condimentum arcu consectetur. Suspendisse nisl massa, condimentum sit amet luctus ut, euismod id lacus. Pellentesque pretium consectetur urna, non vehicula massa tincidunt in. Nam lacus ante, euismod vel purus eget, faucibus dapibus lectus. Sed mi augue, pulvinar in sodales a, laoreet suscipit magna. Maecenas mollis nisl a nisl auctor venenatis. Praesent id tempor nulla. Cras viverra vulputate ligula. Interdum et malesuada fames ac ante ipsum primis in faucibus.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="outputs-panel">
+    <div class="outputs-items">
+      <div class="outputs-main"></div>
+      <div class="outputs-additional-toggle">See all</div>
+      <div class="outputs-additional"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+new pages.NinePatchGenerator();
+</script>
+{% endblock %}

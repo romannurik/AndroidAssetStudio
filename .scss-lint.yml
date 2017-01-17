@@ -1,0 +1,55 @@
+linters:
+  Comment:
+    # 1. Copyright notices should be preserved in production CSS.
+    # 2. Some files have their name in a top comment, so as to distinguish the
+    #    rules in live CSS, so allow "blah.scss */" comments to be preserved.
+    # 3. Preserve CSSJanus "@noflip" annotations.
+    allowed: '(Copyright)|(\.scss[ */]*$)|(@noflip)'
+  DeclarationOrder:
+    enabled: false
+  DisableLinterReason:
+    enabled: true
+  IdSelector:
+    enabled: false
+  ImportantRule:
+    enabled: false
+  MergeableSelector:
+    # Only lint on mergeable selectors that are exactly the same.
+    force_nesting: false
+  NameFormat:
+    enabled: false
+  NestingDepth:
+    # The default is 3. We're allowing 6 to keep some noise down.
+    max_depth: 6
+  PropertySortOrder:
+    enabled: false
+  QualifyingElement:
+    enabled: false
+  SelectorDepth:
+    enabled: false
+    # The default is 3. We're allowing 6 to keep some noise down.
+    max_depth: 6
+  SelectorFormat:
+    # We already have different conventions, like under_scores or camelCase,
+    # and converting your app from these to hyphened-words could involve
+    # refactoring your HTML and your JavaScript as well; these are lints
+    # that cannot be fixed _within_ the file.
+    enabled: false
+  Shorthand:
+    # 3 sides are less readable than 4.
+    allowed_shorthands: [1,2,4]
+  SpaceAfterPropertyColon:
+    enabled: false
+    # Since we have line length limits in place, sometimes (like with image
+    # URLs) we need to newline after a property colon.
+    style: one_space_or_newline
+  TrailingSemicolon:
+    enabled: false
+  TransitionAll:
+    enabled: true
+  UnnecessaryMantissa:
+    enabled: false
+  UrlFormat:
+    enabled: false
+  VendorPrefix:
+    enabled: false

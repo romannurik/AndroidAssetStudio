@@ -1,0 +1,267 @@
+body.page-nine-patch-generator {
+  // inputs
+  .inputs-panel {
+    width: 350px;
+  }
+
+  // stage
+
+  .nine-patch-editor-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stage-top-toolbar,
+  .stage-bottom-toolbar {
+    background-color: #fff;
+    padding: 12px 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    z-index: 1;
+    flex: 0 0 auto;
+
+    .field-label {
+      font-size: 13px;
+      line-height: 16px;
+      margin-right: 12px;
+      color: $colorBlackSecondary;
+    }
+
+    button {
+      margin-right: 8px;
+    }
+
+    .flex {
+      flex: 1 0 auto;
+    }
+  }
+
+  .stage-top-toolbar {
+    box-shadow: 0 1px 0 $thinBorderColor;
+  }
+
+  .stage-bottom-toolbar {
+    box-shadow: 0 -1px 0 $thinBorderColor;
+  }
+
+  .stage-which,
+  .stage-grid-color {
+    display: inline-flex;
+  }
+
+  .stage-bottom-controls {
+    position: relative;
+  }
+
+  .stage-bottom-right-controls {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .nine-patch-stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .stage-canvas-container {
+    position: relative;
+    box-shadow: material-shadow(3);
+    display: flex;
+    flex: 0 0 auto;
+
+    .empty {
+      color: $colorBlackTertiary;
+      max-width: 300px;
+      padding: 32px 48px;
+    }
+
+    canvas {
+      image-rendering: optimizeSpeed;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: optimize-contrast;
+      image-rendering: pixelated;
+      -ms-interpolation-mode: nearest-neighbor;
+    }
+
+    .overlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+    }
+  }
+
+  .canvas-label {
+    $canvasLabelColor: material-color('red', 'a400');
+    $canvasLabelThickness: 1px;
+
+    position: absolute;
+    font-weight: bold;
+    font-family: Roboto;
+    color: $canvasLabelColor;
+    pointer-events: none;
+    font-size: 12px;
+    line-height: 12px;
+
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &::before,
+    &::after {
+      flex: 1;
+      background-color: rgba($canvasLabelColor, .2);
+      content: '';
+    }
+
+    &.label-horizontal {
+      transform: translateY(-50%);
+      height: 10px;
+      flex-direction: row;
+
+      &::before,
+      &::after {
+        height: $canvasLabelThickness;
+      }
+
+      &::before {
+        margin-right: 4px;
+      }
+
+      &::after {
+        margin-left: 4px;
+      }
+    }
+
+    &.label-vertical {
+      transform: translateX(-50%);
+      width: 10px;
+      flex-direction: column;
+
+      &::before,
+      &::after {
+        width: $canvasLabelThickness;
+      }
+
+      &::before {
+        margin-bottom: 4px;
+      }
+
+      &::after {
+        margin-top: 4px;
+      }
+    }
+  }
+
+  // outputs and preview area
+
+  #download-zip-button {
+    top: 24px;
+  }
+
+  .outputs-preview-sidebar {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    box-shadow: material-shadow(2);
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .outputs-preview-tabs {
+    background-color: $colorPrimary700;
+    flex: 0 0 auto;
+
+    label {
+      color: $colorWhiteSecondary;
+      padding: 16px 20px;
+
+      &:focus,
+      &:active {
+        background-color: rgba(#000, $opacityBlackHighlight);
+      }
+    }
+
+    input:checked + label {
+      color: $colorWhitePrimary;
+      box-shadow: 0 -2px 0 $colorWhitePrimary inset;
+    }
+  }
+
+  .outputs-panel,
+  .nine-patch-preview-area-container {
+    flex: 1 1 auto;
+    display: none;
+    background-color: material-color('grey', '300');
+  }
+
+  &[data-theme="dark"] {
+    .outputs-panel,
+    .nine-patch-preview-area-container {
+      background-color: material-color('grey', '400');
+    }
+  }
+
+  .outputs-preview-sidebar[data-view="preview"] {
+    .nine-patch-preview-area-container {
+      display: flex;
+    }
+  }
+
+  .outputs-preview-sidebar[data-view="output"] {
+    .outputs-panel {
+      display: flex;
+    }
+  }
+
+  .preview-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    cursor: se-resize;
+    user-select: none;
+  }
+
+  .preview-area .text-preview {
+    position: absolute;
+    overflow: hidden;
+    width: 0;
+    height: 0;
+    display: none;
+  }
+
+  .preview-area canvas {
+    pointer-events: none;
+  }
+
+  .preview-stage > div {
+    position: relative;
+  }
+
+  #preview-with-content-container {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+  }
+
+  .preview-area.dark label {
+    color: #eee;
+  }
+  .preview-stage {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

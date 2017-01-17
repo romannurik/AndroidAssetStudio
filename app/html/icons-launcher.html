@@ -1,0 +1,13 @@
+---
+title: Launcher icon generator
+bodyClasses: page-launcher-icon-generator
+---
+
+{% extends '_generator-base.html' %}
+
+{% block body %}
+{% parent %}
+<script>
+new pages.LauncherIconGenerator();
+</script>
+{% endblock %}

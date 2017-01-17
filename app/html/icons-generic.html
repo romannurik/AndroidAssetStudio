@@ -1,0 +1,13 @@
+---
+title: Generic icon generator
+bodyClasses: page-generic-icon-generator
+---
+
+{% extends '_generator-base.html' %}
+
+{% block body %}
+{% parent %}
+<script>
+new pages.GenericIconGenerator();
+</script>
+{% endblock %}

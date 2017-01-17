@@ -1,0 +1,382 @@
+/*
+ * Copyright 2016 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+$formFieldPaddingX: 12px;
+$formFieldPaddingY: 4px;
+$formFieldSpacing: 24px;
+
+.inputs-panel {
+  box-sizing: border-box;
+  background-color: material-color('grey', '100');
+  width: 400px;
+  flex: 0 0 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-shadow: material-shadow(2);
+  padding: 24px 0;
+  z-index: 2;
+
+  .form-field-outer {
+    padding: 0 24px;
+
+    .form-field-outer {
+      // nested forms
+      padding: 0;
+    }
+  }
+}
+
+.form-field-outer {
+  margin-bottom: $formFieldSpacing;
+
+  > label {
+    display: block;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 500;
+    margin: 0 0 8px 0;
+    color: $colorBlackPrimary;
+  }
+
+  > label .form-field-help-text {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: $colorBlackTertiary;
+  }
+
+  &[disabled] {
+    opacity: .2;
+    pointer-events: none;
+    user-select: none;
+    filter: grayscale(100%);
+  }
+
+  &.is-new-group {
+    border-top: 1px solid $thinBorderColor;
+    padding-top: 24px;
+  }
+}
+
+.form-field-container {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin form-field-element {
+  align-self: flex-start;
+  border-radius: 2px;
+  border: 0;
+  box-shadow: 0 0 0 1px $thinBorderColor;
+  padding: $formFieldPaddingY $formFieldPaddingX;
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  background-color: #fff;
+  outline: 0;
+
+  &:focus {
+    box-shadow: 0 0 0 2px $colorPrimary;
+  }
+
+  &[disabled] {
+    opacity: .5;
+    user-select: none;
+    cursor: not-allowed;
+    filter: grayscale(100%);
+  }
+}
+
+.sp-replacer {
+  // color field
+  @include form-field-element;
+  padding: $formFieldPaddingY; // Even padding for this element
+}
+
+.form-field-select {
+  position: relative;
+  display: inline-flex;
+  align-self: flex-start;
+
+  select {
+    @include form-field-element;
+    padding:
+        $formFieldPaddingY ($formFieldPaddingX + 16px) $formFieldPaddingY $formFieldPaddingX;
+    cursor: pointer;
+    appearance: none;
+  }
+
+  &::after {
+    @include material-icons;
+    content: 'arrow_drop_down';
+    position: absolute;
+    color: $colorBlackSecondary;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+}
+
+.form-field-image > .form-field-container {
+  align-items: stretch;
+}
+
+.form-field-text {
+  @include form-field-element;
+  align-self: stretch;
+}
+
+.form-field-buttonset {
+  @include form-field-element;
+  padding: 0;
+  display: inline-flex;
+  flex-direction: row;
+  overflow: hidden;
+
+  input[type=radio] {
+    display: none;
+  }
+
+  label {
+    font-size: 14px;
+    line-height: 20px;
+    padding: $formFieldPaddingY $formFieldPaddingX;
+    cursor: pointer;
+    outline: 0;
+
+    &:focus,
+    &:active {
+      background-color: $colorPrimary100;
+    }
+  }
+
+  input:checked + label {
+    background-color: $colorPrimary;
+    color: $colorWhitePrimary;
+
+    &:focus,
+    &:active {
+      background-color: $colorPrimary600;
+    }
+  }
+}
+
+.form-field-button {
+  @include form-field-element;
+  border: 0;
+  font-size: 14px;
+  line-height: 20px;
+  padding: $formFieldPaddingY $formFieldPaddingX;
+  cursor: pointer;
+  outline: 0;
+
+  &:active {
+    background-color: $colorPrimary100;
+  }
+}
+
+.form-image-hidden-file-field {
+  position: absolute;
+  left: -10000px;
+  opacity: 0;
+}
+
+.form-image-type-params-clipart {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+  box-shadow: material-shadow(2);
+  border-radius: 2px;
+  background-color: #fff;
+  overflow: hidden;
+
+  &.is-hidden {
+    display: none;
+  }
+}
+
+// put the ::before on the parent container, not the input
+// because inputs can't have pseudoelements
+.form-image-type-params-clipart::before {
+  @include material-icons;
+  content: 'search';
+  display: block;
+  color: $colorBlackTertiary;
+  font-size: 20px;
+  position: absolute;
+  left: 12px;
+  top: 8px;
+  z-index: 2;
+}
+
+.form-image-clipart-filter {
+  color: $colorBlackPrimary;
+  font-size: 14px;
+  line-height: 20px;
+  border: 0;
+  padding: 8px 8px 8px 40px;
+  outline: 0;
+  box-shadow: 0 1px 0 $thinBorderColor;
+  z-index: 1;
+
+  &::placeholder {
+    color: $colorBlackTertiary;
+  }
+}
+
+.form-image-clipart-list {
+  height: 200px;
+  padding: 16px;
+  display: flex;
+  flex-flow: row wrap;
+  align-content: flex-start;
+  box-sizing: border-box;
+  overflow-y: scroll;
+}
+
+.form-image-clipart-item {
+  @include material-icons;
+  font-size: 36px;
+  overflow: hidden;
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 50%;
+
+  color: $colorBlackPrimary;
+  transition:
+      color .1s ease,
+      background-color .1s ease,
+      box-shadow .1s ease;
+
+  &:hover,
+  &:focus {
+    background-color: rgba(#000, $opacityBlackHighlight);
+  }
+
+  &.is-selected {
+    color: $colorWhitePrimary;
+    box-shadow: 0 0 0 4px $colorPrimary;
+    background-color: $colorPrimary;
+  }
+}
+
+.form-image-clipart-attribution {
+  font-size: 12px;
+  line-height: 16px;
+  padding: 4px 8px;
+  color: $colorBlackTertiary;
+  box-shadow: 0 -1px 0 $thinBorderColor;
+}
+
+.form-image-preview {
+  display: none !important;
+  background-color: #fff;
+  // display: inline-block;
+  max-height: 100px;
+  max-width: 250px;
+  border: 1px solid #ccc;
+}
+
+.form-field-range {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  input[type="range"] {
+    flex: 1;
+    outline: 0;
+    cursor: pointer;
+    vertical-align: bottom;
+    appearance: none;
+    position: relative;
+    height: $formFieldPaddingY * 2 + 20px;
+    margin: 0;
+    background-color: transparent;
+
+    &::-webkit-slider-runnable-track {
+      appearance: none;
+      background-color: $colorPrimary;
+      height: 2px;
+      transform: translateY(calc(-50%));
+    }
+
+    &:focus::-webkit-slider-thumb {
+      transform: translateY(calc(-50% + 1px)) scale(1.2);
+    }
+
+    &:active::-webkit-slider-thumb {
+      transform: translateY(calc(-50% + 1px)) scale(1.5);
+    }
+
+    &::-webkit-slider-thumb {
+      appearance: none;
+      background: $colorPrimary;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      transform: translateY(calc(-50% + 1px));
+      transition: transform .1s ease;
+    }
+  }
+}
+
+.form-field-range-text {
+  flex: 0 0 auto;
+  margin-left: 6px;
+  font-size: 14px;
+  line-height: 20px;
+  color: $colorPrimary;
+  font-weight: 500;
+  width: 40px;
+  text-align: right;
+}
+
+.form-field-drop-target.drag-hover {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba($colorAccent, .5);
+    animation: pulsate-color .33s ease 0s infinite alternate;
+    z-index: 1000;
+
+    @keyframes pulsate-color {
+      from { opacity: .5 }
+      to { opacity: 1 }
+    }
+  }
+}
+
+.form-subform {
+  margin-top: $formFieldSpacing;
+
+  &.is-hidden {
+    display: none;
+  }
+
+  &:not(.is-hidden) + .form-subform {
+    margin-top: 0;
+  }
+}

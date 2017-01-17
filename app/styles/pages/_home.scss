@@ -1,0 +1,127 @@
+$homeCardWidth: 296px;
+$homeCardGutter: 24px;
+$homeHeaderOverlap: 48px;
+
+@function home-card-span($numCards) {
+  @return $homeCardWidth * $numCards + $homeCardGutter * ($numCards - 1);
+}
+
+@function home-card-span-outer($numCards) {
+  @return home-card-span($numCards) + $homeCardGutter * 2;
+}
+
+body.page-home {
+  font-size: 14px;
+  line-height: 20px;
+  background-color: material-color('grey', '200');
+  min-height: 100%;
+  height: auto;
+  overflow: auto;
+
+  .home-header,
+  .home-generator-list,
+  .home-footer {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .inner {
+      box-sizing: border-box;
+      flex: 0 0 auto;
+      padding: 0 24px;
+
+      @for $i from 1 through 3 {
+        @media only screen and (min-width: home-card-span-outer($i)) {
+          width: home-card-span-outer($i);
+        }
+      }
+    }
+  }
+
+  .home-header {
+    background-color: $colorPrimary;
+    color: $colorWhiteSecondary;
+    font-size: 16px;
+    line-height: 24px;
+    margin-bottom: -$homeHeaderOverlap;
+
+    .inner {
+      margin-top: 48px;
+      margin-bottom: $homeHeaderOverlap;
+    }
+
+    h1 {
+      color: $colorWhitePrimary;
+      font-size: 28px;
+      line-height: 36px;
+      font-weight: 400;
+      margin: 0 0 12px 0;
+    }
+
+    .subtitle {
+      margin: 0 0 48px 0;
+      max-width: 360px;
+    }
+  }
+
+  .home-footer {
+    .inner {
+      color: $colorBlackTertiary;
+      margin: 24px 0 64px 0;
+    }
+  }
+
+  .home-generator-list {
+    .inner {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: flex-start;
+      align-items: stretch;
+      padding-right: 0;
+    }
+  }
+
+  .home-generator-card {
+    width: $homeCardWidth;
+    margin: 0 24px 24px 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 2px;
+    box-shadow: material-shadow(2);
+    text-decoration: none;
+    overflow: hidden;
+    transition: box-shadow .1s ease;
+    outline: 0;
+
+    &:hover,
+    &:focus {
+      box-shadow: material-shadow(5);
+    }
+
+    &:active {
+      box-shadow: material-shadow(8);
+    }
+
+    .generator-image {
+      width: $homeCardWidth;
+      height: $homeCardWidth / 1.48;
+    }
+
+    .generator-title {
+      margin: 16px 16px 0 16px;
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 500;
+      color: $colorBlackPrimary;
+    }
+
+    .generator-description {
+      margin: 4px 16px 16px 16px;
+      font-size: 14px;
+      line-height: 20px;
+      color: $colorBlackSecondary;
+    }
+  }
+}

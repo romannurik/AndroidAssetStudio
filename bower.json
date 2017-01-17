@@ -1,0 +1,17 @@
+{
+  "name": "android-asset-studio",
+  "main": "android-asset-studio",
+  "version": "0.0.1",
+  "authors": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "spectrum": "^1.8.0"
+  }
+}

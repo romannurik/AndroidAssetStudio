@@ -1,0 +1,36 @@
+{% extends '_base.html' %}
+
+{% block body %}
+<header class="page-header">
+  <a class="page-header-back-button icon-button theme-dark" href="index.html">
+    <i class="material-icons">arrow_back</i>
+  </a>
+  <a class="page-header-crumb" href="index.html">Android Asset Studio</a>
+  <h1 class="page-header-title">{{ title }}</h1>
+  <div class="page-header-links">
+    <a target="_blank" class="external-link" href="https://github.com/romannurik/AndroidAssetStudio">Source on GitHub</a>
+  </div>
+</header>
+<div class="main-container">
+  {% block generator-body %}
+  <div class="inputs-panel">
+    <div id="inputs-form"></div>
+  </div>
+  <div class="outputs-panel">
+    <label id="grid-toggle-container" class="checkbox">
+      <input id="grid-toggle" type="checkbox">
+      Show grid
+    </label>
+    <button id="download-zip-button" class="fab-button">
+      <i class="material-icons">file_download</i>
+      <span class="tooltip">Download ZIP</span>
+    </button>
+    <div class="outputs-items">
+      <div class="outputs-main"></div>
+      <div class="outputs-additional-toggle">See all</div>
+      <div class="outputs-additional"></div>
+    </div>
+  </div>
+  {% endblock %}
+</div>
+{% endblock %}

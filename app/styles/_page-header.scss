@@ -1,0 +1,71 @@
+/*
+ * Copyright 2016 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@mixin pageHeaderLink {
+  color: $colorWhiteSecondary;
+
+  &:hover,
+  &:focus {
+    color: $colorWhitePrimary;
+  }
+}
+
+.page-header {
+  position: relative;
+  padding: 12px 24px 12px 64px;
+  background-color: $colorPrimary;
+  box-shadow: material-shadow(4);
+  z-index: 3;
+  transform: translateZ(0);
+}
+
+.page-header-back-button {
+  position: absolute;
+  font-size: 24px;
+  left: 12px;
+  bottom: 4px;
+  padding: 12px;
+}
+
+.page-header-crumb {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 20px;
+  @include pageHeaderLink;
+}
+
+.page-header-title {
+  display: block;
+  color: $colorWhitePrimary;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 32px;
+  margin: 0;
+}
+
+.page-header-links {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  line-height: 20px;
+
+  a {
+    @include pageHeaderLink;
+  }
+}

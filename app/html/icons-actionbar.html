@@ -1,0 +1,13 @@
+---
+title: Action bar/tab icon generator
+bodyClasses: page-actionbar-icon-generator
+---
+
+{% extends '_generator-base.html' %}
+
+{% block body %}
+{% parent %}
+<script>
+new pages.ActionBarIconGenerator();
+</script>
+{% endblock %}

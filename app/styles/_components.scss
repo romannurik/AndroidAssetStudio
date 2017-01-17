@@ -1,0 +1,205 @@
+/*
+ * Copyright 2016 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.icon-button {
+  position: relative;
+  color: $colorBlackSecondary;
+  display: flex;
+  text-decoration: none;
+  cursor: pointer;
+  outline: 0;
+
+  &:hover,
+  &:focus {
+    color: $colorBlackPrimary;
+  }
+
+  &::after {
+    opacity: 0;
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    background-color: rgba($colorBlackPrimary, $opacityBlackHighlight);
+    transition: opacity .2s ease;
+    pointer-events: none;
+  }
+
+  &:active::after {
+    opacity: 1;
+  }
+
+  &.theme-dark {
+    color: $colorWhiteSecondary;
+
+    &:hover,
+    &:focus {
+      color: $colorWhitePrimary;
+    }
+
+    &::after {
+      background-color: rgba($colorWhitePrimary, $opacityWhiteHighlight);
+    }
+  }
+}
+
+.fab-button {
+  border: 0;
+  background-color: $colorAccent;
+  box-shadow: material-shadow(4);
+  border-radius: 50%;
+  cursor: pointer;
+  min-width: 0;
+  min-height: 0;
+  padding: 16px;
+  position: relative;
+  color: $colorWhitePrimary;
+  display: flex;
+  text-decoration: none;
+  outline: 0;
+  transition: box-shadow .2s ease;
+
+  &::after {
+    opacity: 0;
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    background-color: rgba($colorWhitePrimary, $opacityWhiteHighlight);
+    transition: opacity .2s ease;
+    pointer-events: none;
+  }
+
+  &:hover,
+  &:focus {
+    box-shadow: material-shadow(6);
+
+    &::after {
+      opacity: .3;
+    }
+  }
+
+  &:active {
+    box-shadow: material-shadow(8);
+
+    &::after {
+      opacity: .1;
+    }
+  }
+
+  &[disabled] {
+    background-color: rgba(#000, .12);
+    box-shadow: none;
+    color: $colorBlackTertiary;
+    cursor: not-allowed;
+  }
+}
+
+.tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  text-align: center;
+  transform: translate(-50%, 100%);
+  pointer-events: none;
+  background-color: rgba(material-color('grey', '800'), .8);
+  border-radius: 2px;
+  color: $colorWhitePrimary;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  padding: 4px 8px;
+  visibility: hidden;
+  opacity: 0;
+  transition:
+      opacity .1s ease,
+      visibility 0s ease .1s;
+
+  :hover > &,
+  :focus > & {
+    transition: opacity .1s ease .2s;
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+
+  input[type="checkbox"] {
+    appearance: none;
+    margin: 0 4px 0 0;
+    display: flex;
+    outline: 0;
+
+    &::after {
+      @include material-icons;
+      content: 'check_box_outline_blank';
+      color: $colorBlackSecondary;
+      cursor: pointer;
+    }
+
+    &:checked::after {
+      content: 'check_box';
+      color: $colorPrimary;
+    }
+  }
+}
+
+.tabs {
+  padding: 0;
+  display: inline-flex;
+  flex-direction: row;
+  overflow: hidden;
+  z-index: 1;
+
+  input[type=radio] {
+    display: none;
+  }
+
+  label {
+    color: $colorBlackSecondary;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    padding: 12px 16px;
+    cursor: pointer;
+    outline: 0;
+
+    &:focus,
+    &:active {
+      background-color: rgba(#000, $opacityBlackHighlight);
+    }
+  }
+
+  input:checked + label {
+    color: $colorBlackPrimary;
+    box-shadow: 0 -2px 0 $colorPrimary inset;
+  }
+}
