@@ -9,3 +9,4 @@ dist
 .publish
 *.sublime-workspace
 *~
+older-version
