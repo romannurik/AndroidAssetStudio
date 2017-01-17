@@ -15,6 +15,16 @@ Currently available asset generators area available for:
 - Generic square icons
 - Simple nine-patches
 
+## Building the tool
+
+To build, ensure you have `node` and `npm` installed, and run:
+
+    $ npm install
+
+Once dependencies are installed, run with `gulp`:
+
+    $ gulp serve
+
 ## Related (third-party) projects
 
 - [Android Asset Studio Desktop Apps](https://androidassetstudio.codeplex.com/)
