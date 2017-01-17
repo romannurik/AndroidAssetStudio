@@ -1,7 +1,7 @@
 Android Asset Studio
 ====================
 
-**[Open the Android Asset Studio](http://romannurik.github.io/AndroidAssetStudio/)**
+**[Open the Original Android Asset Studio](http://romannurik.github.io/AndroidAssetStudio/)**
 
 **[See the older version](http://romannurik.github.io/AndroidAssetStudio/older-version/) if you're having trouble with the new version**
 
