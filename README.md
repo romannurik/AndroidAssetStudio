@@ -13,3 +13,6 @@ Currently available asset generators area available for:
 - Device-framed screenshots
 - Simple nine-patches
 
+## Related (third-party) projects
+
+- [Android Asset Studio Desktop Apps](https://androidassetstudio.codeplex.com/)
