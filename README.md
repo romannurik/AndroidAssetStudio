@@ -12,7 +12,7 @@ Currently available asset generators area available for:
 - Launcher icons
 - Action bar icons
 - Notification icons
-- Device-framed screenshots
+- Generic square icons
 - Simple nine-patches
 
 ## Related (third-party) projects
