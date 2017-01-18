@@ -97,6 +97,7 @@ export class AppShortcutIconGenerator extends BaseGenerator {
       outCtx.beginPath();
       outCtx.arc(24 * mult, 24 * mult, 22 * mult, 0, Math.PI * 2);
       outCtx.closePath();
+      values.backColor.setAlpha(1);
       outCtx.fillStyle = values.backColor.toRgbString();
       outCtx.fill();
       outCtx.restore();
@@ -110,6 +111,7 @@ export class AppShortcutIconGenerator extends BaseGenerator {
             {x: 0, y: 0, w: srcCtx.canvas.width, h: srcCtx.canvas.height});
       }
 
+      values.foreColor.setAlpha(1);
       imagelib.Effects.fx([
         {effect: 'fill-color', color: values.foreColor.toRgbString()}
       ], outCtx, tmpCtx, iconSize);

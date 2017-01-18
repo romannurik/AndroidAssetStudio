@@ -180,6 +180,7 @@ export class LauncherIconGenerator extends BaseGenerator {
       // background layer
       draw: ctx => {
         ctx.scale(mult, mult);
+        values.backColor.setAlpha(1);
         ctx.fillStyle = values.backColor.toRgbString();
 
         let targetRect = TARGET_RECTS_BY_SHAPE[values.backgroundShape];
