@@ -285,9 +285,9 @@ export class LauncherIconGenerator extends BaseGenerator {
         },
         {
           effect: 'outer-shadow',
-          color: 'rgba(0, 0, 0, 0.2)',
-          blur: 1 * mult,
-          translateY: 1 * mult
+          color: 'rgba(0, 0, 0, 0.3)',
+          blur: .7 * mult,
+          translateY: .7 * mult
         }
       ]
     });
