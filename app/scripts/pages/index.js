@@ -15,6 +15,7 @@
  */
 
 import {LauncherIconGenerator} from './launchericons';
+import {AppShortcutIconGenerator} from './appshortcuticons';
 import {ActionBarIconGenerator} from './actionbaricons';
 import {NotificationIconGenerator} from './notificationicons';
 import {GenericIconGenerator} from './genericicons';
@@ -22,6 +23,7 @@ import {NinePatchGenerator} from './ninepatch/ninepatches';
 
 export const pages = {
   LauncherIconGenerator,
+  AppShortcutIconGenerator,
   ActionBarIconGenerator,
   NotificationIconGenerator,
   GenericIconGenerator,

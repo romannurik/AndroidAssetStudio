@@ -8,6 +8,17 @@ generatorGroups:
     title: Launcher icon generator
     description: Generate launcher and store listing icons for your app.
 
+  - url: icons-app-shortcut.html
+    image: res/generator-thumbs/icons-app-shortcut.svg
+    title: App shortcut icon generator
+    description: Generate app launcher shortcut icons (Android 7.1+).
+
+  - url: https://romannurik.github.io/AndroidIconAnimator/
+    image: res/generator-thumbs/icon-animator.svg
+    extraClasses: is-external
+    title: Android Icon Animator
+    description: Create vector drawables and vector icon animations.
+
   - url: icons-notification.html
     image: res/generator-thumbs/icons-notification.svg
     title: Notification icon generator
@@ -55,7 +66,8 @@ generatorGroups:
   <div class="inner">
     {% if group.title %}<h2>{{ group.title }}</h2>{% endif %}
     {% for generator in group.items %}
-    <a href="{{ generator.url }}" class="home-generator-card">
+    <a href="{{ generator.url }}"
+       class="home-generator-card{% if generator.extraClasses %} {{ generator.extraClasses }}{% endif %}">
       <img class="generator-image" src="{{ generator.image }}" alt="{{ generator.title }}">
       <div class="generator-title">{{ generator.title }}</div>
       <div class="generator-description">{{ generator.description }}</div>
@@ -66,7 +78,8 @@ generatorGroups:
 {% endfor %}
 <div class="home-footer">
   <div class="inner">
-    Created by <a href="https://twitter.com/romannurik">Roman Nurik</a>. <a target="_blank" class="external-link" href="https://github.com/romannurik/AndroidAssetStudio">Source on GitHub</a>
+    Created by <a href="https://twitter.com/romannurik">Roman Nurik</a>.
+    <a target="_blank" class="external-link" href="https://github.com/romannurik/AndroidAssetStudio">Source on GitHub</a>
   </div>
 </div>
 {% endblock %}

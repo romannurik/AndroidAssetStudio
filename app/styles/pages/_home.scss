@@ -117,6 +117,16 @@ body.page-home {
       color: $colorBlackPrimary;
     }
 
+    &.is-external .generator-title::after {
+      @include material-icons;
+      content: 'open_in_new';
+      font-size: 16px;
+      vertical-align: middle;
+      margin-left: 4px;
+      position: relative;
+      top: -1px;
+    }
+
     .generator-description {
       margin: 4px 16px 16px 16px;
       font-size: 14px;
