@@ -16,7 +16,7 @@
 
 import {default as WebFont} from 'webfontloader';
 
-import {Field, TextField, RangeField, BooleanField, AutocompleteTextField, EnumField} from './fields';
+import {Field, TextField, RangeField, BooleanField, EnumField} from './fields';
 import {Form} from './forms';
 import {Util} from './util';
 import {imagelib} from '../imagelib';

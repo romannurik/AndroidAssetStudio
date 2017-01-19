@@ -15,7 +15,7 @@
  */
 
 import {Form} from './forms';
-import {Field, TextField, AutocompleteTextField, ColorField, EnumField,
+import {Field, TextField, ColorField, EnumField,
         BooleanField, RangeField} from './fields';
 import {ImageField} from './imagefield';
 import {Hash} from './hash';
@@ -23,7 +23,6 @@ import {Util} from './util';
 import {Zip} from './zip';
 
 export const studio = {
-  AutocompleteTextField,
   BooleanField,
   ColorField,
   EnumField,

@@ -166,60 +166,6 @@ export class TextField extends Field {
 }
 
 
-export class AutocompleteTextField extends Field {
-  createUi(container) {
-    var fieldContainer = $('.form-field-container', super.createUi(container));
-
-    var datalistId = this.getHtmlId() + '-datalist';
-
-    this.el_ = $('<input>')
-        .attr('type', 'text')
-        .attr('placeholder', this.params_.placeholder)
-        .addClass('form-field-text')
-        .attr('list', datalistId)
-        .val(this.getValue())
-        .on('input', ev => this.setValue($(ev.currentTarget).val(), true))
-        .appendTo(fieldContainer);
-
-    this.datalistEl_ = $('<datalist>')
-        .attr('id', datalistId)
-        .appendTo(fieldContainer);
-
-    this.setOptions(this.params_.options);
-  }
-
-  setOptions(options = []) {
-    this.datalistEl_.empty();
-    options.forEach(option => this.datalistEl_.append($('<option>').attr('value', option)));
-  }
-
-  getValue() {
-    var value = this.value_;
-    if (typeof value != 'string') {
-      value = this.params_.defaultValue || '';
-    }
-    return value;
-  }
-
-  setValue(val, pauseUi) {
-    let oldValue = this.value_;
-    this.value_ = val;
-    if (!pauseUi) {
-      this.el_.val(val);
-    }
-    this.notifyChanged_(val, oldValue);
-  }
-
-  serializeValue() {
-    return this.getValue();
-  }
-
-  deserializeValue(s) {
-    this.setValue(s);
-  }
-}
-
-
 export class ColorField extends Field {
   createUi(container) {
     var fieldContainer = $('.form-field-container', super.createUi(container));
@@ -308,6 +254,10 @@ export class EnumField extends Field {
   }
 
   setOptions(options) {
+    if (!this.el_) {
+      return;
+    }
+
     options = (options || []).map(option =>
         (typeof option == 'string')
             ? {id: option, title: String(option)}

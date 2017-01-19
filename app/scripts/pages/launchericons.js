@@ -41,6 +41,20 @@ const GRID_OVERLAY_SVG =
     </svg>`;
 
 
+const DEFAULT_EFFECT_OPTIONS = [
+  { id: 'none', title: 'None' },
+  { id: 'elevate', title: 'Elevate' },
+  { id: 'shadow', title: 'Cast shadow' },
+  { id: 'score', title: 'Score' }
+];
+
+
+const NO_SHAPE_EFFECT_OPTIONS = [
+  { id: 'none', title: 'None' },
+  { id: 'score', title: 'Score' }
+];
+
+
 export class LauncherIconGenerator extends BaseGenerator {
   get densities() {
     return new Set(['xxxhdpi' /* must be first */, 'web', 'xxhdpi', 'xhdpi', 'hdpi', 'mdpi']);
@@ -90,27 +104,27 @@ export class LauncherIconGenerator extends BaseGenerator {
             { id: 'vrect', title: 'Tall rect' },
             { id: 'hrect', title: 'Wide rect' }
           ],
-          defaultValue: 'square'
+          defaultValue: 'square',
+          onChange: newValue => {
+            backColorField.setEnabled(newValue != 'none');
+            let newEffectsOptions = newValue == 'none'
+                ? NO_SHAPE_EFFECT_OPTIONS
+                : DEFAULT_EFFECT_OPTIONS;
+            if (!newEffectsOptions.find(e => e.id == effectsField.getValue())) {
+              effectsField.setValue(newEffectsOptions[0].id);
+            }
+            effectsField.setOptions(newEffectsOptions);
+          }
         }),
         (effectsField = new studio.EnumField('effects', {
           title: 'Effect',
           buttons: true,
-          options: [
-            { id: 'none', title: 'None' },
-            { id: 'elevate', title: 'Elevate' },
-            { id: 'shadow', title: 'Cast shadow' },
-            { id: 'score', title: 'Score' },
-            // { id: 'dogear', title: 'Folded' }
-          ],
+          options: DEFAULT_EFFECT_OPTIONS,
           defaultValue: 'none'
         }))
       ]
     });
-    this.form.onChange(field => {
-      backColorField.setEnabled(this.form.getValues().backgroundShape != 'none');
-      effectsField.setEnabled(this.form.getValues().backgroundShape != 'none');
-      this.regenerateDebounced_();
-    });
+    this.form.onChange(field => this.regenerateDebounced_());
   }
 
   regenerate() {
@@ -218,7 +232,8 @@ export class LauncherIconGenerator extends BaseGenerator {
         drawFn_(ctx, foreSrcCtx, studio.Util.mult(targetRect, mult),
             {x: 0, y: 0, w: foreSrcCtx.canvas.width, h: foreSrcCtx.canvas.height});
       },
-      effects: []
+      effects: [],
+      mask: !!(values.backgroundShape == 'none')
     };
 
     if (values.backgroundShape != 'none' &&values.effects == 'shadow') {
@@ -260,7 +275,7 @@ export class LauncherIconGenerator extends BaseGenerator {
       children: [
         values.backgroundShape != 'none' ? backgroundLayer : null,
         foregroundLayer,
-        (values.backgroundShape != 'none' && values.effects == 'score') ? scoreLayer : null,
+        values.effects == 'score' ? scoreLayer : null,
       ],
       effects: [
         {
