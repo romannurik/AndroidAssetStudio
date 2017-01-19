@@ -131,6 +131,8 @@ export class ActionBarIconGenerator extends BaseGenerator {
         {effect: 'fill-color', color: color.toRgbString(), opacity: alpha}
       ], outCtx, tmpCtx, iconSize);
 
+      color.setAlpha(alpha);
+
       this.zipper.add({
         name: `res/drawable-${density}/${values.name}.png`,
         canvas: outCtx.canvas

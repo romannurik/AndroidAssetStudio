@@ -64,7 +64,7 @@ export class GenericIconGenerator extends BaseGenerator {
         }),
         new studio.ColorField('color', {
           title: 'Color',
-          helpText: 'Flat foreground color',
+          helpText: 'Set to transparent to retain original colors',
           defaultValue: 'rgba(0, 0, 0, 0.54)',
           alpha: true
         }),
@@ -107,11 +107,17 @@ export class GenericIconGenerator extends BaseGenerator {
 
       let color = values.color;
       let alpha = color.getAlpha();
-      color.setAlpha(1);
+      if (alpha > 0) {
+        color.setAlpha(1);
 
-      imagelib.Effects.fx([
-        {effect: 'fill-color', color: color.toRgbString(), opacity: alpha}
-      ], outCtx, tmpCtx, iconSize);
+        imagelib.Effects.fx([
+          {effect: 'fill-color', color: color.toRgbString(), opacity: alpha}
+        ], outCtx, tmpCtx, iconSize);
+
+        color.setAlpha(alpha);
+      } else {
+        outCtx.drawImage(tmpCtx.canvas, 0, 0);
+      }
 
       this.zipper.add({
         name: `res/drawable-${density}/${values.name}.png`,
