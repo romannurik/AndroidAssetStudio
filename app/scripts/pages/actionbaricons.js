@@ -41,6 +41,11 @@ export class ActionBarIconGenerator extends BaseGenerator {
   setupForm() {
     super.setupForm();
 
+    let defaultNameForSourceValue_ = v => {
+      let name = studio.Util.sanitizeResourceName(v.name || 'example');
+      return `ic_action_${name}`;
+    };
+
     let nameField, customColorField;
     this.form = new studio.Form({
       id: 'iconform',
@@ -52,13 +57,18 @@ export class ActionBarIconGenerator extends BaseGenerator {
           maxFinalSize: { w: 128, h: 128 },
           clipartNoTrimPadding: true,
           defaultValueClipart: 'add_circle',
-          dropTarget: document.body
+          dropTarget: document.body,
+          onChange: (newValue, oldValue) => {
+            if (nameField.getValue() == defaultNameForSourceValue_(oldValue)) {
+              nameField.setValue(defaultNameForSourceValue_(newValue));
+            }
+          }
         }),
         (nameField = new studio.TextField('name', {
           newGroup: true,
           title: 'Name',
           helpText: 'Used when generating ZIP files.',
-          defaultValue: 'ic_action_example'
+          defaultValue: defaultNameForSourceValue_({})
         })),
         new studio.EnumField('theme', {
           title: 'Theme',
@@ -79,14 +89,6 @@ export class ActionBarIconGenerator extends BaseGenerator {
     });
     this.form.onChange(field => {
       let values = this.form.getValues();
-      if ((!field || field.id_ == 'source')
-          && values.source && values.source.name) {
-        let name = 'ic_action_' + studio.Util.sanitizeResourceName(values.source.name);
-        if (name != nameField.getValue()) {
-          nameField.setValue(name);
-        }
-      }
-
       $('.outputs-panel').attr('data-theme', values.theme);
       customColorField.setEnabled(values.theme == 'custom');
       this.regenerateDebounced_();

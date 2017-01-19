@@ -25,6 +25,11 @@ export class GenericIconGenerator extends BaseGenerator {
   setupForm() {
     super.setupForm();
 
+    let defaultNameForSourceValue_ = v => {
+      let name = studio.Util.sanitizeResourceName(v.name || 'example');
+      return `ic_${name}`;
+    };
+
     let nameField;
     this.form = new studio.Form({
       id: 'iconform',
@@ -35,7 +40,12 @@ export class GenericIconGenerator extends BaseGenerator {
           helpText: 'Must be transparent',
           maxFinalSize: { w: 720, h: 720 }, // max render size, for SVGs
           defaultValueClipart: 'ac_unit',
-          dropTarget: document.body
+          dropTarget: document.body,
+          onChange: (newValue, oldValue) => {
+            if (nameField.getValue() == defaultNameForSourceValue_(oldValue)) {
+              nameField.setValue(defaultNameForSourceValue_(newValue));
+            }
+          }
         }),
         new studio.RangeField('size', {
           newGroup: true,
@@ -61,22 +71,11 @@ export class GenericIconGenerator extends BaseGenerator {
         (nameField = new studio.TextField('name', {
           title: 'Name',
           helpText: 'Used when generating ZIP files as the resource name.',
-          defaultValue: 'ic_example'
+          defaultValue: defaultNameForSourceValue_({})
         }))
       ]
     });
-    this.form.onChange(field => {
-      let values = this.form.getValues();
-      if ((!field || field.id_ == 'source')
-          && values.source && values.source.name) {
-        let name = 'ic_' + studio.Util.sanitizeResourceName(values.source.name);
-        if (name != nameField.getValue()) {
-          nameField.setValue(name);
-        }
-      }
-
-      this.regenerateDebounced_();
-    });
+    this.form.onChange(field => this.regenerateDebounced_());
   }
 
   regenerate() {

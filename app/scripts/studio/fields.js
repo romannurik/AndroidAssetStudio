@@ -28,6 +28,9 @@ export class Field {
   constructor(id, params) {
     this.id_ = id;
     this.params_ = params;
+    if (this.params_.onChange) {
+      this.onChange(this.params_.onChange);
+    }
     this.enabled_ = true;
   }
 
@@ -39,6 +42,9 @@ export class Field {
    */
   setForm_(form) {
     this.form_ = form;
+    this.onChange((newValue, oldValue) => {
+      this.form_.notifyChanged_(this, newValue, oldValue);
+    });
   }
 
   /**
@@ -103,6 +109,14 @@ export class Field {
       }
     }
   }
+
+  onChange(listener) {
+    this.changeListeners_ = (this.changeListeners_ || []).concat([listener]);
+  }
+
+  notifyChanged_(newValue, oldValue) {
+    (this.changeListeners_ || []).forEach(listener => listener(newValue, oldValue));
+  }
 }
 
 
@@ -134,11 +148,12 @@ export class TextField extends Field {
   }
 
   setValue(val, pauseUi) {
+    let oldValue = this.value_;
     this.value_ = val;
     if (!pauseUi) {
       this.el_.val(val);
     }
-    this.form_.notifyChanged_(this);
+    this.notifyChanged_(val, oldValue);
   }
 
   serializeValue() {
@@ -187,11 +202,12 @@ export class AutocompleteTextField extends Field {
   }
 
   setValue(val, pauseUi) {
+    let oldValue = this.value_;
     this.value_ = val;
     if (!pauseUi) {
-      $(this.el_).val(val);
+      this.el_.val(val);
     }
-    this.form_.notifyChanged_(this);
+    this.notifyChanged_(val, oldValue);
   }
 
   serializeValue() {
@@ -246,13 +262,14 @@ export class ColorField extends Field {
   }
 
   setValue(val, pauseUi) {
+    let oldValue = this.value_;
     this.value_ = (val.hasOwnProperty('_r'))
         ? val
         : tinycolor(val || this.params_.defaultValue || '#000');
     if (!pauseUi) {
       this.el_.spectrum('set', this.value_.toRgbString());
     }
-    this.form_.notifyChanged_(this);
+    this.notifyChanged_(val, oldValue);
   }
 
   serializeValue() {
@@ -343,6 +360,7 @@ export class EnumField extends Field {
   }
 
   setValueInternal_(val, pauseUi) {
+    let oldValue = this.value_;
     // Note, this needs to be its own function because setValue gets
     // overridden in BooleanField and we need access to this method
     // from createUi.
@@ -355,7 +373,7 @@ export class EnumField extends Field {
         this.selectEl_.val(val);
       }
     }
-    this.form_.notifyChanged_(this);
+    this.notifyChanged_(val, oldValue);
   }
 
   serializeValue() {
@@ -436,6 +454,7 @@ export class RangeField extends Field {
   }
 
   setValue(val, pauseUi) {
+    let oldValue = this.value_;
     this.value_ = val;
     if (!pauseUi) {
       this.rangeEl_.val(val);
@@ -443,7 +462,7 @@ export class RangeField extends Field {
 		if (this.textEl_) {
 		  this.textEl_.text(this.params_.textFn(val));
 	  }
-		this.form_.notifyChanged_(this);
+		this.notifyChanged_(val, oldValue);
   }
 
   serializeValue() {

@@ -37,6 +37,8 @@ export class ImageField extends Field {
     this.valueType_ = null;
     this.textParams_ = {};
     this.imageParams_ = {};
+    this.clipartSrc_ = null;
+    this.lastNotifiedValue_ = {};
     this.spaceFormValues_ = {}; // cache
   }
 
@@ -93,18 +95,7 @@ export class ImageField extends Field {
           type: 'file',
           accept: 'image/*'
         })
-        .on('change', () => {
-          ImageField.loadImageFromFileList(this.fileEl_.get(0).files).then(ret => {
-            if (!ret) {
-              return;
-            }
-
-            this.setValueType_('image');
-            this.imageParams_ = ret;
-            this.valueFilename_ = ret.name.replace(/\.[^.]+?$/, ''); // basename
-            this.renderValueAndNotifyChanged_();
-          });
-        })
+        .on('change', () => this.loadImage_(this.fileEl_.get(0).files))
         .appendTo(this.el_);
 
     typeEls.image.click(evt => {
@@ -194,10 +185,8 @@ export class ImageField extends Field {
       let tryLoadWebFontDebounced_ = Util.debounce(500, () => this.tryLoadWebFont_());
       this.textForm_.onChange(() => {
         var values = this.textForm_.getValues();
-        this.textParams_.text = values['text'];
-        this.textParams_.fontStack = values['font']
-            ? values['font'] : 'Roboto, sans-serif';
-        this.valueFilename_ = values['text'];
+        this.textParams_.text = values.text;
+        this.textParams_.fontStack = values.font || 'Roboto, sans-serif';
         tryLoadWebFontDebounced_();
         this.renderValueAndNotifyChanged_();
       });
@@ -297,18 +286,21 @@ export class ImageField extends Field {
           $el.removeClass('drag-hover');
           ev.stopPropagation();
           ev.preventDefault();
-          ImageField.loadImageFromFileList(ev.originalEvent.dataTransfer.files)
-              .then(ret => {
-                if (!ret) {
-                  return;
-                }
-
-                this.setValueType_('image');
-                this.imageParams_ = ret;
-                this.valueFilename_ = ret.name;
-                this.renderValueAndNotifyChanged_();
-              });
+          this.loadImage_(ev.originalEvent.dataTransfer.files);
         });
+  }
+
+  loadImage_(fileList) {
+    ImageField.loadImageFromFileList(fileList).then(ret => {
+      if (!ret) {
+        return;
+      }
+
+      this.setValueType_('image');
+      this.imageParams_ = ret;
+      this.imageFilename_ = ret.name.replace(/\.[^.]+?$/, ''); // basename
+      this.renderValueAndNotifyChanged_();
+    });
   }
 
   loadGoogleWebFontsList_() {
@@ -358,7 +350,7 @@ export class ImageField extends Field {
     $('input', this.el_).prop('checked', false);
     $('.form-image-type-params', this.el_.parent()).addClass('is-hidden');
     if (type) {
-      $('#' + this.getHtmlId() + '-' + type).prop('checked', true);
+      $(`#${this.getHtmlId()}-${type}`).prop('checked', true);
       $('.form-image-type-params-' + type, this.el_.parent()).removeClass('is-hidden');
     }
 
@@ -385,13 +377,11 @@ export class ImageField extends Field {
 
     this.setValueType_('clipart');
     this.clipartSrc_ = clipartSrc;
-    this.valueFilename_ = clipartSrc;
     this.renderValueAndNotifyChanged_();
   }
 
   clearValue() {
     this.valueType_ = null;
-    this.valueFilename_ = null;
     this.valueCtx_ = null;
     this.valueOrigImg_ = null;
     this.fileEl_.val('');
@@ -401,12 +391,32 @@ export class ImageField extends Field {
   }
 
   getValue() {
+    let name = null;
+    switch (this.valueType_) {
+      case 'image':
+        name = this.imageFilename_;
+        break;
+
+      case 'clipart':
+        name = this.clipartSrc_;
+        break;
+
+      case 'text':
+        name = this.textParams_.text;
+        break;
+    }
+
     return {
       ctx: this.valueCtx_,
       origImg: this.valueOrigImg_,
       type: this.valueType_,
-      name: this.valueFilename_
+      name
     };
+  }
+
+  notifyChanged_(newValue, oldValue) {
+    super.notifyChanged_(newValue, oldValue);
+    this.lastNotifiedValue_ = Object.assign({}, newValue);
   }
 
   // this function is asynchronous
@@ -414,6 +424,7 @@ export class ImageField extends Field {
     if (!this.valueType_) {
       this.valueCtx_ = null;
       this.valueOrigImg_ = null;
+      this.notifyChanged_(this.getValue(), this.lastNotifiedValue_);
       return;
     }
 
@@ -423,7 +434,9 @@ export class ImageField extends Field {
     }
 
     if (this.rendering_) {
-      this.renderTimeout_ = setTimeout(() => this.renderValueAndNotifyChanged_(), 100);
+      this.renderTimeout_ = setTimeout(
+          () => this.renderValueAndNotifyChanged_(),
+          100);
       return;
     }
 
@@ -455,11 +468,12 @@ export class ImageField extends Field {
                 }
 
                 this.rendering_ = false;
-                this.form_.notifyChanged_(this);
+                this.notifyChanged_(this.getValue(), this.lastNotifiedValue_);
               });
         }).catch(e => {
           console.error('Error: ' + e);
           this.rendering_ = false;
+          this.notifyChanged_(this.getValue(), this.lastNotifiedValue_);
         });
   }
 
@@ -468,7 +482,6 @@ export class ImageField extends Field {
       // Render the base image (text, clipart, or image)
       switch (this.valueType_) {
         case 'image':
-        // case 'clipart':
           if (this.imageParams_.uri) {
             Util.loadImageFromUri(this.imageParams_.uri)
                 .then(img => {
@@ -478,10 +491,7 @@ export class ImageField extends Field {
                     h: img.naturalHeight
                   };
                   if (this.imageParams_.isSvg && this.params_.maxFinalSize) {
-                    size = {
-                      w: this.params_.maxFinalSize.w,
-                      h: this.params_.maxFinalSize.h
-                    };
+                    size = Object.assign({}, this.params_.maxFinalSize);
                   }
                   var ctx = imagelib.Drawing.context(size);
                   imagelib.Drawing.copy(ctx, img, size);

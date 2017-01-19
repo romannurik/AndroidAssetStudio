@@ -42,11 +42,11 @@ export class Form {
    * Notifies that the form contents have changed;
    * @private
    */
-  notifyChanged_(field) {
+  notifyChanged_(field, newValue, oldValue) {
     if (this.pauseNotify_) {
       return;
     }
-    (this.changeListeners_ || []).forEach(listener => listener(field));
+    (this.changeListeners_ || []).forEach(listener => listener(field, newValue, oldValue));
   }
 
   /**
@@ -87,6 +87,6 @@ export class Form {
         .filter(field => field.id_ in serializedValues && field.deserializeValue)
         .forEach(field => field.deserializeValue(serializedValues[field.id_]));
     this.pauseNotify_ = false;
-    this.notifyChanged_(null);
+    this.notifyChanged_();
   }
 }

@@ -26,6 +26,11 @@ export class NotificationIconGenerator extends BaseGenerator {
     super.setupForm();
     $('.outputs-panel').attr('data-theme', 'dark');
 
+    let defaultNameForSourceValue_ = v => {
+      let name = studio.Util.sanitizeResourceName(v.name || 'example');
+      return `ic_stat_${name}`;
+    };
+
     let nameField;
     this.form = new studio.Form({
       id: 'iconform',
@@ -36,28 +41,22 @@ export class NotificationIconGenerator extends BaseGenerator {
           helpText: 'Must be transparent',
           maxFinalSize: { w: 128, h: 128 },
           defaultValueClipart: 'ac_unit',
-          dropTarget: document.body
+          dropTarget: document.body,
+          onChange: (newValue, oldValue) => {
+            if (nameField.getValue() == defaultNameForSourceValue_(oldValue)) {
+              nameField.setValue(defaultNameForSourceValue_(newValue));
+            }
+          }
         }),
         (nameField = new studio.TextField('name', {
           newGroup: true,
           title: 'Name',
           helpText: 'Used when generating ZIP files.',
-          defaultValue: 'ic_stat_example'
+          defaultValue: defaultNameForSourceValue_({})
         }))
       ]
     });
-    this.form.onChange(field => {
-      let values = this.form.getValues();
-      if ((!field || field.id_ == 'source')
-          && values.source && values.source.name) {
-        let name = 'ic_stat_' + studio.Util.sanitizeResourceName(values.source.name);
-        if (name != nameField.getValue()) {
-          nameField.setValue(name);
-        }
-      }
-
-      this.regenerateDebounced_();
-    });
+    this.form.onChange(field => this.regenerateDebounced_());
   }
 
   regenerate() {

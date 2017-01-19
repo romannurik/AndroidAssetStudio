@@ -36,6 +36,11 @@ export class AppShortcutIconGenerator extends BaseGenerator {
   setupForm() {
     super.setupForm();
 
+    let defaultNameForSourceValue_ = v => {
+      let name = studio.Util.sanitizeResourceName(v.name || 'example');
+      return `ic_shortcut_${name}`;
+    };
+
     let nameField, customColorField;
     this.form = new studio.Form({
       id: 'iconform',
@@ -47,13 +52,18 @@ export class AppShortcutIconGenerator extends BaseGenerator {
           maxFinalSize: { w: 128, h: 128 },
           clipartNoTrimPadding: true,
           defaultValueClipart: 'search',
-          dropTarget: document.body
+          dropTarget: document.body,
+          onChange: (newValue, oldValue) => {
+            if (nameField.getValue() == defaultNameForSourceValue_(oldValue)) {
+              nameField.setValue(defaultNameForSourceValue_(newValue));
+            }
+          }
         }),
         (nameField = new studio.TextField('name', {
           newGroup: true,
           title: 'Name',
           helpText: 'Used when generating ZIP files.',
-          defaultValue: 'ic_shortcut_example'
+          defaultValue: defaultNameForSourceValue_({})
         })),
         new studio.ColorField('foreColor', {
           title: 'Color',
@@ -65,19 +75,7 @@ export class AppShortcutIconGenerator extends BaseGenerator {
         })
       ]
     });
-    this.form.onChange(field => {
-      let values = this.form.getValues();
-      if ((!field || field.id_ == 'source')
-          && values.source && values.source.name) {
-        let name = 'ic_shortcut_' + studio.Util.sanitizeResourceName(values.source.name);
-        if (name != nameField.getValue()) {
-          nameField.setValue(name);
-        }
-      }
-
-      $('.outputs-panel').attr('data-theme', values.theme);
-      this.regenerateDebounced_();
-    });
+    this.form.onChange(() => this.regenerateDebounced_());
   }
 
   regenerate() {
