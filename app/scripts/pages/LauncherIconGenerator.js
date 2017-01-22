@@ -121,17 +121,21 @@ export class LauncherIconGenerator extends BaseGenerator {
           buttons: true,
           options: DEFAULT_EFFECT_OPTIONS,
           defaultValue: 'none'
-        }))
+        })),
+        new studio.TextField('name', {
+          title: 'Name',
+          defaultValue: 'ic_launcher'
+        })
       ]
     });
     this.form.onChange(field => this.regenerateDebounced_());
   }
 
   regenerate() {
-    let iconName = 'ic_launcher';
+    let values = this.form.getValues();
 
     this.zipper.clear();
-    this.zipper.setZipFilename(iconName + '.zip');
+    this.zipper.setZipFilename(`${values.name}.zip`);
 
     let xxxhdpiCtx = null;
 
@@ -156,7 +160,7 @@ export class LauncherIconGenerator extends BaseGenerator {
       this.zipper.add({
         name: (density == 'web')
             ? 'web_hi_res_512.png'
-            : `res/mipmap-${density}/${iconName}.png`,
+            : `res/mipmap-${density}/${values.name}.png`,
         canvas: ctx.canvas
       });
 
