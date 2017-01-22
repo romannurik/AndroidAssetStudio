@@ -18,9 +18,9 @@ import {studio} from '../../studio';
 import {imagelib} from '../../imagelib';
 import {BaseGenerator} from '../basegenerator';
 
-import {NinePatchStage} from './ninepatchstage';
-import {NinePatchPreview} from './ninepatchpreview';
-import {NinePatchLoader} from './ninepatchloader';
+import {NinePatchStage} from './NinePatchStage';
+import {NinePatchPreview} from './NinePatchPreview';
+import {NinePatchLoader} from './NinePatchLoader';
 
 
 const DENSITIES = new Set(['xxxhdpi', 'xxhdpi', 'xhdpi', 'hdpi', 'mdpi']);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Util} from './util';
+import {Util} from './Util';
 
 export const Hash = {
   bindFormToDocumentHash(form) {

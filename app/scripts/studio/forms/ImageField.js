@@ -16,11 +16,18 @@
 
 import {default as WebFont} from 'webfontloader';
 
-import {Field, TextField, RangeField, BooleanField, EnumField} from './fields';
-import {Form} from './forms';
-import {Util} from './util';
-import {imagelib} from '../imagelib';
-import {clipartNames} from './imagefield-clipart';
+import {Form} from './Form';
+import {Field} from './Field';
+import {TextField} from './TextField';
+import {RangeField} from './RangeField';
+import {BooleanField} from './BooleanField';
+import {EnumField} from './EnumField';
+
+import {Util} from '../Util';
+
+import {imagelib} from '../../imagelib';
+
+import {CLIPART_NAMES} from './ImageField-clipart';
 
 
 const WEB_FONTS_API_KEY = 'AIzaSyAtSe8wlXPCUaLQ4LTyPKpbzBBPJAzEXmU';
@@ -117,7 +124,7 @@ export class ImageField extends Field {
           .addClass('cancel-parent-scroll')
           .appendTo(clipartParamsEl);
 
-      clipartNames.forEach(clipartSrc => {
+      CLIPART_NAMES.forEach(clipartSrc => {
         $('<div>')
             .addClass('form-image-clipart-item')
             .attr('data-name', clipartSrc)
@@ -494,7 +501,7 @@ export class ImageField extends Field {
                     size = Object.assign({}, this.params_.maxFinalSize);
                   }
                   var ctx = imagelib.Drawing.context(size);
-                  imagelib.Drawing.copy(ctx, img, size);
+                  ctx.drawImage(img, 0, 0);
                   resolve({ctx, size});
                 });
           } else {

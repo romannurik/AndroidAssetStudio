@@ -15,7 +15,7 @@
  */
 
 import {default as zipjs} from 'zipjs-browserify';
-import {Util} from './util';
+import {Util} from './Util';
 
 const URL = window.URL || window.webkitURL || window.mozURL;
 

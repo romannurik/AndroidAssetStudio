@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 
-import {Effects} from './Effects';
-import {Drawing} from './Drawing';
-import {Analysis} from './Analysis';
+import {BooleanField} from './BooleanField';
+import {ColorField} from './ColorField';
+import {EnumField} from './EnumField';
+import {Field} from './Field';
+import {Form} from './Form';
+import {ImageField} from './Imagefield';
+import {RangeField} from './RangeField';
+import {TextField} from './TextField';
 
-export const imagelib = {
-  Drawing,
-  Effects,
-  Analysis,
+export const forms = {
+  BooleanField,
+  ColorField,
+  EnumField,
+  Field,
+  Form,
+  ImageField,
+  RangeField,
+  TextField,
 };

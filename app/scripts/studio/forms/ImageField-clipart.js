@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export const clipartNames = [
+export const CLIPART_NAMES = [
   '3d_rotation',
   'ac_unit',
   'access_alarm',

@@ -28,14 +28,6 @@ Drawing.context = function(size) {
   return canvas.getContext('2d');
 };
 
-Drawing.copy = function(dstCtx, src, size) {
-  dstCtx.drawImage(src.canvas || src, 0, 0, size.w, size.h);
-};
-
-Drawing.clear = function(ctx, size) {
-  ctx.clearRect(0, 0, size.w, size.h);
-};
-
 Drawing.drawCenterInside = function(dstCtx, src, dstRect, srcRect) {
   if (srcRect.w / srcRect.h > dstRect.w / dstRect.h) {
     var h = srcRect.h * dstRect.w / srcRect.w;
@@ -113,7 +105,7 @@ Drawing.drawLayers = function(dstCtx, size, layerTree) {
       layerCtx = effectsCtx;
     }
 
-    Drawing.copy(dstCtx, layerCtx, size);
+    dstCtx.drawImage(layerCtx.canvas, 0, 0);
   }
 
   function drawGroup_(dstCtx, group) {
@@ -133,7 +125,7 @@ Drawing.drawLayers = function(dstCtx, size, layerTree) {
       let contentCtx = dstCtxStack[dstCtxStack.length - 1];
       targetCtx.save();
       targetCtx.globalCompositeOperation = 'source-atop';
-      Drawing.copy(targetCtx, contentCtx, size);
+      targetCtx.drawImage(contentCtx.canvas, 0, 0);
       targetCtx.restore();
       dstCtxStack.pop();
     }

@@ -52,7 +52,7 @@ Analysis.getTrimRect = function(ctx, size, minAlpha) {
     // Likely an image
     let src = ctx;
     ctx = Drawing.context(size);
-    Drawing.copy(ctx, src, size);
+    ctx.drawImage(src, 0, 0);
   }
 
   let scale = 1;
@@ -105,7 +105,7 @@ Analysis.getCenterOfMass = function(ctx, size, minAlpha) {
       // Likely an image
       var src = ctx;
       ctx = Drawing.context(size);
-      Drawing.copy(ctx, src, size);
+      ctx.drawImage(src, 0, 0);
     }
 
     if (minAlpha == 0) {

@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 
-import {Form} from './forms';
-import {Field, TextField, ColorField, EnumField,
-        BooleanField, RangeField} from './fields';
-import {ImageField} from './imagefield';
-import {Hash} from './hash';
-import {Util} from './util';
-import {Zip} from './zip';
+import {Hash} from './Hash';
+import {Util} from './Util';
+import {Zip} from './Zip';
 
 export const studio = {
-  BooleanField,
-  ColorField,
-  EnumField,
-  Field,
-  Form,
   Hash,
-  ImageField,
-  RangeField,
-  TextField,
   Util,
   Zip,
 };
+
+import {forms} from './forms';
+
+Object.assign(studio, forms);

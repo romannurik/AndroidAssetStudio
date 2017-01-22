@@ -15,7 +15,7 @@
  */
 
 import {imagelib} from '../../imagelib';
-import {Summer} from './summer';
+import {Summer} from './Summer';
 
 export const NinePatchTrimming = {
   /**

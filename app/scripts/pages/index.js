@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import {LauncherIconGenerator} from './launchericons';
-import {AppShortcutIconGenerator} from './appshortcuticons';
-import {ActionBarIconGenerator} from './actionbaricons';
-import {NotificationIconGenerator} from './notificationicons';
-import {GenericIconGenerator} from './genericicons';
-import {NinePatchGenerator} from './ninepatch/ninepatches';
+import {LauncherIconGenerator} from './LauncherIconGenerator';
+import {AppShortcutIconGenerator} from './AppShortcutIconGenerator';
+import {ActionBarIconGenerator} from './ActionBarIconGenerator';
+import {NotificationIconGenerator} from './NotificationIconGenerator';
+import {GenericIconGenerator} from './GenericIconGenerator';
+import {NinePatchGenerator} from './ninepatch/NinePatchGenerator';
 
 export const pages = {
   LauncherIconGenerator,
