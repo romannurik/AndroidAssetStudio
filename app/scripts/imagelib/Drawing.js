@@ -16,7 +16,7 @@
 
 import {default as tinycolor} from 'tinycolor2';
 
-import {Effects} from './effects';
+import {Effects} from './Effects';
 
 export const Drawing = {};
 

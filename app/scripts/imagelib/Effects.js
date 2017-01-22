@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Drawing} from './drawing';
+import {Drawing} from './Drawing';
 
 const OUTER_EFFECTS = new Set(['outer-shadow', 'cast-shadow']);
 const INNER_EFFECTS = new Set(['inner-shadow', 'score']);

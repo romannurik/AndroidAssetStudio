@@ -16,7 +16,7 @@
 
 import {studio} from '../studio';
 import {imagelib} from '../imagelib';
-import {BaseGenerator} from './basegenerator';
+import {BaseGenerator} from './BaseGenerator';
 
 const ICON_SIZE = { w: 48, h: 48 };
 const TARGET_RECT = { x: 12, y: 12, w: 24, h: 24 };

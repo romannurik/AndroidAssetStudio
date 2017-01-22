@@ -16,7 +16,7 @@
 
 import {studio} from '../../studio';
 import {imagelib} from '../../imagelib';
-import {BaseGenerator} from '../basegenerator';
+import {BaseGenerator} from '../BaseGenerator';
 
 import {NinePatchStage} from './NinePatchStage';
 import {NinePatchPreview} from './NinePatchPreview';

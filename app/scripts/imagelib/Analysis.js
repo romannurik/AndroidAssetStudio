@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Drawing} from './drawing';
+import {Drawing} from './Drawing';
 
 export const Analysis = {};
 
