@@ -19,7 +19,7 @@ import {ColorField} from './ColorField';
 import {EnumField} from './EnumField';
 import {Field} from './Field';
 import {Form} from './Form';
-import {ImageField} from './Imagefield';
+import {ImageField} from './ImageField';
 import {RangeField} from './RangeField';
 import {TextField} from './TextField';
 
