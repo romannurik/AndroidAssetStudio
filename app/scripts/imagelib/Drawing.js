@@ -65,6 +65,11 @@ Drawing.drawCenterCrop = function(dstCtx, src, dstRect, srcRect) {
 };
 
 Drawing.drawImageScaled = function(dstCtx, src, sx, sy, sw, sh, dx, dy, dw, dh) {
+  if (dw <= 0 || dh <= 0 || sw <= 0 || sh <= 0) {
+    console.error('Width/height must be at least 0');
+    return;
+  }
+
   src = src.canvas || src;
 
   // algorithm: when scaling down, downsample by at most a factor of 2 per iteration

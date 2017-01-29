@@ -87,7 +87,7 @@ export class GenericIconGenerator extends BaseGenerator {
     this.densities.forEach(density => {
       let mult = studio.Util.getMultBaseMdpi(density);
       let totalSize = values.size;
-      let padding = Math.min(values.size / 2, values.padding);
+      let padding = Math.min(values.size / 2 - 1, values.padding);
       let iconSize = studio.Util.multRound(
           {w: totalSize, h: totalSize}, mult);
       let targetRect = studio.Util.multRound(
