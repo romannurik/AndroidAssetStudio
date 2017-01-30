@@ -493,15 +493,24 @@ export class ImageField extends Field {
             Util.loadImageFromUri(this.imageParams_.uri)
                 .then(img => {
                   this.valueOrigImg_ = img;
-                  var size = {
+                  let origSize = {
                     w: img.naturalWidth,
                     h: img.naturalHeight
                   };
+                  let size = Object.assign({}, origSize);
                   if (this.imageParams_.isSvg && this.params_.maxFinalSize) {
-                    size = Object.assign({}, this.params_.maxFinalSize);
+                    if (size.w / size.h > this.params_.maxFinalSize.w / this.params_.maxFinalSize.h) {
+                      size.w = this.params_.maxFinalSize.w;
+                      size.h = size.w * origSize.h / origSize.w;
+                    } else {
+                      size.h = this.params_.maxFinalSize.h;
+                      size.w = size.h * origSize.w / origSize.h;
+                    }
                   }
-                  var ctx = imagelib.Drawing.context(size);
-                  ctx.drawImage(img, 0, 0);
+                  let ctx = imagelib.Drawing.context(size);
+                  ctx.drawImage(img,
+                      0, 0, origSize.w, origSize.h,
+                      0, 0, size.w, size.h);
                   resolve({ctx, size});
                 });
           } else {
