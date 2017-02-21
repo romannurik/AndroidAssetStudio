@@ -533,17 +533,23 @@ export class ImageField extends Field {
 
         case 'text':
           var size = { w: 6144, h: 1536 };
-          var textHeight = size.h * 0.75;
           var ctx = imagelib.Drawing.context(size);
           var text = this.textParams_.text || '';
-          text = ' ' + text + ' ';
+          var lines = text.split("\n");
+          var numberOfLines = lines.length;
+          var lineHeight = Math.ceil(size.h / numberOfLines);
+          var textHeight = Math.ceil(lineHeighth * 0.75);
+          var linePositionHeight = lineHeight;
 
-          ctx.fillStyle = '#000';
+          ctx.fillStyle = '#000';          
+          ctx.textBaseline = 'alphabetic';          
           ctx.font = `bold ${textHeight}px/${size.h}px ${this.textParams_.fontStack}`;
-          ctx.textBaseline = 'alphabetic';
-          ctx.fillText(text, 0, textHeight);
+          for (var i = 0; i < numberOfLines; ++i) {
+            ctx.fillText(' ' + lines[i] + ' ', 0, linePositionHeight);
+            linePositionHeight += lineHeight;
+          }
+          
           size.w = Math.ceil(Math.min(ctx.measureText(text).width, size.w) || size.w);
-
           resolve({ctx, size});
           break;
 
