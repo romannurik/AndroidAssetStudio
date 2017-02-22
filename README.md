@@ -15,6 +15,8 @@ Currently available asset generators are for:
 - Generic square icons
 - Simple nine-patches
 
+Now supporting generating icons with multi-line text.
+
 ## Building the tool
 
 To build, ensure you have `node` and `npm` installed, and run:
