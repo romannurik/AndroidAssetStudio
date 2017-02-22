@@ -15,7 +15,7 @@ Currently available asset generators are for:
 - Generic square icons
 - Simple nine-patches
 
-Now supporting generating icons with multi-line text.
+Now supporting assests with multi-line text.
 
 ## Building the tool
 
