@@ -179,7 +179,7 @@ export class ImageField extends Field {
         container: textParamsEl,
         fields: [
           new TextField('text', {
-            title: 'Text',
+            title: 'Text - use ^ for multi-line',
           }),
           (fontFamilyField = new EnumField('font', {
             title: 'Font',
@@ -535,21 +535,24 @@ export class ImageField extends Field {
           var size = { w: 6144, h: 1536 };
           var ctx = imagelib.Drawing.context(size);
           var text = this.textParams_.text || '';
-          var lines = text.split("\n");
+          var lines = text.split("^");
           var numberOfLines = lines.length;
-          var lineHeight = Math.ceil(size.h / numberOfLines);
-          var textHeight = Math.ceil(lineHeighth * 0.75);
-          var linePositionHeight = lineHeight;
+          var lineHeight = Math.floor(size.h / numberOfLines);
+          var textHeight = Math.floor(lineHeight * 0.75);
+          var linePositionHeight = lineHeight*.8;
+		  var textWidth;
 
           ctx.fillStyle = '#000';          
           ctx.textBaseline = 'alphabetic';          
           ctx.font = `bold ${textHeight}px/${size.h}px ${this.textParams_.fontStack}`;
+		  console.log(ctx.font);
           for (var i = 0; i < numberOfLines; ++i) {
             ctx.fillText(' ' + lines[i] + ' ', 0, linePositionHeight);
             linePositionHeight += lineHeight;
+			 textWidth = Math.max(ctx.measureText(' ' + lines[i] + ' ').width, textWidth);		 
           }
-          
-          size.w = Math.ceil(Math.min(ctx.measureText(text).width, size.w) || size.w);
+          size.w = Math.ceil(Math.min(textWidth, size.w) || size.w);
+	
           resolve({ctx, size});
           break;
 
