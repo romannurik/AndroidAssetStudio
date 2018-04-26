@@ -68,6 +68,17 @@ export class GenericIconGenerator extends BaseGenerator {
           defaultValue: 'rgba(0, 0, 0, 0.54)',
           alpha: true
         }),
+		new studio.EnumField('subfolder',{
+			id: 'drawable', title: 'Subfolder', defaultValue: 'drawable',
+			options: [
+				{
+					id: 'drawable', 'title': 'Drawable'
+				},
+				{
+					id: 'mipmap', 'title': 'Mipmap'
+				}
+			]
+		}),
         (nameField = new studio.TextField('name', {
           title: 'Name',
           helpText: 'Used when generating ZIP files as the resource name.',
@@ -118,9 +129,8 @@ export class GenericIconGenerator extends BaseGenerator {
       } else {
         outCtx.drawImage(tmpCtx.canvas, 0, 0);
       }
-
       this.zipper.add({
-        name: `res/drawable-${density}/${values.name}.png`,
+        name: `res/${values.subfolder}-${density}/${values.name}.png`,
         canvas: outCtx.canvas
       });
 

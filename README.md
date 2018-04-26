@@ -21,6 +21,13 @@ To build, ensure you have `node` and `npm` installed, and run:
 
     $ npm install
 
+Aparentemente, puede generarse un error
+	```Error: Cannot find module 'js-yaml'```
+
+Solve it installing
+
+	$ npm install js-yaml
+
 Once dependencies are installed, run with `gulp`:
 
     $ gulp serve
