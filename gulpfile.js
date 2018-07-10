@@ -35,7 +35,8 @@ const through = require('through2');
 const url = require('url');
 const yaml = require('js-yaml');
 const path = require('path');
-
+const workboxBuild = require('workbox-build');
+const prettyBytes = require('pretty-bytes');
 
 var AUTOPREFIXER_BROWSERS = [
   'ie >= 10',
@@ -242,11 +243,36 @@ gulp.task('serve:dist', ['default'], function () {
   });
 });
 
+gulp.task('service-worker', function() {
+  return workboxBuild.injectManifest({
+    swSrc: path.join('app', 'sw.js'),
+    swDest: path.join('dist', 'sw.js'),
+    globDirectory: 'dist',
+    globPatterns: [
+      '*.html',
+      '**/jquery.min.js',
+      '**/spectrum.{css,js}',
+      'res/**/*.svg',
+      'scripts/**/*.js',
+      'styles/**/*.css',
+    ],
+  }).then(function(obj) {
+    obj.warnings.forEach(function(warning) {
+      console.warn(warning);
+    });
+    console.log('A service worker was generated to precache', obj.count,
+                'files, totalling', prettyBytes(obj.size));
+  });
+});
+
 // Build Production Files, the Default Task
 gulp.task('default', ['clean'], function (cb) {
-  runSequence('styles',
-      ['scripts', 'bower', 'html', 'res', 'copy'],
-      cb);
+  runSequence(
+    'styles',
+    ['scripts', 'bower', 'html', 'res', 'copy'],
+    'service-worker',
+    cb
+  );
 });
 
 // Deploy to GitHub pages
