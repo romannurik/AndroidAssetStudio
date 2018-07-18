@@ -221,8 +221,9 @@ gulp.task('serve', ['styles', 'html', 'scripts', 'bower'], function () {
     //       will present a certificate warning in the browser.
     // https: true,
     server: {
-      baseDir: ['.tmp', 'app']
-    }
+      baseDir: ['.tmp', 'app'],
+    },
+    port: 3000,
   });
 
   gulp.watch(['app/html/**/*.html'], ['html', reload]);
@@ -239,13 +240,14 @@ gulp.task('serve:dist', ['default'], function () {
     // Note: this uses an unsigned certificate which on first access
     //       will present a certificate warning in the browser.
     // https: true,
-    server: 'dist'
+    server: 'dist',
+    port: 3001,
   });
 });
 
 gulp.task('service-worker', function() {
   return workboxBuild.injectManifest({
-    swSrc: path.join('app', 'sw.js'),
+    swSrc: path.join('app', 'prod-sw.js'),
     swDest: path.join('dist', 'sw.js'),
     globDirectory: 'dist',
     globPatterns: [

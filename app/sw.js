@@ -1,21 +1,8 @@
-importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.3.1/workbox-sw.js");
+// A simple, no-op service worker that takes immediate control.
 
-workbox.precaching.precacheAndRoute([]);
-
-workbox.routing.registerRoute(
-  new RegExp('https://(?:fonts|www).(?:googleapis|gstatic).com/(.*)'),
-  workbox.strategies.cacheFirst({
-    cacheName: 'google-fonts',
-    plugins: [
-      new workbox.expiration.Plugin({
-        maxEntries: 20,
-        purgeOnQuotaError: true,
-      }),
-      new workbox.cacheableResponse.Plugin({
-        statuses: [0, 200]
-      }),
-    ],
-  }),
-);
-
-workbox.googleAnalytics.initialize();
+self.addEventListener('install', () => {
+  // Skip over the "waiting" lifecycle state, to ensure that our
+  // new service worker is activated immediately, even if there's
+  // another tab open controlled by our older service worker code.
+  self.skipWaiting();
+});
