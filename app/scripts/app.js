@@ -19,3 +19,9 @@ import {studio} from './studio';
 import {imagelib} from './imagelib';
 
 window.pages = pages;
+
+window.addEventListener('load', function() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+});

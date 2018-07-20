@@ -35,7 +35,8 @@ const through = require('through2');
 const url = require('url');
 const yaml = require('js-yaml');
 const path = require('path');
-
+const workboxBuild = require('workbox-build');
+const prettyBytes = require('pretty-bytes');
 
 var AUTOPREFIXER_BROWSERS = [
   'ie >= 10',
@@ -220,8 +221,9 @@ gulp.task('serve', ['styles', 'html', 'scripts', 'bower'], function () {
     //       will present a certificate warning in the browser.
     // https: true,
     server: {
-      baseDir: ['.tmp', 'app']
-    }
+      baseDir: ['.tmp', 'app'],
+    },
+    port: 3000,
   });
 
   gulp.watch(['app/html/**/*.html'], ['html', reload]);
@@ -238,15 +240,41 @@ gulp.task('serve:dist', ['default'], function () {
     // Note: this uses an unsigned certificate which on first access
     //       will present a certificate warning in the browser.
     // https: true,
-    server: 'dist'
+    server: 'dist',
+    port: 3001,
+  });
+});
+
+gulp.task('service-worker', function() {
+  return workboxBuild.injectManifest({
+    swSrc: path.join('app', 'prod-sw.js'),
+    swDest: path.join('dist', 'sw.js'),
+    globDirectory: 'dist',
+    globPatterns: [
+      '*.html',
+      '**/jquery.min.js',
+      '**/spectrum.{css,js}',
+      'res/**/*.svg',
+      'scripts/**/*.js',
+      'styles/**/*.css',
+    ],
+  }).then(function(obj) {
+    obj.warnings.forEach(function(warning) {
+      console.warn(warning);
+    });
+    console.log('A service worker was generated to precache', obj.count,
+                'files, totalling', prettyBytes(obj.size));
   });
 });
 
 // Build Production Files, the Default Task
 gulp.task('default', ['clean'], function (cb) {
-  runSequence('styles',
-      ['scripts', 'bower', 'html', 'res', 'copy'],
-      cb);
+  runSequence(
+    'styles',
+    ['scripts', 'bower', 'html', 'res', 'copy'],
+    'service-worker',
+    cb
+  );
 });
 
 // Deploy to GitHub pages
