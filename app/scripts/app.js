@@ -15,8 +15,6 @@
  */
 
 import {pages} from './pages';
-import {studio} from './studio';
-import {imagelib} from './imagelib';
 
 window.pages = pages;
 

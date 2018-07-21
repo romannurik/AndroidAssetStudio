@@ -247,7 +247,7 @@ gulp.task('serve:dist', ['default'], function () {
 
 gulp.task('service-worker', function() {
   return workboxBuild.injectManifest({
-    swSrc: path.join('app', 'prod-sw.js'),
+    swSrc: path.join('app', 'sw-prod.js'),
     swDest: path.join('dist', 'sw.js'),
     globDirectory: 'dist',
     globPatterns: [
