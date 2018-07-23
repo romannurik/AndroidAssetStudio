@@ -14,31 +14,22 @@
  * limitations under the License.
  */
 
-'use strict';
-
-// Include Gulp & Tools We'll Use
 const gulp = require('gulp');
 const $ = require('gulp-load-plugins')();
 const del = require('del');
-const fs = require('fs');
-const buffer = require('vinyl-buffer');
 const runSequence = require('run-sequence');
 const browserSync = require('browser-sync');
-const browserify = require('browserify');
-const exclude = require('gulp-ignore').exclude;
 const reload = browserSync.reload;
 const merge = require('merge-stream');
-const source = require('vinyl-source-stream');
 const swig = require('swig');
 const swigExtras = require('swig-extras');
 const through = require('through2');
-const url = require('url');
-const yaml = require('js-yaml');
 const path = require('path');
 const workboxBuild = require('workbox-build');
 const prettyBytes = require('pretty-bytes');
+const webpack = require('webpack');
 
-var AUTOPREFIXER_BROWSERS = [
+const AUTOPREFIXER_BROWSERS = [
   'ie >= 10',
   'ie_mob >= 10',
   'ff >= 30',
@@ -49,8 +40,17 @@ var AUTOPREFIXER_BROWSERS = [
 ];
 
 
-var DEV_MODE = false;
-var BASE_HREF = DEV_MODE ? '/' : '/AndroidAssetStudio/';
+let DEV_MODE = false;
+let BASE_HREF = DEV_MODE ? '/' : '/AndroidAssetStudio/';
+
+let webpackInstance;
+
+function printWebpackStats(stats) {
+  console.log(stats.toString({
+    modules: false,
+    colors: true,
+  }));
+};
 
 
 function errorHandler(error) {
@@ -59,72 +59,40 @@ function errorHandler(error) {
 }
 
 // Lint JavaScript
-gulp.task('scripts', function () {
-  return browserify('./app/scripts/app.js', {
-        debug: true, // debug generates sourcemap
-        basedir: '.',
-        paths: [
-          './app/scripts/',
-          './node_modules/'
-        ]
-      })
-      .transform('babelify', {presets: ['es2015'], plugins: ['es6-promise']})
-      .transform('require-globify')
-      .bundle()
-      .on('error', errorHandler)
-      .pipe(source('app.js'))
-      .pipe(buffer())
-      .pipe(gulp.dest('.tmp/scripts'))
-      .pipe($.if(!DEV_MODE, $.uglify({
-        mangle:false
-      })))
-      .pipe(gulp.dest('dist/scripts'));
-});
-
-// Bower
-gulp.task('bower', function(cb) {
-  return $.bower('.tmp/lib')
-      .pipe(exclude('!**/*.{js,css,map}'))
-      .pipe(exclude('**/test/**'))
-      .pipe(exclude('**/tests/**'))
-      .pipe(exclude('**/modules/**'))
-      .pipe(exclude('**/demos/**'))
-      .pipe(exclude('**/src/**'))
-      .pipe(gulp.dest('dist/lib'));
+gulp.task('webpack', cb => {
+  // force reload webpack config
+  delete require.cache[require.resolve('./webpack.config.js')];
+  let webpackConfig = require('./webpack.config.js');
+  webpackConfig.mode = DEV_MODE ? 'development' : 'production';
+  webpackInstance = webpack(webpackConfig, (err, stats) => {
+    printWebpackStats(stats);
+    cb();
+  });
 });
 
 // Optimize Images
-gulp.task('res', function () {
+gulp.task('res', () => {
   return gulp.src('app/res/**/*')
     .pipe($.cache($.imagemin({
       progressive: true,
       interlaced: true
     })))
-    .pipe(gulp.dest('dist/res'))
-    .pipe($.size({title: 'res'}));
+    .pipe(gulp.dest('dist/res'));
 });
 
 // Copy All Files At The Root Level (app) and lib
-gulp.task('copy', function () {
-  var s1 = gulp.src([
-    'app/*',
-    '!app/html'
-  ], {
-    dot: true
-  }).pipe(gulp.dest('dist'))
-    .pipe($.size({title: 'copy'}));
-
-  var s2 = gulp.src('older-version/**/*', {dot: true})
-    .pipe(gulp.dest('dist/older-version'))
-    .pipe($.size({title: 'copy'}));
-
-  return merge(s1, s2);
+gulp.task('copy', () => {
+  return merge(
+      gulp.src(['app/*', '!app/sw-prod.js'], {dot: true, nodir: true,})
+          .pipe(gulp.dest('dist')),
+      gulp.src('older-version/**/*', {dot: true})
+          .pipe(gulp.dest('dist/older-version')));
 });
 
 // Compile and Automatically Prefix Stylesheets
-gulp.task('styles', function () {
+gulp.task('styles', () => {
   // For best performance, don't add Sass partials to `gulp.src`
-  return gulp.src('app/styles/app.scss')
+  return gulp.src('app/styles/app.entry.scss')
     .pipe($.changed('styles', {extension: '.scss'}))
     .pipe($.sassGlob())
     .pipe($.sass({
@@ -133,11 +101,12 @@ gulp.task('styles', function () {
       quiet: true
     }).on('error', errorHandler))
     .pipe($.autoprefixer(AUTOPREFIXER_BROWSERS))
-    .pipe(gulp.dest('.tmp/styles'))
     // Concatenate And Minify Styles
-    .pipe($.if(!DEV_MODE, $.if('*.css', $.csso())))
-    .pipe(gulp.dest('dist/styles'))
-    .pipe($.size({title: 'styles'}));
+    .pipe($.if(!DEV_MODE, $.csso()))
+    .pipe($.tap((file, t) => {
+      file.path = file.path.replace(/\.entry\.css$/, '.css');
+    }))
+    .pipe(gulp.dest('dist'));
 });
 
 
@@ -154,47 +123,33 @@ gulp.task('html', () => {
       remove: true
     }).on('error', errorHandler))
     // Start populating context data for the file, globalData, followed by file's frontmatter
-    .pipe($.tap(function(file, t) {
+    .pipe($.tap((file, t) => {
       file.contextData = Object.assign({}, file.frontMatter);
     }))
     // Populate the global pages collection
     // Wait for all files first (to collect all front matter)
     .pipe($.util.buffer())
-    .pipe(through.obj(function(filesArray, enc, callback) {
-      var me = this;
-      filesArray.forEach(function(file) {
-        var pageInfo = {path: file.path, data: file.frontMatter || {}};
+    .pipe(through.obj(function(filesArray, enc, cb) {
+      filesArray.forEach(file => {
+        let pageInfo = {path: file.path, data: file.frontMatter || {}};
         pages.push(pageInfo);
       });
       // Re-emit each file into the stream
-      filesArray.forEach(function(file) {
-        me.push(file);
-      });
-      callback();
+      filesArray.forEach(file => this.push(file));
+      cb();
     }))
-    .pipe($.tap(function(file, t) {
+    .pipe($.tap((file, t) => {
       // Finally, add pages array to collection
       file.contextData = Object.assign(file.contextData, {all_pages: pages});
     }))
     // Run everything through swig templates
     .pipe($.swig({
-      setup: function(sw) {
-        swigExtras.useTag(sw, 'markdown');
-        swigExtras.useFilter(sw, 'markdown');
-        swigExtras.useFilter(sw, 'trim');
-      },
-      data: function(file) {
-        return file.contextData;
-      },
+      data: file => file.contextData,
       defaults: {
         cache: false
       }
     }).on('error', errorHandler))
     // Concatenate And Minify JavaScript
-    .pipe($.if('*.js', $.uglify({preserveComments: 'some'})))
-    // Concatenate And Minify Styles
-    // In case you are still using useref build blocks
-    .pipe($.if('*.css', $.csso()))
     // Minify Any HTML
     .pipe($.replace(/%%BASE_HREF%%/g, BASE_HREF))
     .pipe(gulp.dest('.tmp'))
@@ -204,16 +159,19 @@ gulp.task('html', () => {
 });
 
 // Clean Output Directory
-gulp.task('clean', function(cb) {
+gulp.task('clean', cb => {
   del.sync(['.tmp', 'dist']);
   $.cache.clearAll();
   cb();
 });
 
 // Watch Files For Changes & Reload
-gulp.task('serve', ['styles', 'html', 'scripts', 'bower'], function () {
+gulp.task('serve', cb => {
   DEV_MODE = true;
+  runSequence('__serve__', cb);
+});
 
+gulp.task('__serve__', ['styles', 'html', 'webpack'], () => {
   browserSync({
     notify: false,
     // Run as an https by uncommenting 'https: true'
@@ -221,19 +179,25 @@ gulp.task('serve', ['styles', 'html', 'scripts', 'bower'], function () {
     //       will present a certificate warning in the browser.
     // https: true,
     server: {
-      baseDir: ['.tmp', 'app'],
+      baseDir: ['.tmp', 'dist', 'app'],
     },
     port: 3000,
   });
 
   gulp.watch(['app/html/**/*.html'], ['html', reload]);
   gulp.watch(['app/**/*.{scss,css}'], ['styles', reload]);
-  gulp.watch(['app/**/*.js'], ['scripts', reload]);
   gulp.watch(['app/res/**/*'], reload);
+
+  if (webpackInstance) {
+    webpackInstance.watch({}, (err, stats) => {
+      printWebpackStats(stats);
+      reload();
+    });
+  }
 });
 
 // Build and serve the output from the dist build
-gulp.task('serve:dist', ['default'], function () {
+gulp.task('serve:dist', ['default'], () => {
   browserSync({
     notify: false,
     // Run as an https by uncommenting 'https: true'
@@ -245,43 +209,35 @@ gulp.task('serve:dist', ['default'], function () {
   });
 });
 
-gulp.task('service-worker', function() {
+gulp.task('service-worker', () => {
   return workboxBuild.injectManifest({
     swSrc: path.join('app', 'sw-prod.js'),
     swDest: path.join('dist', 'sw.js'),
     globDirectory: 'dist',
     globPatterns: [
       '*.html',
-      '**/jquery.min.js',
-      '**/spectrum.{css,js}',
-      'res/**/*.svg',
-      'scripts/**/*.js',
-      'styles/**/*.css',
+      '**/*.svg',
+      '**/*.js',
+      '**/*.css',
     ],
-  }).then(function(obj) {
-    obj.warnings.forEach(function(warning) {
-      console.warn(warning);
-    });
-    console.log('A service worker was generated to precache', obj.count,
-                'files, totalling', prettyBytes(obj.size));
+  }).then(obj => {
+    obj.warnings.forEach(warning => console.warn(warning));
+    console.log(`A service worker was generated to precache ${obj.count} files ` +
+                `totalling ${prettyBytes(obj.size)}`);
   });
 });
 
 // Build Production Files, the Default Task
-gulp.task('default', ['clean'], function (cb) {
+gulp.task('default', ['clean'], cb => {
   runSequence(
-    'styles',
-    ['scripts', 'bower', 'html', 'res', 'copy'],
-    'service-worker',
-    cb
-  );
+      'styles',
+      ['webpack', 'html', 'res', 'copy'],
+      'service-worker',
+      cb);
 });
 
 // Deploy to GitHub pages
-gulp.task('deploy', function() {
+gulp.task('deploy', () => {
   return gulp.src('dist/**/*', {dot: true})
-    .pipe($.ghPages());
+      .pipe($.ghPages());
 });
-
-// Load custom tasks from the `tasks` directory
-try { require('require-dir')('tasks'); } catch (err) {}

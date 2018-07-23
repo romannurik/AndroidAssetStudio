@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {default as $} from 'jquery';
 import {Field} from './Field';
 
 export class EnumField extends Field {

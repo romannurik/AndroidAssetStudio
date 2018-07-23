@@ -380,3 +380,50 @@ $formFieldSpacing: 24px;
     margin-top: 0;
   }
 }
+
+.form-field-color {
+  &-popup-container {
+    position: fixed;
+    z-index: 2;
+  }
+
+  &-popup-cover {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  &-widget {
+    @include form-field-element;
+    display: inline-flex;
+    cursor: pointer;
+    padding: 6px;
+  }
+
+  &-widget-swatch {
+    width: 40px;
+    height: 20px;
+    box-shadow: 0 0 0 1px rgba(#000, .12);
+    position: relative;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+    }
+
+    &::before {
+      background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCA0MCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCAwaDEwdjEwSDBWMHptMjAgMGgxMHYxMEgyMFYwek0xMCAxMGgxMHYxMEgxMFYxMHptMjAgMGgxMHYxMEgzMFYxMHoiIGZpbGw9IiMwMDAiIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbC1vcGFjaXR5PSIuMSIvPjwvc3ZnPg==");
+    }
+
+    &::after {
+      background-color: currentColor;
+    }
+  }
+}

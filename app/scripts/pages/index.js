@@ -14,18 +14,9 @@
  * limitations under the License.
  */
 
-import {LauncherIconGenerator} from './LauncherIconGenerator';
-import {AppShortcutIconGenerator} from './AppShortcutIconGenerator';
-import {ActionBarIconGenerator} from './ActionBarIconGenerator';
-import {NotificationIconGenerator} from './NotificationIconGenerator';
-import {GenericIconGenerator} from './GenericIconGenerator';
-import {NinePatchGenerator} from './ninepatch/NinePatchGenerator';
-
-export const pages = {
-  LauncherIconGenerator,
-  AppShortcutIconGenerator,
-  ActionBarIconGenerator,
-  NotificationIconGenerator,
-  GenericIconGenerator,
-  NinePatchGenerator,
-};
+export {LauncherIconGenerator} from './LauncherIconGenerator';
+export {AppShortcutIconGenerator} from './AppShortcutIconGenerator';
+export {ActionBarIconGenerator} from './ActionBarIconGenerator';
+export {NotificationIconGenerator} from './NotificationIconGenerator';
+export {GenericIconGenerator} from './GenericIconGenerator';
+export {NinePatchGenerator} from './ninepatch/NinePatchGenerator';

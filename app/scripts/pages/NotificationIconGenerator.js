@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {default as $} from 'jquery';
 import {studio} from '../studio';
 import {imagelib} from '../imagelib';
 import {BaseGenerator} from './BaseGenerator';

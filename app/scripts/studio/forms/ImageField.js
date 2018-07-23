@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import {default as $} from 'jquery';
 import {default as WebFont} from 'webfontloader';
 
 import {Form} from './Form';

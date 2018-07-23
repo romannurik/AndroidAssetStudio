@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+import {default as $} from 'jquery';
 import {studio} from '../studio';
 import {imagelib} from '../imagelib';
 import {BaseGenerator} from './BaseGenerator';
+import {default as tinycolor} from 'tinycolor2';
 
 const ICON_SIZE = { w: 24, h: 24 };
 const TARGET_RECT = { x: 0, y: 0, w: 24, h: 24 };

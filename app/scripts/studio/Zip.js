@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-import {default as zipjs} from 'zipjs-browserify';
+import JSZip from 'jszip/lib';
 
 import {Util} from './Util';
-
-const URL = window.URL || window.webkitURL || window.mozURL;
 
 
 export const Zip = {
@@ -51,7 +49,7 @@ class DownloadZipButton {
   }
 
   updateUI_() {
-    if (this.fileSpecs_.length && !this.generating_) {
+    if (this.fileSpecs_.length && !this.isGenerating_) {
       this.el_.removeAttr('disabled');
     } else {
       this.el_.attr('disabled', 'disabled');
@@ -67,29 +65,21 @@ class DownloadZipButton {
     this.isGenerating_ = true;
     this.updateUI_();
 
-    zipjs.createWriter(new zipjs.BlobWriter(), writer => {
-      let i = -1;
-      let nextFile_ = () => {
-        ++i;
-        if (i >= this.fileSpecs_.length) {
-          // close
-          writer.close(blob => Util.downloadFile(blob, filename));
-          this.isGenerating_ = false;
-          this.updateUI_();
+    let zip = new JSZip();
 
-        } else {
-          // add next file
-          let fileSpec = this.fileSpecs_[i];
-          writer.add(
-              fileSpec.name,
-              fileSpec.canvas
-                  ? new zipjs.Data64URIReader(fileSpec.canvas.toDataURL())
-                  : new zipjs.TextReader(fileSpec.textData),
-              nextFile_);
-        }
-      };
-      nextFile_();
-    }, error => {
+    this.fileSpecs_.forEach(fileSpec => {
+      if (fileSpec.canvas) {
+        zip.file(fileSpec.name, fileSpec.canvas.toDataURL().replace(/.*?;base64,/, ''), {base64: true});
+      } else {
+        zip.file(fileSpec.name, fileSpec.textData);
+      }
+    });
+
+    zip.generateAsync({type: 'blob'}).then(blob => {
+      Util.downloadFile(blob, filename);
+      this.isGenerating_ = false;
+      this.updateUI_();
+    }).catch(error => {
       console.error(error);
       this.isGenerating_ = false;
       this.updateUI_();

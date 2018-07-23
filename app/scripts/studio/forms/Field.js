@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import {default as $} from 'jquery';
+
 /**
  * Represents a form field and its associated UI elements. This should be
  * broken out into a more MVC-like architecture in the future.

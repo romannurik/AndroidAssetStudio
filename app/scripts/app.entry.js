@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-import {pages} from './pages';
+require('babel-polyfill');
 
+import * as pages from './pages';
 window.pages = pages;
 
-window.addEventListener('load', function() {
+window.addEventListener('load', () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js');
   }

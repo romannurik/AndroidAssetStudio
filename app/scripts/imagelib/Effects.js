@@ -15,6 +15,7 @@
  */
 
 import {Drawing} from './Drawing';
+import {default as tinycolor} from 'tinycolor2';
 
 const OUTER_EFFECTS = new Set(['outer-shadow', 'cast-shadow']);
 const INNER_EFFECTS = new Set(['inner-shadow', 'score']);
