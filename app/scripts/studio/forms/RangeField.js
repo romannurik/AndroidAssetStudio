@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import {default as $} from 'jquery';
+import $ from 'jquery';
+
 import {Field} from './Field';
 
 export class RangeField extends Field {

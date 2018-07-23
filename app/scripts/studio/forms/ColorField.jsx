@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {default as $} from 'jquery';
-import {default as tinycolor} from 'tinycolor2';
+import $ from 'jquery';
+import tinycolor from 'tinycolor2';
 
 import React from 'react';
 import ReactDOM from 'react-dom';

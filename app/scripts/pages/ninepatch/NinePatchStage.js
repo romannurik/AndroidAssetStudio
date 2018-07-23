@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import {default as $} from 'jquery';
+import $ from 'jquery';
+
 import {NinePatchTrimming} from './NinePatchTrimming';
 
 const EMPTY_RECT = {x: 0, y: 0, w: 0, h: 0};

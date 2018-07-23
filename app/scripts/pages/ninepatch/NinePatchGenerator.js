@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {default as $} from 'jquery';
+import $ from 'jquery';
 
 import {studio} from '../../studio';
 import {imagelib} from '../../imagelib';

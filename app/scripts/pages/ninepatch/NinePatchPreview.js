@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {default as $} from 'jquery';
+import $ from 'jquery';
 
 export class NinePatchPreview {
   constructor(stage) {

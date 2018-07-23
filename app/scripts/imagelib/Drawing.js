@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import {default as tinycolor} from 'tinycolor2';
-
 import {Effects} from './Effects';
 
 export const Drawing = {};

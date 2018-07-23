@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {default as $} from 'jquery';
+import $ from 'jquery';
 
 /**
  * Represents a form field and its associated UI elements. This should be
