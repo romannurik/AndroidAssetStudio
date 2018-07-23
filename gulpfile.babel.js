@@ -214,6 +214,9 @@ gulp.task('service-worker', () => {
     swSrc: path.join('app', 'sw-prod.js'),
     swDest: path.join('dist', 'sw.js'),
     globDirectory: 'dist',
+    globIgnores: [
+      'older-version/**/*',
+    ],
     globPatterns: [
       '*.html',
       '**/*.svg',
