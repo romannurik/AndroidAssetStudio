@@ -1,0 +1,14 @@
+---
+title: Generic icon generator
+bodyClasses: page-generic-icon-generator
+destination: /icons-generic.html
+---
+
+{% extends '_generator-base.html' %}
+
+{% block body %}
+{{ super() }}
+<script>
+new pages.GenericIconGenerator();
+</script>
+{% endblock %}

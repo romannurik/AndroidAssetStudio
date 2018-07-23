@@ -79,7 +79,10 @@ gulp.task('res', () => {
 // Copy All Files At The Root Level (app) and lib
 gulp.task('copy', () => {
   return merge(
-      gulp.src(['app/*', '!app/sw-prod.js'], {dot: true, nodir: true,})
+      gulp.src([
+            'app/favicon.ico',
+            'app/sw.js',
+          ], {dot: true, nodir: true,})
           .pipe(gulp.dest('dist')),
       gulp.src('older-version/**/*', {dot: true})
           .pipe(gulp.dest('dist/older-version')));
@@ -88,7 +91,7 @@ gulp.task('copy', () => {
 // Compile and Automatically Prefix Stylesheets
 gulp.task('styles', () => {
   // For best performance, don't add Sass partials to `gulp.src`
-  return gulp.src('app/styles/app.entry.scss')
+  return gulp.src('app/app.entry.scss')
     .pipe($.changed('styles', {extension: '.scss'}))
     .pipe($.sassGlob())
     .pipe($.sass({
@@ -106,17 +109,21 @@ gulp.task('styles', () => {
 
 gulp.task('html', () => {
   return gulp.src([
-      'app/html/**/*.html',
-      '!app/html/**/_*.html'
+      'app/**/*.html',
+      '!app/**/_*.html'
     ])
     .pipe($.nucleus({
       templateRootPath: [
         'app',
-        'app/html',
       ],
     }).on('error', errorHandler))
     .pipe($.replace(/%%BASE_HREF%%/g, BASE_HREF))
     .pipe($.if(!DEV_MODE, $.minifyHtml()))
+    .pipe($.tap((file, t) => {
+      if (file.contextData.destination) {
+        file.path = path.join('./app', file.contextData.destination);
+      }
+    }))
     .pipe(gulp.dest('dist'));
 });
 
@@ -146,7 +153,7 @@ gulp.task('__serve__', ['copy', 'styles', 'html', 'webpack'], () => {
     port: 3000,
   });
 
-  gulp.watch(['app/html/**/*.html'], ['html', reload]);
+  gulp.watch(['app/**/*.html'], ['html', reload]);
   gulp.watch(['app/**/*.{scss,css}'], ['styles', reload]);
   gulp.watch(['app/res/**/*'], ['res', reload]);
 

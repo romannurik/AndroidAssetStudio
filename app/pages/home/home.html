@@ -1,0 +1,87 @@
+---
+home: true
+bodyClasses: page-home
+destination: /index.html
+generatorGroups:
+- items:
+  - url: icons-launcher.html
+    image: res/generator-thumbs/icons-launcher.svg
+    title: Launcher icon generator
+    description: Generate launcher and store listing icons for your app.
+
+  - url: icons-app-shortcut.html
+    image: res/generator-thumbs/icons-app-shortcut.svg
+    title: App shortcut icon generator
+    description: Generate app launcher shortcut icons (Android 7.1+).
+
+  - url: https://shapeshifter.design/
+    image: res/generator-thumbs/icon-animator.svg
+    extraClasses: is-external
+    title: Shape Shifter
+    description: Create vector drawables and vector icon animations.
+
+  - url: icons-notification.html
+    image: res/generator-thumbs/icons-notification.svg
+    title: Notification icon generator
+    description:
+      Generate notification icons for your app. These show up
+      in the system status bar and notification shade.
+
+  - url: nine-patches.html
+    image: res/generator-thumbs/nine-patches.svg
+    title: Simple nine-patch generator
+    description:
+      Generate nine-patch (.9.png) assets for your app, normally
+      used for custom UI widgets.
+
+  - url: icons-generic.html
+    image: res/generator-thumbs/icons-generic.svg
+    title: Generic icon generator
+    description:
+      Generate square icons for custom use within your app.
+
+  - url: icons-actionbar.html
+    image: res/generator-thumbs/icons-actionbar.svg
+    title: Action bar/tab icon generator
+    description: Generate icons for the app bar or tab bars.
+
+---
+{% extends '_base.html' %}
+
+{% block header %}
+{% endblock %}
+
+{% block body %}
+<div class="home-header">
+  <div class="inner">
+    <h1>Android Asset Studio</h1>
+    <p class="subtitle">
+      A collection of tools to easily generate assets such as launcher icons
+      for your Android app.
+    </p>
+  </div>
+</div>
+{% for group in generatorGroups %}
+<div class="home-generator-list">
+  <div class="inner">
+    {% if group.title %}<h2>{{ group.title }}</h2>{% endif %}
+    {% for generator in group.items %}
+    <a href="{{ generator.url }}"
+       class="home-generator-card{% if generator.extraClasses %} {{ generator.extraClasses }}{% endif %}">
+      <div class="generator-image">
+        {% include generator.image %}
+      </div>
+      <div class="generator-title">{{ generator.title }}</div>
+      <div class="generator-description">{{ generator.description }}</div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endfor %}
+<div class="home-footer">
+  <div class="inner">
+    Created by <a href="https://twitter.com/romannurik">Roman Nurik</a>.
+    <a target="_blank" class="external-link" href="https://github.com/romannurik/AndroidAssetStudio">Source on GitHub</a>
+  </div>
+</div>
+{% endblock %}

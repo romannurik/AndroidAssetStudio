@@ -4,7 +4,7 @@ import webpack from 'webpack';
 
 module.exports = {
   entry: {
-    app: './app/scripts/app.entry.js',
+    app: './app/app.entry.js',
   },
   output: {
     filename: '[name].js',
@@ -33,7 +33,7 @@ module.exports = {
     rules: [
       {
         enforce: 'pre',
-        test: /\.js/,
+        test: /\.jsx?/,
         use: 'import-glob',
       },
       {

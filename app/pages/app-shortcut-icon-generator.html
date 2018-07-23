@@ -1,0 +1,14 @@
+---
+title: App shortcut icon generator
+bodyClasses: page-app-shortcut-icon-generator
+destination: /icons-app-shortcut.html
+---
+
+{% extends '_generator-base.html' %}
+
+{% block body %}
+{{ super() }}
+<script>
+new pages.AppShortcutIconGenerator();
+</script>
+{% endblock %}

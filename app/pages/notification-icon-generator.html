@@ -1,0 +1,14 @@
+---
+title: Notification icon generator
+bodyClasses: page-notification-icon-generator
+destination: /icons-notification.html
+---
+
+{% extends '_generator-base.html' %}
+
+{% block body %}
+{{ super() }}
+<script>
+new pages.NotificationIconGenerator();
+</script>
+{% endblock %}
