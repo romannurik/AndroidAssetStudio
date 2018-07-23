@@ -21,22 +21,15 @@ const runSequence = require('run-sequence');
 const browserSync = require('browser-sync');
 const reload = browserSync.reload;
 const merge = require('merge-stream');
-const swig = require('swig');
-const swigExtras = require('swig-extras');
-const through = require('through2');
 const path = require('path');
 const workboxBuild = require('workbox-build');
 const prettyBytes = require('pretty-bytes');
 const webpack = require('webpack');
 
 const AUTOPREFIXER_BROWSERS = [
-  'ie >= 10',
-  'ie_mob >= 10',
   'ff >= 30',
   'chrome >= 34',
   'safari >= 7',
-  'ios >= 7',
-  'android >= 4.4'
 ];
 
 
@@ -54,6 +47,9 @@ function printWebpackStats(stats) {
 
 
 function errorHandler(error) {
+  if (error.fileName) {
+    console.error(`Error in ${error.fileName}`);
+  }
   console.error(error.stack);
   this.emit('end'); // http://stackoverflow.com/questions/23971388
 }
@@ -103,58 +99,24 @@ gulp.task('styles', () => {
     .pipe($.autoprefixer(AUTOPREFIXER_BROWSERS))
     // Concatenate And Minify Styles
     .pipe($.if(!DEV_MODE, $.csso()))
-    .pipe($.tap((file, t) => {
-      file.path = file.path.replace(/\.entry\.css$/, '.css');
-    }))
+    .pipe($.tap(file => file.path = file.path.replace(/\.entry\.css$/, '.css')))
     .pipe(gulp.dest('dist'));
 });
 
 
 gulp.task('html', () => {
-  let pages = [];
-
   return gulp.src([
       'app/html/**/*.html',
       '!app/html/**/_*.html'
     ])
-    // Extract frontmatter
-    .pipe($.frontMatter({
-      property: 'frontMatter',
-      remove: true
+    .pipe($.nucleus({
+      templateRootPath: [
+        'app',
+        'app/html',
+      ],
     }).on('error', errorHandler))
-    // Start populating context data for the file, globalData, followed by file's frontmatter
-    .pipe($.tap((file, t) => {
-      file.contextData = Object.assign({}, file.frontMatter);
-    }))
-    // Populate the global pages collection
-    // Wait for all files first (to collect all front matter)
-    .pipe($.util.buffer())
-    .pipe(through.obj(function(filesArray, enc, cb) {
-      filesArray.forEach(file => {
-        let pageInfo = {path: file.path, data: file.frontMatter || {}};
-        pages.push(pageInfo);
-      });
-      // Re-emit each file into the stream
-      filesArray.forEach(file => this.push(file));
-      cb();
-    }))
-    .pipe($.tap((file, t) => {
-      // Finally, add pages array to collection
-      file.contextData = Object.assign(file.contextData, {all_pages: pages});
-    }))
-    // Run everything through swig templates
-    .pipe($.swig({
-      data: file => file.contextData,
-      defaults: {
-        cache: false
-      }
-    }).on('error', errorHandler))
-    // Concatenate And Minify JavaScript
-    // Minify Any HTML
     .pipe($.replace(/%%BASE_HREF%%/g, BASE_HREF))
-    .pipe(gulp.dest('.tmp'))
-    .pipe($.if('*.html', $.minifyHtml()))
-    // Output Files
+    .pipe($.if(!DEV_MODE, $.minifyHtml()))
     .pipe(gulp.dest('dist'));
 });
 
@@ -171,7 +133,7 @@ gulp.task('serve', cb => {
   runSequence('__serve__', cb);
 });
 
-gulp.task('__serve__', ['styles', 'html', 'webpack'], () => {
+gulp.task('__serve__', ['copy', 'styles', 'html', 'webpack'], () => {
   browserSync({
     notify: false,
     // Run as an https by uncommenting 'https: true'

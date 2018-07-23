@@ -116,21 +116,6 @@ export class ColorField extends Field {
           showAlpha={ this.params_.alpha }
           onChange={ update_ } />,
       $('<div>').appendTo(fieldContainer).get(0));
-    // this.el_.spectrum({
-    //   color: this.getValue().toRgbString(),
-    //   showInput: true,
-    //   showPalette: true,
-    //   showAlpha: this.params_.alpha,
-    //   preferredFormat: 'hex',
-    //   palette: [
-
-    //   ],
-    //   localStorageKey: 'recentcolors',
-    //   showInitial: true,
-    //   showButtons: false,
-    //   change: update_,
-    //   move: update_
-    // });
   }
 
   getValue() {
@@ -143,7 +128,6 @@ export class ColorField extends Field {
         ? val
         : tinycolor(val || this.params_.defaultValue || '#000');
     if (!pauseUi) {
-      // this.el_.spectrum('set', this.value_.toRgbString());
       this.pickerWidget.setState({ color: this.value_.toRgb() });
     }
     this.notifyChanged_(val, oldValue);

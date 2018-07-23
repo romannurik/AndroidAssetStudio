@@ -6,7 +6,7 @@ bodyClasses: page-notification-icon-generator
 {% extends '_generator-base.html' %}
 
 {% block body %}
-{% parent %}
+{{ super() }}
 <script>
 new pages.NotificationIconGenerator();
 </script>

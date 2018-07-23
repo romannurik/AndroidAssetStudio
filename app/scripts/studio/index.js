@@ -14,16 +14,7 @@
  * limitations under the License.
  */
 
-import {Hash} from './Hash';
-import {Util} from './Util';
-import {Zip} from './Zip';
-
-export const studio = {
-  Hash,
-  Util,
-  Zip,
-};
-
-import {forms} from './forms';
-
-Object.assign(studio, forms);
+export {Hash} from './Hash';
+export {Util} from './Util';
+export {Zip} from './Zip';
+export * from './forms';

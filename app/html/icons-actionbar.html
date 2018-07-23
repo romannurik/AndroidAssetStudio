@@ -6,7 +6,7 @@ bodyClasses: page-actionbar-icon-generator
 {% extends '_generator-base.html' %}
 
 {% block body %}
-{% parent %}
+{{ super() }}
 <script>
 new pages.ActionBarIconGenerator();
 </script>

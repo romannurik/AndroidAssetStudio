@@ -16,8 +16,9 @@
 
 import $ from 'jquery';
 
-import {studio} from '../studio';
-import {imagelib} from '../imagelib';
+import * as studio from '../studio';
+import * as imagelib from '../imagelib';
+
 import {BaseGenerator} from './BaseGenerator';
 
 const ICON_SIZE = {w: 24, h: 24};

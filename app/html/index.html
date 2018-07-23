@@ -48,7 +48,6 @@ generatorGroups:
 {% extends '_base.html' %}
 
 {% block header %}
-
 {% endblock %}
 
 {% block body %}
@@ -69,8 +68,7 @@ generatorGroups:
     <a href="{{ generator.url }}"
        class="home-generator-card{% if generator.extraClasses %} {{ generator.extraClasses }}{% endif %}">
       <div class="generator-image">
-        {% set imgIncludePath = '../' + generator.image %}
-        {% include imgIncludePath %}
+        {% include generator.image %}
       </div>
       <div class="generator-title">{{ generator.title }}</div>
       <div class="generator-description">{{ generator.description }}</div>

@@ -36,9 +36,9 @@ export class Field {
 
   /**
    * Sets the form owner of the field. Internally called by
-   * {@link studio.forms.Form}.
+   * {@link studio.Form}.
    * @private
-   * @param {studio.forms.Form} form The owner form.
+   * @param {studio.Form} form The owner form.
    */
   setForm_(form) {
     this.form_ = form;

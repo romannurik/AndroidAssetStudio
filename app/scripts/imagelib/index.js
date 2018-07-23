@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-import {Effects} from './Effects';
-import {Drawing} from './Drawing';
-import {Analysis} from './Analysis';
-
-export const imagelib = {
-  Drawing,
-  Effects,
-  Analysis,
-};
+export {Effects} from './Effects';
+export {Drawing} from './Drawing';
+export {Analysis} from './Analysis';

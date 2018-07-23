@@ -26,7 +26,7 @@ import {EnumField} from './EnumField';
 
 import {Util} from '../Util';
 
-import {imagelib} from '../../imagelib';
+import * as imagelib from '../../imagelib';
 
 import {CLIPART_NAMES} from './ImageField-clipart';
 

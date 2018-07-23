@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {studio} from '../studio';
-import {imagelib} from '../imagelib';
+import * as studio from '../studio';
+import * as imagelib from '../imagelib';
 import {BaseGenerator} from './BaseGenerator';
 
 const ICON_SIZE = { w: 48, h: 48 };

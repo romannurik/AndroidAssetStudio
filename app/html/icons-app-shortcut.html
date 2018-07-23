@@ -6,7 +6,7 @@ bodyClasses: page-app-shortcut-icon-generator
 {% extends '_generator-base.html' %}
 
 {% block body %}
-{% parent %}
+{{ super() }}
 <script>
 new pages.AppShortcutIconGenerator();
 </script>

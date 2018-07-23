@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {imagelib} from '../../imagelib';
+import * as imagelib from '../../imagelib';
 
 const numberForRGBA = (r,g,b,a) => (r << 16) + (g << 8) + (b << 0) + (a << 24);
 const BLACK = numberForRGBA(0,0,0,255);

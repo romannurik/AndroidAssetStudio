@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import {imagelib} from '../../imagelib';
+import * as imagelib from '../../imagelib';
+
 import {Summer} from './Summer';
 
 export const NinePatchTrimming = {

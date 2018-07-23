@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-import {BooleanField} from './BooleanField';
-import {ColorField} from './ColorField';
-import {EnumField} from './EnumField';
-import {Field} from './Field';
-import {Form} from './Form';
-import {ImageField} from './ImageField';
-import {RangeField} from './RangeField';
-import {TextField} from './TextField';
-
-export const forms = {
-  BooleanField,
-  ColorField,
-  EnumField,
-  Field,
-  Form,
-  ImageField,
-  RangeField,
-  TextField,
-};
+export {BooleanField} from './BooleanField';
+export {ColorField} from './ColorField';
+export {EnumField} from './EnumField';
+export {Field} from './Field';
+export {Form} from './Form';
+export {ImageField} from './ImageField';
+export {RangeField} from './RangeField';
+export {TextField} from './TextField';
