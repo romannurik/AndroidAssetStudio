@@ -107,6 +107,7 @@ body.page-home {
     .generator-image {
       width: $homeCardWidth;
       height: $homeCardWidth / 1.48;
+      color: $colorAccent;
     }
 
     .generator-title {

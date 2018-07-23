@@ -68,7 +68,10 @@ generatorGroups:
     {% for generator in group.items %}
     <a href="{{ generator.url }}"
        class="home-generator-card{% if generator.extraClasses %} {{ generator.extraClasses }}{% endif %}">
-      <img class="generator-image" src="{{ generator.image }}" alt="{{ generator.title }}">
+      <div class="generator-image">
+        {% set imgIncludePath = '../' + generator.image %}
+        {% include imgIncludePath %}
+      </div>
       <div class="generator-title">{{ generator.title }}</div>
       <div class="generator-description">{{ generator.description }}</div>
     </a>

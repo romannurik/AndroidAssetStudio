@@ -186,7 +186,7 @@ gulp.task('__serve__', ['styles', 'html', 'webpack'], () => {
 
   gulp.watch(['app/html/**/*.html'], ['html', reload]);
   gulp.watch(['app/**/*.{scss,css}'], ['styles', reload]);
-  gulp.watch(['app/res/**/*'], reload);
+  gulp.watch(['app/res/**/*'], ['res', reload]);
 
   if (webpackInstance) {
     webpackInstance.watch({}, (err, stats) => {
