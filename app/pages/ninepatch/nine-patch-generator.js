@@ -135,6 +135,7 @@ export class NinePatchGenerator extends BaseGenerator {
     }
 
     let values = this.form.getValues();
+    values.name = values.name || 'outline';
 
     this.zipper.clear();
     this.zipper.setZipFilename(`${values.name}.9.zip`);

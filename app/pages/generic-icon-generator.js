@@ -77,6 +77,7 @@ export class GenericIconGenerator extends BaseGenerator {
 
   regenerate() {
     let values = this.form.getValues();
+    values.name = values.name || 'icon';
 
     this.zipper.clear();
     this.zipper.setZipFilename(`${values.name}.zip`);

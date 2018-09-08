@@ -100,6 +100,7 @@ export class ActionBarIconGenerator extends BaseGenerator {
 
   regenerate() {
     let values = this.form.getValues();
+    values.name = values.name || 'ic_action';
 
     this.zipper.clear();
     this.zipper.setZipFilename(`${values.name}.zip`);
