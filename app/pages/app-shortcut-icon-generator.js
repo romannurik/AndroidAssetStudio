@@ -79,6 +79,7 @@ export class AppShortcutIconGenerator extends BaseGenerator {
 
   regenerate() {
     let values = this.form.getValues();
+    values.name = values.name || 'ic_shortcut';
 
     this.zipper.clear();
     this.zipper.setZipFilename(`${values.name}.zip`);
