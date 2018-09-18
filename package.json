@@ -33,6 +33,10 @@
   "engines": {
     "node": ">=0.10.0"
   },
+  "scripts": {
+    "build": "gulp",
+    "start": "gulp serve"
+  },
   "private": true,
   "dependencies": {
     "babel-polyfill": "^6.26.0",
