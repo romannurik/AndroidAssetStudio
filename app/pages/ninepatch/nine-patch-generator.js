@@ -207,7 +207,7 @@ export class NinePatchGenerator extends BaseGenerator {
         canvas: outCtx.canvas
       });
 
-      this.setImageForSlot_(density, outCtx.canvas.toDataURL());
+      this.setImageForSlot_(density, outCtx.canvas.toDataURL('image/png', 1.0));
     });
   }
 }
