@@ -155,50 +155,30 @@ export class NinePatchGenerator extends BaseGenerator {
           0, 0, this.stage.srcSize.w, this.stage.srcSize.h,
           1, 1, outSize.w - 2, outSize.h - 2);
 
-      // draw Android 4.3 optical bounds
-      outCtx.strokeStyle = '#f00';
-      outCtx.lineWidth = 1;
+      // draw optical bounds
+      outCtx.fillStyle = '#f00';
       outCtx.beginPath();
 
-      outCtx.moveTo(1, outSize.h - 0.5);
-      outCtx.lineTo(1 + Math.floor(scale * this.stage.opticalBoundsRect.x), outSize.h - 0.5);
-      outCtx.stroke();
-
-      outCtx.moveTo(Math.ceil(scale * (this.stage.opticalBoundsRect.x + this.stage.opticalBoundsRect.w)) + 1, outSize.h - 0.5);
-      outCtx.lineTo(outSize.w - 1, outSize.h - 0.5);
-      outCtx.stroke();
-
-      outCtx.moveTo(outSize.w - 0.5, 1);
-      outCtx.lineTo(outSize.w - 0.5, 1 + Math.floor(scale * this.stage.opticalBoundsRect.y));
-      outCtx.stroke();
-
-      outCtx.moveTo(outSize.w - 0.5, Math.ceil(scale * (this.stage.opticalBoundsRect.y + this.stage.opticalBoundsRect.h)) + 1);
-      outCtx.lineTo(outSize.w - 0.5, outSize.h - 1);
-      outCtx.stroke();
-
-      outCtx.closePath();
+      outCtx.fillRect(1, outSize.h - 1, Math.floor(scale * this.stage.opticalBoundsRect.x), 1);
+      outCtx.fillRect(outSize.w - 1, outSize.h - 1, -Math.ceil(scale * (this.stage.srcSize.w - this.stage.opticalBoundsRect.x - this.stage.opticalBoundsRect.w)), 1);
+      outCtx.fillRect(outSize.w - 1, 1, 1, Math.floor(scale * this.stage.opticalBoundsRect.y));
+      outCtx.fillRect(outSize.w - 1, outSize.h - 1, 1, -Math.ceil(scale * (this.stage.srcSize.h - this.stage.opticalBoundsRect.y - this.stage.opticalBoundsRect.h)));
 
       // draw nine-patch tick marks
-      outCtx.strokeStyle = '#000';
-      outCtx.beginPath();
+      outCtx.fillStyle = '#000';
 
-      outCtx.moveTo(1 + Math.floor(scale * this.stage.stretchRect.x), 0.5);
-      outCtx.lineTo(1 + Math.ceil(scale * (this.stage.stretchRect.x + this.stage.stretchRect.w)), 0.5);
-      outCtx.stroke();
-
-      outCtx.moveTo(0.5, 1 + Math.floor(scale * this.stage.stretchRect.y));
-      outCtx.lineTo(0.5, 1 + Math.ceil(scale * (this.stage.stretchRect.y + this.stage.stretchRect.h)));
-      outCtx.stroke();
-
-      outCtx.moveTo(1 + Math.floor(scale * this.stage.contentRect.x), outSize.h - 0.5);
-      outCtx.lineTo(1 + Math.ceil(scale * (this.stage.contentRect.x + this.stage.contentRect.w)), outSize.h - 0.5);
-      outCtx.stroke();
-
-      outCtx.moveTo(outSize.w - 0.5, 1 + Math.floor(scale * this.stage.contentRect.y));
-      outCtx.lineTo(outSize.w - 0.5, 1 + Math.ceil(scale * (this.stage.contentRect.y + this.stage.contentRect.h)));
-      outCtx.stroke();
-
-      outCtx.closePath();
+      outCtx.fillRect(
+          1 + Math.floor(scale * this.stage.stretchRect.x), 0,
+          Math.ceil(scale * this.stage.stretchRect.w), 1);
+      outCtx.fillRect(
+          0, 1 + Math.floor(scale * this.stage.stretchRect.y),
+          1, Math.ceil(scale * this.stage.stretchRect.h));
+      outCtx.fillRect(
+          1 + Math.floor(scale * this.stage.contentRect.x), outSize.h - 1,
+          Math.ceil(scale * this.stage.contentRect.w), 1);
+      outCtx.fillRect(
+          outSize.w - 1, 1 + Math.floor(scale * this.stage.contentRect.y),
+          1, Math.ceil(scale * this.stage.contentRect.h));
 
       // add to zip and show preview
 
