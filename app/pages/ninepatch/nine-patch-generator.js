@@ -156,31 +156,36 @@ export class NinePatchGenerator extends BaseGenerator {
           1, 1, outSize.w - 2, outSize.h - 2);
 
       // draw optical bounds
-      outCtx.fillStyle = '#f00';
-      outCtx.beginPath();
-
-      outCtx.fillRect(1, outSize.h - 1, Math.floor(scale * this.stage.opticalBoundsRect.x), 1);
-      outCtx.fillRect(outSize.w - 1, outSize.h - 1, -Math.ceil(scale * (this.stage.srcSize.w - this.stage.opticalBoundsRect.x - this.stage.opticalBoundsRect.w)), 1);
-      outCtx.fillRect(outSize.w - 1, 1, 1, Math.floor(scale * this.stage.opticalBoundsRect.y));
-      outCtx.fillRect(outSize.w - 1, outSize.h - 1, 1, -Math.ceil(scale * (this.stage.srcSize.h - this.stage.opticalBoundsRect.y - this.stage.opticalBoundsRect.h)));
+      fillRectImageData(outCtx, [255,0,0,255],
+          1, outSize.h - 1,
+          Math.floor(scale * this.stage.opticalBoundsRect.x), 1);
+      fillRectImageData(outCtx, [255,0,0,255],
+          outSize.w - 1, outSize.h - 1,
+          -Math.ceil(scale * (this.stage.srcSize.w - this.stage.opticalBoundsRect.x - this.stage.opticalBoundsRect.w)), 1);
+      fillRectImageData(outCtx, [255,0,0,255],
+          outSize.w - 1, 1,
+          1, Math.floor(scale * this.stage.opticalBoundsRect.y));
+      fillRectImageData(outCtx, [255,0,0,255],
+          outSize.w - 1, outSize.h - 1,
+          1, -Math.ceil(scale * (this.stage.srcSize.h - this.stage.opticalBoundsRect.y - this.stage.opticalBoundsRect.h)));
 
       // draw nine-patch tick marks
-      outCtx.fillStyle = '#000';
-
-      outCtx.fillRect(
+      fillRectImageData(outCtx, [0,0,0,255],
           1 + Math.floor(scale * this.stage.stretchRect.x), 0,
           Math.ceil(scale * this.stage.stretchRect.w), 1);
-      outCtx.fillRect(
+      fillRectImageData(outCtx, [0,0,0,255],
           0, 1 + Math.floor(scale * this.stage.stretchRect.y),
           1, Math.ceil(scale * this.stage.stretchRect.h));
-      outCtx.fillRect(
+      fillRectImageData(outCtx, [0,0,0,255],
           1 + Math.floor(scale * this.stage.contentRect.x), outSize.h - 1,
           Math.ceil(scale * this.stage.contentRect.w), 1);
-      outCtx.fillRect(
+      fillRectImageData(outCtx, [0,0,0,255],
           outSize.w - 1, 1 + Math.floor(scale * this.stage.contentRect.y),
           1, Math.ceil(scale * this.stage.contentRect.h));
 
       // add to zip and show preview
+
+      console.log(density, outCtx.getImageData(outSize.w - 1, Math.floor(outSize.h / 2), 1, 1).data.toString());
 
       this.zipper.add({
         name: `res/drawable-${density}/${values.name}.9.png`,
@@ -190,4 +195,32 @@ export class NinePatchGenerator extends BaseGenerator {
       this.setImageForSlot_(density, outCtx.canvas.toDataURL('image/png', 1.0));
     });
   }
+}
+
+function fillRectImageData(ctx, colorArray, x, y, w, h) {
+  if (w == 0 || h == 0) {
+    return;
+  }
+
+  if (w < 0) {
+    x += w;
+    w = -w;
+  }
+  if (h < 0) {
+    y += h;
+    h = -h;
+  }
+
+  // This is necessary because fillRect() and other drawing methods have weird
+  // alpha channel precision issues
+  // see https://stackoverflow.com/questions/22384423/canvas-corrupts-rgb-when-alpha-0
+  // see https://github.com/romannurik/AndroidAssetStudio/issues/196
+  let imgData = ctx.createImageData(w, h);
+  for (let i = 0; i < w * h; i++) {
+    imgData.data[i * 4] = colorArray[0];
+    imgData.data[i * 4 + 1] = colorArray[1];
+    imgData.data[i * 4 + 2] = colorArray[2];
+    imgData.data[i * 4 + 3] = colorArray[3];
+  }
+  ctx.putImageData(imgData, x, y);
 }
