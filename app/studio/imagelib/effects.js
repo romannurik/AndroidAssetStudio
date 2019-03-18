@@ -27,9 +27,9 @@ export const Effects = {
   fx(effects, dstCtx, src, size) {
     effects = effects || [];
 
-    let outerEffects = effects.filter(e => OUTER_EFFECTS.has(e.effect));
-    let innerEffects = effects.filter(e => INNER_EFFECTS.has(e.effect));
-    let fillEffects = effects.filter(e => FILL_EFFECTS.has(e.effect));
+    let outerEffects = effects.filter(e => !!e && OUTER_EFFECTS.has(e.effect));
+    let innerEffects = effects.filter(e => !!e && INNER_EFFECTS.has(e.effect));
+    let fillEffects = effects.filter(e => !!e && FILL_EFFECTS.has(e.effect));
 
     let tmpCtx, bufferCtx;
 
@@ -99,8 +99,7 @@ export const Effects = {
 
     // Fill effects
     let fillOpacity = 1.0;
-    if (fillEffects.length) {
-      let effect = fillEffects[0];
+    fillEffects.forEach(effect => {
       fillOpacity = ('opacity' in effect) ? effect.opacity : 1;
 
       tmpCtx.save();
@@ -130,7 +129,7 @@ export const Effects = {
 
       tmpCtx.fillRect(0, 0, size.w, size.h);
       tmpCtx.restore();
-    }
+    });
 
     bufferCtx.save();
     bufferCtx.globalAlpha = fillOpacity;

@@ -97,6 +97,7 @@ export class LauncherIconGenerator extends BaseGenerator {
         }),
         new studio.EnumField('backgroundShape', {
           title: 'Shape',
+          helpText: 'Web version will always be square',
           options: [
             { id: 'none', title: 'None' },
             { id: 'square', title: 'Square' },
@@ -179,6 +180,9 @@ export class LauncherIconGenerator extends BaseGenerator {
 
     let iconSize = studio.Util.multRound(ICON_SIZE, mult);
     let targetRect = TARGET_RECTS_BY_SHAPE[values.backgroundShape];
+    if (density == 'web') {
+      targetRect = {x: 0, y: 0, w: 48, h: 48};
+    }
 
     let outCtx = studio.Drawing.context(iconSize);
 
@@ -201,6 +205,13 @@ export class LauncherIconGenerator extends BaseGenerator {
         ctx.scale(mult, mult);
         values.backColor.setAlpha(1);
         ctx.fillStyle = values.backColor.toRgbString();
+        if (density == 'web') {
+          if (values.backgroundShape == 'none') {
+            ctx.fillStyle = 'white';
+          }
+          ctx.fillRect(0, 0, 48, 48);
+          return;
+        }
 
         let targetRect = TARGET_RECTS_BY_SHAPE[values.backgroundShape];
         switch (values.backgroundShape) {
@@ -241,7 +252,7 @@ export class LauncherIconGenerator extends BaseGenerator {
       mask: !!(values.backgroundShape == 'none')
     };
 
-    if (values.backgroundShape != 'none' &&values.effects == 'shadow') {
+    if (values.backgroundShape != 'none' && values.effects == 'shadow') {
       foregroundLayer.effects.push({effect: 'cast-shadow'});
     }
 
@@ -254,7 +265,8 @@ export class LauncherIconGenerator extends BaseGenerator {
 
     if (values.backgroundShape != 'none' &&
         (values.effects == 'elevate' || values.effects == 'shadow')) {
-      foregroundLayer.effects = foregroundLayer.effects.concat([
+      foregroundLayer.effects = [
+        ...foregroundLayer.effects,
         {
           effect: 'outer-shadow',
           color: 'rgba(0, 0, 0, 0.2)',
@@ -266,7 +278,7 @@ export class LauncherIconGenerator extends BaseGenerator {
           blur: 1 * mult,
           translateY: 1 * mult
         }
-      ]);
+      ];
     }
 
     let scoreLayer = {
@@ -276,40 +288,52 @@ export class LauncherIconGenerator extends BaseGenerator {
       }
     };
 
+    let finalEffects = [
+      {
+        effect: 'inner-shadow',
+        color: 'rgba(255, 255, 255, 0.2)',
+        translateY: .25 * mult
+      },
+      {
+        effect: 'inner-shadow',
+        color: 'rgba(0, 0, 0, 0.2)',
+        translateY: -.25 * mult
+      },
+      {
+        effect: 'outer-shadow',
+        color: 'rgba(0, 0, 0, 0.3)',
+        blur: .7 * mult,
+        translateY: .7 * mult
+      },
+      {
+        effect: 'fill-radialgradient',
+        centerX: 0,
+        centerY: 0,
+        radius: iconSize.w,
+        colors: [
+          { offset: 0, color: 'rgba(255,255,255,.1)' },
+          { offset: 1.0, color: 'rgba(255,255,255,0)' }
+        ]
+      }
+    ];
+
+    if (density == 'web') {
+      if (values.backgroundShape == 'none') {
+        foregroundLayer.effects = [...foregroundLayer.effects, ...finalEffects];
+        finalEffects = [];
+      } else {
+        finalEffects = finalEffects.filter(e => e.effect.match(/fill/));
+      }
+    }
+
     studio.Drawing.drawLayers(outCtx, iconSize, {
       children: [
-        values.backgroundShape != 'none' ? backgroundLayer : null,
+        (density == 'web' || values.backgroundShape != 'none')
+            ? backgroundLayer : null,
         foregroundLayer,
         values.effects == 'score' ? scoreLayer : null,
       ],
-      effects: [
-        {
-          effect: 'inner-shadow',
-          color: 'rgba(255, 255, 255, 0.2)',
-          translateY: .25 * mult
-        },
-        {
-          effect: 'inner-shadow',
-          color: 'rgba(0, 0, 0, 0.2)',
-          translateY: -.25 * mult
-        },
-        {
-          effect: 'fill-radialgradient',
-          centerX: 0,
-          centerY: 0,
-          radius: iconSize.w,
-          colors: [
-            { offset: 0, color: 'rgba(255,255,255,.1)' },
-            { offset: 1.0, color: 'rgba(255,255,255,0)' }
-          ]
-        },
-        {
-          effect: 'outer-shadow',
-          color: 'rgba(0, 0, 0, 0.3)',
-          blur: .7 * mult,
-          translateY: .7 * mult
-        }
-      ]
+      effects: finalEffects,
     });
 
     return outCtx;
