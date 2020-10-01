@@ -1,3 +1,5 @@
+This is an amazing project!!
+
 Android Asset Studio
 ====================
 
@@ -12,7 +14,7 @@ Currently available asset generators are for:
 - Launcher icons
 - Action bar icons
 - Notification icons
-- Generic square icons
+- Generics square icons
 - Simple nine-patches
 
 ## Building the tool
@@ -28,3 +30,5 @@ Once dependencies are installed, run with `gulp`:
 ## Related (third-party) projects
 
 - [Android Asset Studio Desktop Apps](https://androidassetstudio.codeplex.com/)
+
+Thankyou!
