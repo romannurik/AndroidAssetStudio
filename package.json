@@ -25,6 +25,7 @@
     "gulp-util": "^3.0.8",
     "import-glob": "^1.5.0",
     "merge-stream": "^1.0.1",
+    "natives": "^1.1.6",
     "pretty-bytes": "^5.1.0",
     "run-sequence": "^2.2.1",
     "webpack": "^4.16.1",
