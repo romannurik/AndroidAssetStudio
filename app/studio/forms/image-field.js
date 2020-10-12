@@ -509,8 +509,11 @@ export class ImageField extends Field {
                     }
                   }
                   let ctx = studio.Drawing.context(size);
+                  // don't specify source width and height because it breaks
+                  // SVGs that don't have a width or height set (i.e. viewbox only)
+                  // and is irrelevant for PNGs
                   ctx.drawImage(img,
-                      0, 0, origSize.w, origSize.h,
+                      // 0, 0, origSize.w, origSize.h,
                       0, 0, size.w, size.h);
                   resolve({ctx, size});
                 });
