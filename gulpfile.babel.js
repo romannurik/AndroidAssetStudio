@@ -17,7 +17,6 @@
 const gulp = require('gulp');
 const $ = require('gulp-load-plugins')();
 const del = require('del');
-const runSequence = require('run-sequence');
 const browserSync = require('browser-sync');
 const reload = browserSync.reload;
 const merge = require('merge-stream');
@@ -134,13 +133,10 @@ gulp.task('clean', cb => {
   cb();
 });
 
-// Watch Files For Changes & Reload
-gulp.task('serve', cb => {
-  DEV_MODE = true;
-  runSequence('__serve__', cb);
-});
+const setDevMode = cb => { DEV_MODE = true; cb(); }
 
-gulp.task('__serve__', ['copy', 'styles', 'html', 'webpack'], () => {
+// Watch Files For Changes & Reload
+gulp.task('serve', gulp.series(setDevMode, 'copy', 'styles', 'html', 'webpack', () => {
   browserSync({
     notify: false,
     // Run as an https by uncommenting 'https: true'
@@ -153,9 +149,10 @@ gulp.task('__serve__', ['copy', 'styles', 'html', 'webpack'], () => {
     port: 3000,
   });
 
-  gulp.watch(['app/**/*.html'], ['html', reload]);
-  gulp.watch(['app/**/*.{scss,css}'], ['styles', reload]);
-  gulp.watch(['app/res/**/*'], ['res', reload]);
+  let r = () => reload();
+  gulp.watch(['app/**/*.html'], gulp.series('html', r));
+  gulp.watch(['app/**/*.{scss,css}'], gulp.series('styles', r));
+  gulp.watch(['app/res/**/*'], gulp.series('res', r));
 
   if (webpackInstance) {
     webpackInstance.watch({}, (err, stats) => {
@@ -163,20 +160,7 @@ gulp.task('__serve__', ['copy', 'styles', 'html', 'webpack'], () => {
       reload();
     });
   }
-});
-
-// Build and serve the output from the dist build
-gulp.task('serve:dist', ['default'], () => {
-  browserSync({
-    notify: false,
-    // Run as an https by uncommenting 'https: true'
-    // Note: this uses an unsigned certificate which on first access
-    //       will present a certificate warning in the browser.
-    // https: true,
-    server: 'dist',
-    port: 3001,
-  });
-});
+}));
 
 gulp.task('service-worker', () => {
   return workboxBuild.injectManifest({
@@ -200,13 +184,16 @@ gulp.task('service-worker', () => {
 });
 
 // Build Production Files, the Default Task
-gulp.task('default', ['clean'], cb => {
-  runSequence(
-      'styles',
-      ['webpack', 'html', 'res', 'copy'],
-      'service-worker',
-      cb);
-});
+gulp.task('default', gulp.series('clean', 'styles', gulp.parallel('webpack', 'html', 'res', 'copy'), 'service-worker'));
+
+// Build and serve the output from the dist build
+gulp.task('serve:dist', gulp.series('default', () => {
+  browserSync({
+    notify: false,
+    server: 'dist',
+    port: 3001,
+  });
+}));
 
 // Deploy to GitHub pages
 gulp.task('deploy', () => {

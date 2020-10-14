@@ -44,11 +44,11 @@ module.exports = {
             loader: 'babel-loader',
             options: {
               presets: [
-                'env',
-                'react'
+                '@babel/preset-env',
+                '@babel/preset-react'
               ],
               plugins: [
-                'transform-object-rest-spread'
+                '@babel/plugin-proposal-object-rest-spread'
               ],
             }
           },
