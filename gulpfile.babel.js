@@ -149,7 +149,7 @@ gulp.task('serve', gulp.series(setDevMode, 'copy', 'styles', 'html', 'webpack', 
     port: 3000,
   });
 
-  let r = () => reload();
+  let r = cb => { reload(); cb(); };
   gulp.watch(['app/**/*.html'], gulp.series('html', r));
   gulp.watch(['app/**/*.{scss,css}'], gulp.series('styles', r));
   gulp.watch(['app/res/**/*'], gulp.series('res', r));
