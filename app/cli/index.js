@@ -52,7 +52,7 @@ export function main(argv) {
 		console.info(`    -f, --fore-color    RBGA foreground web color for logo colorization.`)
 		console.info(`                        Format: rgba(255, 255, 255, 255)`)
 		console.info(`    -b, --back-color    RBGA filling background web color for the logo container.`)
-		console.info(`                        Format: rgba(255, 255, 255, 255)`)
+		console.info(`                        Format: rgb(255, 255, 255), #ffffff`)
 		console.info(`    -c, --crop          Crop logo instead of centering it.`)
 		console.info(`    -s, --shape         Shape of the logo container.`)
 		console.info(`                        Possible values: none, square, circle, vrect, hrect`)
