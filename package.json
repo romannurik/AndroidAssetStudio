@@ -1,4 +1,5 @@
 {
+  "name": "android-asset-studio",
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
@@ -40,13 +41,22 @@
   },
   "private": true,
   "dependencies": {
+    "arg": "^5.0.1",
     "babel-polyfill": "^6.26.0",
+    "esm": "^3.2.25",
     "jquery": "^3.5.1",
     "jszip": "^3.5.0",
+    "open": "^8.2.1",
+    "react": "^16.13.1",
     "react-color": "^2.18.1",
     "react-dom": "^16.13.1",
-    "react": "^16.13.1",
     "tinycolor2": "^1.4.2",
     "webfontloader": "^1.6.28"
+  },
+  "bin": {
+    "android-asset-studio": "bin/android-asset-studio"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
