@@ -1,62 +1,61 @@
-import process from 'process';
-import path from 'path';
-import webpack from 'webpack';
+import process from "process";
+import path from "path";
+import webpack from "webpack";
+const { InjectManifest } = require("workbox-webpack-plugin");
 
 module.exports = {
   entry: {
-    app: './app/app.entry.js',
+    app: "./app/app.entry.js",
   },
   output: {
-    filename: '[name].js',
-    path: path.join(process.cwd(), './dist'),
+    filename: "[name].js",
+    path: path.join(process.cwd(), "./dist"),
   },
   optimization: {
     splitChunks: {
       cacheGroups: {
         vendor: {
           test: /node_modules/,
-          chunks: 'initial',
-          name: 'vendor',
+          chunks: "initial",
+          name: "vendor",
           enforce: true,
         },
-      }
+      },
     },
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: process.env.NODE_ENV
-      }
-    })
+      "process.env": {
+        NODE_ENV: process.env.NODE_ENV,
+      },
+    }),
+    new InjectManifest({
+      swSrc: "./app/sw-prod.js",
+    }),
   ],
   module: {
     rules: [
       {
-        enforce: 'pre',
+        enforce: "pre",
         test: /\.jsx?/,
-        use: 'import-glob',
+        use: "import-glob",
       },
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: [
           {
-            loader: 'babel-loader',
+            loader: "babel-loader",
             options: {
-              presets: [
-                '@babel/preset-env',
-                '@babel/preset-react'
-              ],
-              plugins: [
-                '@babel/plugin-proposal-object-rest-spread'
-              ],
-            }
+              presets: ["@babel/preset-env", "@babel/preset-react"],
+              plugins: ["@babel/plugin-proposal-object-rest-spread"],
+            },
           },
-        ]
-      }
-    ]
+        ],
+      },
+    ],
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.yaml']
+    extensions: [".js", ".jsx", ".yaml"],
   },
 };

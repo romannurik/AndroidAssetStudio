@@ -1,3 +1,5 @@
+@use "sass:math";
+
 $homeCardWidth: 296px;
 $homeCardGutter: 24px;
 $homeHeaderOverlap: 48px;
@@ -13,7 +15,7 @@ $homeHeaderOverlap: 48px;
 body.page-home {
   font-size: 14px;
   line-height: 20px;
-  background-color: material-color('grey', '200');
+  background-color: material-color("grey", "200");
   min-height: 100%;
   height: auto;
   overflow: auto;
@@ -92,7 +94,7 @@ body.page-home {
     box-shadow: material-shadow(2);
     text-decoration: none;
     overflow: hidden;
-    transition: box-shadow .1s ease;
+    transition: box-shadow 0.1s ease;
     outline: 0;
 
     &:hover,
@@ -106,7 +108,7 @@ body.page-home {
 
     .generator-image {
       width: $homeCardWidth;
-      height: $homeCardWidth / 1.48;
+      height: math.div($homeCardWidth, 1.48);
       color: $colorAccent;
     }
 
@@ -120,7 +122,7 @@ body.page-home {
 
     &.is-external .generator-title::after {
       @include material-icons;
-      content: 'open_in_new';
+      content: "open_in_new";
       font-size: 16px;
       vertical-align: middle;
       margin-left: 4px;
