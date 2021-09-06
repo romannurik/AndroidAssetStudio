@@ -18,7 +18,7 @@ import $ from 'jquery';
 
 import * as studio from './studio';
 
-const DENSITIES = new Set(['xxxhdpi', 'xxhdpi', 'xhdpi', 'hdpi', 'mdpi']);
+const DENSITIES = new Set(['xxxhdpi', 'xxhdpi', 'xhdpi', 'hdpi', 'mdpi', 'electron']);
 const REGENERATE_DEBOUNCE_TIME = 200;
 
 

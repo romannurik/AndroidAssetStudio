@@ -14,31 +14,49 @@
  * limitations under the License.
  */
 
-import $ from 'jquery';
+import $ from "jquery";
 
 export const Util = {
   getMultBaseMdpi(density) {
     switch (density) {
-      case 'xxxhdpi': return 4.00;
-      case  'xxhdpi': return 3.00;
-      case   'xhdpi': return 2.00;
-      case    'hdpi': return 1.50;
-      case   'tvdpi': return 1.33125;
-      case    'mdpi': return 1.00;
-      case    'ldpi': return 0.75;
+      case "electron":
+        return 21.34;
+      case "xxxhdpi":
+        return 4.0;
+      case "xxhdpi":
+        return 3.0;
+      case "xhdpi":
+        return 2.0;
+      case "hdpi":
+        return 1.5;
+      case "tvdpi":
+        return 1.33125;
+      case "mdpi":
+        return 1.0;
+      case "ldpi":
+        return 0.75;
     }
     return 1.0;
   },
 
   getDpiForDensity(density) {
     switch (density) {
-      case 'xxxhdpi': return 640;
-      case  'xxhdpi': return 480;
-      case   'xhdpi': return 320;
-      case    'hdpi': return 240;
-      case   'tvdpi': return 213;
-      case    'mdpi': return 160;
-      case    'ldpi': return 120;
+      case "electron":
+        return 1024;
+      case "xxxhdpi":
+        return 640;
+      case "xxhdpi":
+        return 480;
+      case "xhdpi":
+        return 320;
+      case "hdpi":
+        return 240;
+      case "tvdpi":
+        return 213;
+      case "mdpi":
+        return 160;
+      case "ldpi":
+        return 120;
     }
     return 160;
   },
@@ -60,20 +78,23 @@ export const Util = {
   },
 
   sanitizeResourceName(s) {
-    return s.toLowerCase().replace(/[\s-\.]/g, '_').replace(/[^\w_]/g, '');
+    return s
+      .toLowerCase()
+      .replace(/[\s-\.]/g, "_")
+      .replace(/[^\w_]/g, "");
   },
 
   // TODO: support Safari
   downloadFile(content, filename) {
-    let anchor = $('<a>').hide().appendTo(document.body);
+    let anchor = $("<a>").hide().appendTo(document.body);
     let blob = content;
     if (!(content instanceof Blob)) {
-      blob = new Blob([content], {type: 'application/octet-stream'});
+      blob = new Blob([content], { type: "application/octet-stream" });
     }
     let url = window.URL.createObjectURL(blob);
     anchor.attr({
       href: url,
-      download: filename
+      download: filename,
     });
     anchor.get(0).click();
     setTimeout(() => {
@@ -84,7 +105,7 @@ export const Util = {
 
   loadImageFromUri(uri) {
     return new Promise((resolve, reject) => {
-      let img = document.createElement('img');
+      let img = document.createElement("img");
       img.onload = () => resolve(img);
       img.onerror = () => reject();
       img.src = uri;
@@ -96,17 +117,17 @@ export const Util = {
       Util.debugCtx.$lastEl.remove();
     }
 
-    Util.debugCtx.$lastEl = $('<img>')
-        .css({
-          position: 'fixed',
-          top: 0,
-          right: 0,
-          zIndex: 100,
-          backgroundColor: 'rgba(255, 0, 0, 0.5)',
-          pointerEvents: 'none',
-        })
-        .attr('src', ctx.canvas.toDataURL())
-        .appendTo(document.body);
+    Util.debugCtx.$lastEl = $("<img>")
+      .css({
+        position: "fixed",
+        top: 0,
+        right: 0,
+        zIndex: 100,
+        backgroundColor: "rgba(255, 0, 0, 0.5)",
+        pointerEvents: "none",
+      })
+      .attr("src", ctx.canvas.toDataURL())
+      .appendTo(document.body);
   },
 
   debounce(delay, fn) {
@@ -117,7 +138,7 @@ export const Util = {
         clearTimeout(timeout);
       }
       timeout = setTimeout(() => {
-        fn(...args)
+        fn(...args);
         timeout = null;
       }, delay);
     };
