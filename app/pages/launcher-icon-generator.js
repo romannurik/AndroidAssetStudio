@@ -160,11 +160,12 @@ export class LauncherIconGenerator extends BaseGenerator {
       }
 
       let name = `res/mipmap-${density}/${values.name}.png`;
-      if(density == 'web') {
+      if (density == 'web') {
         name = 'web_hi_res_512.png';
-      } else if(density == 'webx') {
+      } else if (density == 'webx') {
         name = 'web_hi_res_1024.png';
       }
+
       this.zipper.add({
         name,
         canvas: ctx.canvas

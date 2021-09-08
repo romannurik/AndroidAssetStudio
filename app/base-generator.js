@@ -64,6 +64,11 @@ export class BaseGenerator {
 
   setupOutputSlots() {
     this.densities.forEach(density => {
+      if (density === 'webx') {
+        // don't show 1024px output preview
+        return;
+      }
+
       this.createImageOutputSlot_({
         container: (density == 'xxxhdpi') ? $('.outputs-main') : $('.outputs-additional'),
         id: density,
