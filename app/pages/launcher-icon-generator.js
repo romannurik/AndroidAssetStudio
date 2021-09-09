@@ -47,7 +47,7 @@ export class LauncherIconGenerator extends BaseGenerator {
   }
 
   get outputSlots() {
-    return new Set(['web', /*'a-f', 'a-b', */...this.densities]);
+    return new Set(['play_store', ...this.densities]);
   }
 
   setupForm() {
@@ -146,13 +146,13 @@ export class LauncherIconGenerator extends BaseGenerator {
     // generate web/play version
     let ctx = this.regenerateRaw_({ mult: 512 / 48, fullBleed: true });
     this.zipper.add({
-      name: 'web_hi_res_512.png',
+      name: 'play_store_512.png',
       canvas: ctx.canvas
     });
-    this.setImageForSlot_('web', ctx.canvas.toDataURL());
+    this.setImageForSlot_('play_store', ctx.canvas.toDataURL());
 
     this.zipper.add({
-      name: 'web_hi_res_1024.png',
+      name: '1024.png',
       canvas: this.regenerateRaw_({ mult: 1024 / 48, fullBleed: true }).canvas
     });
 
