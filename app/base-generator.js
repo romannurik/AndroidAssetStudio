@@ -21,6 +21,7 @@ import * as studio from './studio';
 const DENSITIES = new Set(['xxxhdpi', 'xxhdpi', 'xhdpi', 'hdpi', 'mdpi']);
 const REGENERATE_DEBOUNCE_TIME = 200;
 
+const DEFAULT_VISIBLE_SLOT = 'xxxhdpi';
 
 export class BaseGenerator {
   constructor() {
@@ -63,16 +64,11 @@ export class BaseGenerator {
   }
 
   setupOutputSlots() {
-    this.densities.forEach(density => {
-      if (density === 'webx') {
-        // don't show 1024px output preview
-        return;
-      }
-
+    (this.outputSlots || this.densities).forEach(slot => {
       this.createImageOutputSlot_({
-        container: (density == 'xxxhdpi') ? $('.outputs-main') : $('.outputs-additional'),
-        id: density,
-        label: density
+        container: (slot == DEFAULT_VISIBLE_SLOT) ? $('.outputs-main') : $('.outputs-additional'),
+        id: slot,
+        label: slot
       });
     });
   }

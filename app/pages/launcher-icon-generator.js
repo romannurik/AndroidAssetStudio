@@ -18,27 +18,20 @@ import * as studio from '../studio';
 
 import {BaseGenerator} from '../base-generator';
 
-const ICON_SIZE = { w: 48, h: 48 };
+const ICON_SIZE = { w: 48, h: 48 }; // now legacy
+
+const ADAPTIVE_ICON_WIDTH = 108;
 
 const TARGET_RECTS_BY_SHAPE = {
-  none: { x:  3, y:  3, w:  42, h:  42 },
   circle: { x:  2, y:  2, w:  44, h:  44 },
   square: { x:  5, y:  5, w:  38, h:  38 },
   vrect: { x:  8, y:  2, w:  32, h:  44 },
   hrect: { x:  2, y:  8, w:  44, h:  32 },
 };
 
-const GRID_OVERLAY_SVG =
-    `<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-        <g fill="none" fill-rule="evenodd">
-            <rect vector-effect="non-scaling-stroke" x="8" y="2" width="32" height="44" rx="3"/>
-            <rect vector-effect="non-scaling-stroke" x="5" y="5" width="38" height="38" rx="3"/>
-            <rect vector-effect="non-scaling-stroke" x="2" y="8" width="44" height="32" rx="3"/>
-            <circle vector-effect="non-scaling-stroke" cx="24" cy="24" r="10"/>
-            <circle vector-effect="non-scaling-stroke" cx="24" cy="24" r="22"/>
-            <path vector-effect="non-scaling-stroke" d="M0 48L48 0M0 0l48 48M24 48V0M17 0v48M31 0v48M48 24H0M0 31h48M0 17h48"/>
-        </g>
-    </svg>`;
+const TARGET_RECT_FULL_BLEED = {x: 0, y: 0, w: 48, h: 48};
+
+const TARGET_RECT_ADAPTIVE = {x: 8, y: 8, w: 32, h: 32}; // same as middle 72dp in 108dp square
 
 
 const DEFAULT_EFFECT_OPTIONS = [
@@ -48,24 +41,16 @@ const DEFAULT_EFFECT_OPTIONS = [
   { id: 'score', title: 'Score' }
 ];
 
-
-const NO_SHAPE_EFFECT_OPTIONS = [
-  { id: 'none', title: 'None' },
-  { id: 'score', title: 'Score' }
-];
-
-
 export class LauncherIconGenerator extends BaseGenerator {
   get densities() {
-    return new Set(['xxxhdpi' /* must be first */, 'web', 'webx', 'xxhdpi', 'xhdpi', 'hdpi', 'mdpi']);
+    return new Set(['xxxhdpi', 'xxhdpi', 'xhdpi', 'hdpi', 'mdpi']);
   }
 
-  get gridOverlaySvg() {
-    return GRID_OVERLAY_SVG;
+  get outputSlots() {
+    return new Set(['web', /*'a-f', 'a-b', */...this.densities]);
   }
 
   setupForm() {
-    let backColorField, effectsField;
     this.form = new studio.Form({
       id: 'iconform',
       container: '#inputs-form',
@@ -85,10 +70,10 @@ export class LauncherIconGenerator extends BaseGenerator {
           alpha: true,
           defaultValue: 'rgba(96, 125, 139, 0)'
         }),
-        (backColorField = new studio.ColorField('backColor', {
+        new studio.ColorField('backColor', {
           title: 'Background color',
           defaultValue: '#448aff'
-        })),
+        }),
         new studio.BooleanField('crop', {
           title: 'Scaling',
           defaultValue: false,
@@ -96,33 +81,22 @@ export class LauncherIconGenerator extends BaseGenerator {
           onText: 'Crop'
         }),
         new studio.EnumField('backgroundShape', {
-          title: 'Shape',
-          helpText: 'Web version will always be square',
+          title: 'Shape (Legacy)',
+          helpText: 'For older Android devices',
           options: [
-            { id: 'none', title: 'None' },
             { id: 'square', title: 'Square' },
             { id: 'circle', title: 'Circle' },
             { id: 'vrect', title: 'Tall rect' },
             { id: 'hrect', title: 'Wide rect' }
           ],
-          defaultValue: 'square',
-          onChange: newValue => {
-            backColorField.setEnabled(newValue != 'none');
-            let newEffectsOptions = newValue == 'none'
-                ? NO_SHAPE_EFFECT_OPTIONS
-                : DEFAULT_EFFECT_OPTIONS;
-            if (!newEffectsOptions.find(e => e.id == effectsField.getValue())) {
-              effectsField.setValue(newEffectsOptions[0].id);
-            }
-            effectsField.setOptions(newEffectsOptions);
-          }
+          defaultValue: 'circle',
         }),
-        (effectsField = new studio.EnumField('effects', {
+        new studio.EnumField('effects', {
           title: 'Effect',
           buttons: true,
           options: DEFAULT_EFFECT_OPTIONS,
           defaultValue: 'none'
-        })),
+        }),
         new studio.TextField('name', {
           title: 'Name',
           defaultValue: 'ic_launcher'
@@ -139,72 +113,78 @@ export class LauncherIconGenerator extends BaseGenerator {
     this.zipper.clear();
     this.zipper.setZipFilename(`${values.name}.zip`);
 
-    let xxxhdpiCtx = null;
+    // generate for each density
+    for (let density of this.densities) {
+      let mult = studio.Util.getMultBaseMdpi(density);
 
-    this.densities.forEach(density => {
-      let ctx;
-      if (density == 'xxxhdpi' || density == 'web' || density == 'webx') {
-        ctx = this.regenerateRawAtDensity_(density);
-        if (density == 'xxxhdpi') {
-          xxxhdpiCtx = ctx;
-        }
-      } else {
-        // just scale down xxxhdpi
-        let mult = studio.Util.getMultBaseMdpi(density);
-        let iconSize = studio.Util.multRound(ICON_SIZE, mult);
-        ctx = studio.Drawing.context(iconSize);
-        studio.Drawing.drawImageScaled(
-            ctx, xxxhdpiCtx,
-            0, 0, 192, 192,
-            0, 0, iconSize.w, iconSize.h);
-      }
-
-      let name = `res/mipmap-${density}/${values.name}.png`;
-      if (density == 'web') {
-        name = 'web_hi_res_512.png';
-      } else if (density == 'webx') {
-        name = 'web_hi_res_1024.png';
-      }
-
+      // legacy version
+      let ctx = this.regenerateRaw_({ mult });
       this.zipper.add({
-        name,
+        name: `res/mipmap-${density}/${values.name}.png`,
         canvas: ctx.canvas
       });
-
       this.setImageForSlot_(density, ctx.canvas.toDataURL());
+
+      // adaptive version background + foreground
+      this.zipper.add({
+        name: `res/mipmap-${density}/${values.name}_adaptive_back.png`,
+        canvas: this.regenerateRaw_({
+          mult: mult * ADAPTIVE_ICON_WIDTH / ICON_SIZE.w,
+          adaptive: 'back',
+        }).canvas
+      });
+
+      this.zipper.add({
+        name: `res/mipmap-${density}/${values.name}_adaptive_fore.png`,
+        canvas: this.regenerateRaw_({
+          mult: mult * ADAPTIVE_ICON_WIDTH / ICON_SIZE.w,
+          adaptive: 'fore',
+        }).canvas
+      });
+    }
+
+    // generate web/play version
+    let ctx = this.regenerateRaw_({ mult: 512 / 48, fullBleed: true });
+    this.zipper.add({
+      name: 'web_hi_res_512.png',
+      canvas: ctx.canvas
+    });
+    this.setImageForSlot_('web', ctx.canvas.toDataURL());
+
+    this.zipper.add({
+      name: 'web_hi_res_1024.png',
+      canvas: this.regenerateRaw_({ mult: 1024 / 48, fullBleed: true }).canvas
+    });
+
+    // generate adaptive launcher XML
+    this.zipper.add({
+      name: `res/mipmap-anydpi-v26/${values.name}.xml`,
+      textData: this.makeAdaptiveIconXml_(values.name)
     });
   }
 
-  regenerateRawAtDensity_(density) {
+  makeAdaptiveIconXml_(name) {
+    return (
+`<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+  <background android:drawable="@mipmap/${name}_adaptive_back"/>
+  <foreground android:drawable="@mipmap/${name}_adaptive_fore"/>
+</adaptive-icon>`);
+  }
+
+  regenerateRaw_({ mult, fullBleed, adaptive }) {
     let values = this.form.getValues();
     let foreSrcCtx = values.foreground ? values.foreground.ctx : null;
-    let mult = studio.Util.getMultBaseMdpi(density);
-    if (density == 'web') {
-      mult = 512 / 48;
-    } else if (density == 'webx') {
-      mult = 1024 / 48;
-    }
 
     let iconSize = studio.Util.multRound(ICON_SIZE, mult);
     let targetRect = TARGET_RECTS_BY_SHAPE[values.backgroundShape];
-    if (density == 'web' || density == 'webx') {
-      targetRect = {x: 0, y: 0, w: 48, h: 48};
+    if (fullBleed) {
+      targetRect = TARGET_RECT_FULL_BLEED;
+    } else if (adaptive) {
+      targetRect = TARGET_RECT_ADAPTIVE;
     }
 
     let outCtx = studio.Drawing.context(iconSize);
-
-    let roundRectPath_ = (ctx, {x, y, w, h}, r) => {
-      ctx.beginPath();
-      ctx.moveTo(x + w - r, y);
-      ctx.arcTo(x + w, y, x + w, y + r, r);
-      ctx.lineTo(x + w, y + h - r);
-      ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
-      ctx.lineTo(x + r, y + h);
-      ctx.arcTo(x, y + h, x, y + h - r, r);
-      ctx.lineTo(x, y + r);
-      ctx.arcTo(x, y, x + r, y, r);
-      ctx.closePath();
-    };
 
     let backgroundLayer = {
       // background layer
@@ -212,11 +192,8 @@ export class LauncherIconGenerator extends BaseGenerator {
         ctx.scale(mult, mult);
         values.backColor.setAlpha(1);
         ctx.fillStyle = values.backColor.toRgbString();
-        if (density == 'web' || density == 'webx') {
-          if (values.backgroundShape == 'none') {
-            ctx.fillStyle = 'white';
-          }
-          ctx.fillRect(0, 0, 48, 48);
+        if (fullBleed || adaptive) {
+          ctx.fillRect(0, 0, ICON_SIZE.w, ICON_SIZE.h);
           return;
         }
 
@@ -225,7 +202,7 @@ export class LauncherIconGenerator extends BaseGenerator {
           case 'square':
           case 'vrect':
           case 'hrect':
-            roundRectPath_(ctx, targetRect, 3);
+            studio.Util.roundRectPath(ctx, targetRect, 3);
             ctx.fill();
             break;
 
@@ -256,10 +233,9 @@ export class LauncherIconGenerator extends BaseGenerator {
             {x: 0, y: 0, w: foreSrcCtx.canvas.width, h: foreSrcCtx.canvas.height});
       },
       effects: [],
-      mask: !!(values.backgroundShape == 'none')
     };
 
-    if (values.backgroundShape != 'none' && values.effects == 'shadow') {
+    if (values.effects == 'shadow') {
       foregroundLayer.effects.push({effect: 'cast-shadow'});
     }
 
@@ -270,8 +246,7 @@ export class LauncherIconGenerator extends BaseGenerator {
       });
     }
 
-    if (values.backgroundShape != 'none' &&
-        (values.effects == 'elevate' || values.effects == 'shadow')) {
+    if (values.effects == 'elevate' || values.effects == 'shadow') {
       foregroundLayer.effects = [
         ...foregroundLayer.effects,
         {
@@ -287,13 +262,6 @@ export class LauncherIconGenerator extends BaseGenerator {
         }
       ];
     }
-
-    let scoreLayer = {
-      draw: ctx => {
-        ctx.fillStyle = 'rgba(0, 0, 0, .1)';
-        ctx.fillRect(0, 0, iconSize.w, iconSize.h / 2);
-      }
-    };
 
     let finalEffects = [
       {
@@ -324,21 +292,20 @@ export class LauncherIconGenerator extends BaseGenerator {
       }
     ];
 
-    if (density == 'web' || density == 'webx') {
-      if (values.backgroundShape == 'none') {
-        foregroundLayer.effects = [...foregroundLayer.effects, ...finalEffects];
-        finalEffects = [];
-      } else {
-        finalEffects = finalEffects.filter(e => e.effect.match(/fill/));
-      }
+    if (fullBleed || adaptive) {
+      finalEffects = finalEffects.filter(e => e.effect.match(/fill/));
     }
 
     studio.Drawing.drawLayers(outCtx, iconSize, {
       children: [
-        (density == 'web' || density == 'webx' || values.backgroundShape != 'none')
-            ? backgroundLayer : null,
-        foregroundLayer,
-        values.effects == 'score' ? scoreLayer : null,
+        (!adaptive || adaptive == 'back') && backgroundLayer,
+        (!adaptive || adaptive == 'fore') && foregroundLayer,
+        (values.effects == 'score' && adaptive !== 'back') && {
+          draw: ctx => {
+            ctx.fillStyle = 'rgba(0, 0, 0, .1)';
+            ctx.fillRect(0, 0, iconSize.w, iconSize.h / 2);
+          }
+        },
       ],
       effects: finalEffects,
     });
