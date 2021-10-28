@@ -32,6 +32,29 @@
   transform: translateZ(0);
 }
 
+.page-header-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 0;
+  box-shadow: material-shadow(4);
+  background-color: $colorAccent;
+  color: $colorWhitePrimary;
+  font-weight: 500;
+  z-index: 4;
+
+  a {
+    color: $colorWhitePrimary;
+    // background-color: rgba($colorBlackPrimary, .2);
+    // padding: 4px 8px;
+    // border-radius: 4px;
+  }
+
+  .material-icons {
+    margin-right: 8px;
+  }
+}
+
 .page-header-back-button {
   position: absolute;
   font-size: 24px;

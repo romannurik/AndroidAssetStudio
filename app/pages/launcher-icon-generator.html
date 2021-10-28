@@ -6,6 +6,17 @@ destination: /icons-launcher.html
 
 {% extends '_generator-base.html' %}
 
+{% block banner %}
+<div class="page-header-banner">
+  <i class="material-icons">new_releases</i>
+  <span>
+    <a href="https://icon.kitchen">Try IconKitchen</a>, the successor to the
+    Android Asset Studio, and a great new way to make highly customizable
+    app icons for Android, iOS, and the web.
+  </span>
+</div>
+{% endblock %}
+
 {% block body %}
 {{ super() }}
 <script>
