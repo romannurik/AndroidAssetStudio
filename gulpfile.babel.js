@@ -24,6 +24,7 @@ const path = require('path');
 const workboxBuild = require('workbox-build');
 const prettyBytes = require('pretty-bytes');
 const webpack = require('webpack');
+const sass = require('gulp-sass')(require('sass'));
 
 const AUTOPREFIXER_BROWSERS = [
   'ff >= 30',
@@ -93,7 +94,7 @@ gulp.task('styles', () => {
   return gulp.src('app/app.entry.scss')
     .pipe($.changed('styles', {extension: '.scss'}))
     .pipe($.sassGlob())
-    .pipe($.sass({
+    .pipe(sass({
       style: 'expanded',
       precision: 10,
       quiet: true

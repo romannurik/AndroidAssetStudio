@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 $homeCardWidth: 296px;
 $homeCardGutter: 24px;
 $homeHeaderOverlap: 48px;
@@ -106,7 +108,7 @@ body.page-home {
 
     .generator-image {
       width: $homeCardWidth;
-      height: $homeCardWidth / 1.48;
+      height: math.div($homeCardWidth, 1.48);
       color: $colorAccent;
     }
 

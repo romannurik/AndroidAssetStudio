@@ -20,7 +20,7 @@
     "gulp-minify-html": "^1.0.6",
     "gulp-nucleus": "0.1.1",
     "gulp-replace": "^1.0.0",
-    "gulp-sass": "^4.1.0",
+    "gulp-sass": "^5.1.0",
     "gulp-sass-glob": "^1.1.0",
     "gulp-tap": "^2.0.0",
     "gulp-util": "^3.0.8",
@@ -28,6 +28,7 @@
     "merge-stream": "^2.0.0",
     "pretty-bytes": "^5.4.1",
     "run-sequence": "^2.2.1",
+    "sass": "^1.56.1",
     "webpack": "^4.44.2",
     "workbox-build": "^3.4.1"
   },
@@ -43,9 +44,9 @@
     "babel-polyfill": "^6.26.0",
     "jquery": "^3.5.1",
     "jszip": "^3.5.0",
+    "react": "^16.13.1",
     "react-color": "^2.18.1",
     "react-dom": "^16.13.1",
-    "react": "^16.13.1",
     "tinycolor2": "^1.4.2",
     "webfontloader": "^1.6.28"
   }

@@ -38,7 +38,7 @@
   justify-content: center;
   padding: 16px 0;
   box-shadow: material-shadow(4);
-  background-color: $colorAccent;
+  background-color: material-color('red', '700');
   color: $colorWhitePrimary;
   font-weight: 500;
   z-index: 4;
