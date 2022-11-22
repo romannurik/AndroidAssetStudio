@@ -15,7 +15,7 @@ workbox.precaching.precacheAndRoute([
   },
   {
     "url": "icons-launcher.html",
-    "revision": "e94c767a4e98500cf951cd25d9ebb12b"
+    "revision": "1c322934f58bfeba56098499e4ff73e1"
   },
   {
     "url": "icons-notification.html",
@@ -67,7 +67,7 @@ workbox.precaching.precacheAndRoute([
   },
   {
     "url": "app.css",
-    "revision": "9ea029ccae023a078cf1cb992c196a6e"
+    "revision": "dad79513140372ba71f4ecb7589c3721"
   }
 ]);
 
