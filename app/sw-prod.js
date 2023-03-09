@@ -1,17 +1,17 @@
-import { precacheAndRoute } from "workbox-precaching";
+import { precacheAndRoute } from 'workbox-precaching';
 
 precacheAndRoute(self.__WB_MANIFEST);
 
 importScripts(
-  "https://storage.googleapis.com/workbox-cdn/releases/3.3.1/workbox-sw.js"
+  'https://storage.googleapis.com/workbox-cdn/releases/3.3.1/workbox-sw.js'
 );
 
 workbox.precaching.precacheAndRoute([]);
 
 workbox.routing.registerRoute(
-  new RegExp("https://(?:fonts|www).(?:googleapis|gstatic).com/(.*)"),
+  new RegExp('https://(?:fonts|www).(?:googleapis|gstatic).com/(.*)'),
   workbox.strategies.cacheFirst({
-    cacheName: "google-fonts",
+    cacheName: 'google-fonts',
     plugins: [
       new workbox.expiration.Plugin({
         maxEntries: 20,

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-export {Effects} from './effects';
-export {Drawing} from './drawing';
-export {Analysis} from './analysis';
+export { Effects } from './effects';
+export { Drawing } from './drawing';
+export { Analysis } from './analysis';

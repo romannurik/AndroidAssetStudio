@@ -38,7 +38,7 @@
     bottom: 0;
     border-radius: 50%;
     background-color: rgba($colorBlackPrimary, $opacityBlackHighlight);
-    transition: opacity .2s ease;
+    transition: opacity 0.2s ease;
     pointer-events: none;
   }
 
@@ -74,7 +74,7 @@
   display: flex;
   text-decoration: none;
   outline: 0;
-  transition: box-shadow .2s ease;
+  transition: box-shadow 0.2s ease;
 
   &::after {
     opacity: 0;
@@ -87,7 +87,7 @@
     bottom: 0;
     border-radius: 50%;
     background-color: rgba($colorWhitePrimary, $opacityWhiteHighlight);
-    transition: opacity .2s ease;
+    transition: opacity 0.2s ease;
     pointer-events: none;
   }
 
@@ -96,7 +96,7 @@
     box-shadow: material-shadow(6);
 
     &::after {
-      opacity: .3;
+      opacity: 0.3;
     }
   }
 
@@ -104,12 +104,12 @@
     box-shadow: material-shadow(8);
 
     &::after {
-      opacity: .1;
+      opacity: 0.1;
     }
   }
 
   &[disabled] {
-    background-color: rgba(#000, .12);
+    background-color: rgba(#000, 0.12);
     box-shadow: none;
     color: $colorBlackTertiary;
     cursor: not-allowed;
@@ -123,7 +123,7 @@
   text-align: center;
   transform: translate(-50%, 100%);
   pointer-events: none;
-  background-color: rgba(material-color('grey', '800'), .8);
+  background-color: rgba(material-color('grey', '800'), 0.8);
   border-radius: 2px;
   color: $colorWhitePrimary;
   font-size: 12px;
@@ -132,13 +132,11 @@
   padding: 4px 8px;
   visibility: hidden;
   opacity: 0;
-  transition:
-      opacity .1s ease,
-      visibility 0s ease .1s;
+  transition: opacity 0.1s ease, visibility 0s ease 0.1s;
 
   :hover > &,
   :focus > & {
-    transition: opacity .1s ease .2s;
+    transition: opacity 0.1s ease 0.2s;
     opacity: 1;
     visibility: visible;
   }
@@ -150,7 +148,7 @@
   align-items: center;
   cursor: pointer;
 
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     appearance: none;
     margin: 0 4px 0 0;
     display: flex;
@@ -177,7 +175,7 @@
   overflow: hidden;
   z-index: 1;
 
-  input[type=radio] {
+  input[type='radio'] {
     display: none;
   }
 
@@ -187,7 +185,7 @@
     line-height: 20px;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: .5px;
+    letter-spacing: 0.5px;
     padding: 12px 16px;
     cursor: pointer;
     outline: 0;

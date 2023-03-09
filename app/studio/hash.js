@@ -16,7 +16,7 @@
 
 import $ from 'jquery';
 
-import {Util} from './util';
+import { Util } from './util';
 
 export const Hash = {
   bindFormToDocumentHash(form) {
@@ -27,16 +27,19 @@ export const Hash = {
 
     this.boundForm_ = form;
 
-    form.onChange(Util.debounce(100, () => {
-      this.currentHash_ = paramsToHash_(form.getValuesSerialized());
-      window.history.replaceState({}, '', '#' + this.currentHash_);
-    }));
+    form.onChange(
+      Util.debounce(100, () => {
+        this.currentHash_ = paramsToHash_(form.getValuesSerialized());
+        window.history.replaceState({}, '', '#' + this.currentHash_);
+      })
+    );
 
     let maybeUpdateHash_ = () => {
       // Don't use document.location.hash because it automatically
       // resolves URI-escaped entities.
-      let newHash = paramsToHash_(hashToParams_(
-          (document.location.href.match(/#.*/) || [''])[0]));
+      let newHash = paramsToHash_(
+        hashToParams_((document.location.href.match(/#.*/) || [''])[0])
+      );
       if (newHash != this.currentHash_) {
         form.setValuesSerialized(hashToParams_(newHash));
         this.currentHash_ = newHash;
@@ -46,7 +49,7 @@ export const Hash = {
     $(window).on('hashchange', maybeUpdateHash_);
 
     maybeUpdateHash_();
-  }
+  },
 };
 
 function hashToParams_(hash) {
@@ -87,7 +90,7 @@ function paramsToHash_(params, prefix) {
   const keyPath_ = k => encodeURIComponent((prefix ? prefix + '.' : '') + k);
   const pushKeyValue_ = (k, v) => {
     if (v === false) v = 0;
-    if (v === true)  v = 1;
+    if (v === true) v = 1;
     hashArr.push(keyPath_(k) + '=' + encodeURIComponent(v.toString()));
   };
 

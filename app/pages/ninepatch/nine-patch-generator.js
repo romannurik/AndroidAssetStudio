@@ -18,22 +18,20 @@ import $ from 'jquery';
 
 import * as studio from '../../studio';
 
-import {BaseGenerator} from '../../base-generator';
+import { BaseGenerator } from '../../base-generator';
 
-import {NinePatchStage} from './nine-patch-stage';
-import {NinePatchPreview} from './nine-patch-preview';
-import {NinePatchLoader} from './nine-patch-loader';
-
+import { NinePatchStage } from './nine-patch-stage';
+import { NinePatchPreview } from './nine-patch-preview';
+import { NinePatchLoader } from './nine-patch-loader';
 
 const DENSITIES = new Set(['xxxhdpi', 'xxhdpi', 'xhdpi', 'hdpi', 'mdpi']);
 const SOURCE_DENSITY_OPTIONS = [
-  { id: '160', title:   'mdpi<br><small>(160)</small>' },
-  { id: '240', title:   'hdpi<br><small>(240)</small>' },
-  { id: '320', title:  'xhdpi<br><small>(320)</small>' },
+  { id: '160', title: 'mdpi<br><small>(160)</small>' },
+  { id: '240', title: 'hdpi<br><small>(240)</small>' },
+  { id: '320', title: 'xhdpi<br><small>(320)</small>' },
   { id: '480', title: 'xxhdpi<br><small>(480)</small>' },
-  { id: '640', title: 'xxxhdpi<br><small>(640)</small>' }
+  { id: '640', title: 'xxxhdpi<br><small>(640)</small>' },
 ];
-
 
 if (document.location.search.indexOf('extradensities') >= 0) {
   DENSITIES.add('ldpi');
@@ -41,7 +39,6 @@ if (document.location.search.indexOf('extradensities') >= 0) {
   // SOURCE_DENSITY_OPTIONS.push({ id: '120', title:   'ldpi<br><small>(120)</small>' });
   // SOURCE_DENSITY_OPTIONS.push({ id: '213', title:  'tvdpi<br><small>(213)</small>' });
 }
-
 
 export class NinePatchGenerator extends BaseGenerator {
   constructor() {
@@ -59,7 +56,10 @@ export class NinePatchGenerator extends BaseGenerator {
 
   setupOutputsPreviewTabs() {
     $('.outputs-preview-tabs input').on('change', ev => {
-      $('.outputs-preview-sidebar').attr('data-view', $(ev.currentTarget).val());
+      $('.outputs-preview-sidebar').attr(
+        'data-view',
+        $(ev.currentTarget).val()
+      );
       $('.outputs-preview-tabs input').prop('checked', false);
       $(ev.currentTarget).prop('checked', true);
     });
@@ -81,20 +81,21 @@ export class NinePatchGenerator extends BaseGenerator {
           imageOnly: true,
           noTrimForm: true,
           noPreview: true,
-          dropTarget: document.body
+          dropTarget: document.body,
         }),
         new studio.EnumField('sourceDensity', {
           title: 'Source density',
           buttons: true,
           options: SOURCE_DENSITY_OPTIONS,
-          defaultValue: '320'
+          defaultValue: '320',
         }),
         (nameField = new studio.TextField('name', {
           title: 'Drawable name',
-          helpText: 'Used when generating ZIP files. Becomes <code>&lt;name&gt;.9.png</code>.',
-          defaultValue: 'example'
-        }))
-      ]
+          helpText:
+            'Used when generating ZIP files. Becomes <code>&lt;name&gt;.9.png</code>.',
+          defaultValue: 'example',
+        })),
+      ],
     });
     this.form.onChange(field => {
       let values = this.form.getValues();
@@ -148,48 +149,112 @@ export class NinePatchGenerator extends BaseGenerator {
       let scale = dpi / values.sourceDensity;
       let outSize = {
         w: Math.ceil(this.stage.srcSize.w * scale) + 2,
-        h: Math.ceil(this.stage.srcSize.h * scale) + 2
+        h: Math.ceil(this.stage.srcSize.h * scale) + 2,
       };
       let outCtx = studio.Drawing.context(outSize);
-      studio.Drawing.drawImageScaled(outCtx, this.stage.srcCtx,
-          0, 0, this.stage.srcSize.w, this.stage.srcSize.h,
-          1, 1, outSize.w - 2, outSize.h - 2);
+      studio.Drawing.drawImageScaled(
+        outCtx,
+        this.stage.srcCtx,
+        0,
+        0,
+        this.stage.srcSize.w,
+        this.stage.srcSize.h,
+        1,
+        1,
+        outSize.w - 2,
+        outSize.h - 2
+      );
 
       // draw optical bounds
-      fillRectImageData(outCtx, [255,0,0,255],
-          1, outSize.h - 1,
-          Math.floor(scale * this.stage.opticalBoundsRect.x), 1);
-      fillRectImageData(outCtx, [255,0,0,255],
-          outSize.w - 1, outSize.h - 1,
-          -Math.ceil(scale * (this.stage.srcSize.w - this.stage.opticalBoundsRect.x - this.stage.opticalBoundsRect.w)), 1);
-      fillRectImageData(outCtx, [255,0,0,255],
-          outSize.w - 1, 1,
-          1, Math.floor(scale * this.stage.opticalBoundsRect.y));
-      fillRectImageData(outCtx, [255,0,0,255],
-          outSize.w - 1, outSize.h - 1,
-          1, -Math.ceil(scale * (this.stage.srcSize.h - this.stage.opticalBoundsRect.y - this.stage.opticalBoundsRect.h)));
+      fillRectImageData(
+        outCtx,
+        [255, 0, 0, 255],
+        1,
+        outSize.h - 1,
+        Math.floor(scale * this.stage.opticalBoundsRect.x),
+        1
+      );
+      fillRectImageData(
+        outCtx,
+        [255, 0, 0, 255],
+        outSize.w - 1,
+        outSize.h - 1,
+        -Math.ceil(
+          scale *
+            (this.stage.srcSize.w -
+              this.stage.opticalBoundsRect.x -
+              this.stage.opticalBoundsRect.w)
+        ),
+        1
+      );
+      fillRectImageData(
+        outCtx,
+        [255, 0, 0, 255],
+        outSize.w - 1,
+        1,
+        1,
+        Math.floor(scale * this.stage.opticalBoundsRect.y)
+      );
+      fillRectImageData(
+        outCtx,
+        [255, 0, 0, 255],
+        outSize.w - 1,
+        outSize.h - 1,
+        1,
+        -Math.ceil(
+          scale *
+            (this.stage.srcSize.h -
+              this.stage.opticalBoundsRect.y -
+              this.stage.opticalBoundsRect.h)
+        )
+      );
 
       // draw nine-patch tick marks
-      fillRectImageData(outCtx, [0,0,0,255],
-          1 + Math.floor(scale * this.stage.stretchRect.x), 0,
-          Math.ceil(scale * this.stage.stretchRect.w), 1);
-      fillRectImageData(outCtx, [0,0,0,255],
-          0, 1 + Math.floor(scale * this.stage.stretchRect.y),
-          1, Math.ceil(scale * this.stage.stretchRect.h));
-      fillRectImageData(outCtx, [0,0,0,255],
-          1 + Math.floor(scale * this.stage.contentRect.x), outSize.h - 1,
-          Math.ceil(scale * this.stage.contentRect.w), 1);
-      fillRectImageData(outCtx, [0,0,0,255],
-          outSize.w - 1, 1 + Math.floor(scale * this.stage.contentRect.y),
-          1, Math.ceil(scale * this.stage.contentRect.h));
+      fillRectImageData(
+        outCtx,
+        [0, 0, 0, 255],
+        1 + Math.floor(scale * this.stage.stretchRect.x),
+        0,
+        Math.ceil(scale * this.stage.stretchRect.w),
+        1
+      );
+      fillRectImageData(
+        outCtx,
+        [0, 0, 0, 255],
+        0,
+        1 + Math.floor(scale * this.stage.stretchRect.y),
+        1,
+        Math.ceil(scale * this.stage.stretchRect.h)
+      );
+      fillRectImageData(
+        outCtx,
+        [0, 0, 0, 255],
+        1 + Math.floor(scale * this.stage.contentRect.x),
+        outSize.h - 1,
+        Math.ceil(scale * this.stage.contentRect.w),
+        1
+      );
+      fillRectImageData(
+        outCtx,
+        [0, 0, 0, 255],
+        outSize.w - 1,
+        1 + Math.floor(scale * this.stage.contentRect.y),
+        1,
+        Math.ceil(scale * this.stage.contentRect.h)
+      );
 
       // add to zip and show preview
 
-      console.log(density, outCtx.getImageData(outSize.w - 1, Math.floor(outSize.h / 2), 1, 1).data.toString());
+      console.log(
+        density,
+        outCtx
+          .getImageData(outSize.w - 1, Math.floor(outSize.h / 2), 1, 1)
+          .data.toString()
+      );
 
       this.zipper.add({
         name: `res/drawable-${density}/${values.name}.9.png`,
-        canvas: outCtx.canvas
+        canvas: outCtx.canvas,
       });
 
       this.setImageForSlot_(density, outCtx.canvas.toDataURL('image/png', 1.0));

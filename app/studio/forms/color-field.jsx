@@ -21,14 +21,29 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { SketchPicker } from 'react-color';
 
-import {Field} from './field';
+import { Field } from './field';
 
 const PRESET_COLORS = [
-  '#f44336', '#e91e63', '#9c27b0', '#673ab7',
-  '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4',
-  '#009688', '#4caf50', '#8bc34a', '#cddc39',
-  '#ffeb3b', '#ffc107', '#ff9800', '#ff5722',
-  '#9e9e9e', '#607d8b', '#ffffff', '#000000',
+  '#f44336',
+  '#e91e63',
+  '#9c27b0',
+  '#673ab7',
+  '#3f51b5',
+  '#2196f3',
+  '#03a9f4',
+  '#00bcd4',
+  '#009688',
+  '#4caf50',
+  '#8bc34a',
+  '#cddc39',
+  '#ffeb3b',
+  '#ffc107',
+  '#ff9800',
+  '#ff5722',
+  '#9e9e9e',
+  '#607d8b',
+  '#ffffff',
+  '#000000',
 ];
 
 class ColorPickerWidget extends React.Component {
@@ -37,7 +52,7 @@ class ColorPickerWidget extends React.Component {
     this.widgetRef = React.createRef();
     this.state = {
       displayColorPicker: false,
-      color: props.color || {r:0,g:0,b:0,a:1},
+      color: props.color || { r: 0, g: 0, b: 0, a: 1 },
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -46,7 +61,7 @@ class ColorPickerWidget extends React.Component {
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
-  handleKeyDown(event){
+  handleKeyDown(event) {
     if (event.keyCode === 27) {
       this.handleClose();
     }
@@ -73,32 +88,46 @@ class ColorPickerWidget extends React.Component {
   }
 
   rgbaString(color) {
-    return `rgba(${ color.r }, ${ color.g }, ${ color.b }, ${ color.a })`;
+    return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;
   }
 
   render() {
     return (
-      <div id={ this.props.id } onKeyDown={ this.handleKeyDown }>
-        <button ref={ this.widgetRef } className="form-field-color-widget" onClick={ this.handleClick }>
-          <div className="form-field-color-widget-swatch" style={{
-            color: this.rgbaString(this.state.color)
-          }} />
+      <div id={this.props.id} onKeyDown={this.handleKeyDown}>
+        <button
+          ref={this.widgetRef}
+          className="form-field-color-widget"
+          onClick={this.handleClick}
+        >
+          <div
+            className="form-field-color-widget-swatch"
+            style={{
+              color: this.rgbaString(this.state.color),
+            }}
+          />
         </button>
-        { this.state.displayColorPicker
-            ? <div className="form-field-color-popup-container" style={{
-                  left: this.state.widgetLeft,
-                  top: this.state.widgetTop,
-                }}>
-                <div className="form-field-color-popup-cover" onClick={ this.handleClose }/>
-                <SketchPicker
-                    presetColors={ PRESET_COLORS }
-                    disableAlpha={ !this.props.showAlpha }
-                    color={ this.state.color }
-                    onChange={ this.handleChange } />
-              </div>
-            : null }
+        {this.state.displayColorPicker ? (
+          <div
+            className="form-field-color-popup-container"
+            style={{
+              left: this.state.widgetLeft,
+              top: this.state.widgetTop,
+            }}
+          >
+            <div
+              className="form-field-color-popup-cover"
+              onClick={this.handleClose}
+            />
+            <SketchPicker
+              presetColors={PRESET_COLORS}
+              disableAlpha={!this.props.showAlpha}
+              color={this.state.color}
+              onChange={this.handleChange}
+            />
+          </div>
+        ) : null}
       </div>
-    )
+    );
   }
 }
 
@@ -110,12 +139,14 @@ export class ColorField extends Field {
 
     ReactDOM.render(
       <ColorPickerWidget
-          ref={(c) => this.pickerWidget = c}
-          id={ this.getHtmlId() }
-          color={ this.getValue().toRgb() }
-          showAlpha={ this.params_.alpha }
-          onChange={ update_ } />,
-      $('<div>').appendTo(fieldContainer).get(0));
+        ref={c => (this.pickerWidget = c)}
+        id={this.getHtmlId()}
+        color={this.getValue().toRgb()}
+        showAlpha={this.params_.alpha}
+        onChange={update_}
+      />,
+      $('<div>').appendTo(fieldContainer).get(0)
+    );
   }
 
   getValue() {
@@ -124,9 +155,9 @@ export class ColorField extends Field {
 
   setValue(val, pauseUi) {
     let oldValue = this.value_;
-    this.value_ = (val.hasOwnProperty('_r'))
-        ? val
-        : tinycolor(val || this.params_.defaultValue || '#000');
+    this.value_ = val.hasOwnProperty('_r')
+      ? val
+      : tinycolor(val || this.params_.defaultValue || '#000');
     if (!pauseUi) {
       this.pickerWidget.setState({ color: this.value_.toRgb() });
     }

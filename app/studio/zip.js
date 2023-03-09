@@ -16,15 +16,13 @@
 
 import JSZip from 'jszip/lib';
 
-import {Util} from './util';
-
+import { Util } from './util';
 
 export const Zip = {
   createDownloadifyZipButton(element, options) {
     return new DownloadZipButton(element, options);
-  }
+  },
 };
-
 
 class DownloadZipButton {
   constructor(element, options) {
@@ -69,20 +67,27 @@ class DownloadZipButton {
 
     this.fileSpecs_.forEach(fileSpec => {
       if (fileSpec.canvas) {
-        zip.file(fileSpec.name, fileSpec.canvas.toDataURL().replace(/.*?;base64,/, ''), {base64: true});
+        zip.file(
+          fileSpec.name,
+          fileSpec.canvas.toDataURL().replace(/.*?;base64,/, ''),
+          { base64: true }
+        );
       } else {
         zip.file(fileSpec.name, fileSpec.textData);
       }
     });
 
-    zip.generateAsync({type: 'blob'}).then(blob => {
-      Util.downloadFile(blob, filename);
-      this.isGenerating_ = false;
-      this.updateUI_();
-    }).catch(error => {
-      console.error(error);
-      this.isGenerating_ = false;
-      this.updateUI_();
-    });
+    zip
+      .generateAsync({ type: 'blob' })
+      .then(blob => {
+        Util.downloadFile(blob, filename);
+        this.isGenerating_ = false;
+        this.updateUI_();
+      })
+      .catch(error => {
+        console.error(error);
+        this.isGenerating_ = false;
+        this.updateUI_();
+      });
   }
 }

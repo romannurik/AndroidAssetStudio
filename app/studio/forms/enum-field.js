@@ -16,7 +16,7 @@
 
 import $ from 'jquery';
 
-import {Field} from './field';
+import { Field } from './field';
 
 export class EnumField extends Field {
   createUi(container) {
@@ -24,20 +24,21 @@ export class EnumField extends Field {
 
     if (this.params_.buttons) {
       this.el_ = $('<div>')
-          .attr('id', this.getHtmlId())
-          .addClass('form-field-buttonset')
-          .appendTo(fieldContainer);
-
+        .attr('id', this.getHtmlId())
+        .addClass('form-field-buttonset')
+        .appendTo(fieldContainer);
     } else {
       this.el_ = $('<div>')
-          .addClass('form-field-select')
-          .attr('id', this.getHtmlId())
-          .appendTo(fieldContainer);
+        .addClass('form-field-select')
+        .attr('id', this.getHtmlId())
+        .appendTo(fieldContainer);
 
       this.selectEl_ = $('<select>')
-          .attr('id', this.getHtmlId())
-          .on('input', ev => this.setValueInternal_($(ev.currentTarget).val(), true))
-          .appendTo(this.el_);
+        .attr('id', this.getHtmlId())
+        .on('input', ev =>
+          this.setValueInternal_($(ev.currentTarget).val(), true)
+        )
+        .appendTo(this.el_);
     }
 
     this.setOptions(this.params_.options);
@@ -49,35 +50,37 @@ export class EnumField extends Field {
     }
 
     options = (options || []).map(option =>
-        (typeof option == 'string')
-            ? {id: option, title: String(option)}
-            : option);
+      typeof option == 'string' ? { id: option, title: String(option) } : option
+    );
 
     if (this.params_.buttons) {
       this.el_.empty();
       (options || []).forEach(option => {
         $('<input>')
-            .attr({
-              type: 'radio',
-              name: this.getHtmlId(),
-              id: `${this.getHtmlId()}-${option.id}`,
-              value: option.id
-            })
-            .on('change', ev => this.setValueInternal_($(ev.currentTarget).val(), false))
-            .appendTo(this.el_);
+          .attr({
+            type: 'radio',
+            name: this.getHtmlId(),
+            id: `${this.getHtmlId()}-${option.id}`,
+            value: option.id,
+          })
+          .on('change', ev =>
+            this.setValueInternal_($(ev.currentTarget).val(), false)
+          )
+          .appendTo(this.el_);
         $('<label>')
-            .attr('for', `${this.getHtmlId()}-${option.id}`)
-            .attr('tabindex', 0)
-            .html(option.title)
-            .appendTo(this.el_);
+          .attr('for', `${this.getHtmlId()}-${option.id}`)
+          .attr('tabindex', 0)
+          .html(option.title)
+          .appendTo(this.el_);
       });
     } else {
       this.selectEl_.empty();
       (options || []).forEach(option =>
-          $('<option>')
-              .attr('value', option.id)
-              .text(option.title)
-              .appendTo(this.selectEl_));
+        $('<option>')
+          .attr('value', option.id)
+          .text(option.title)
+          .appendTo(this.selectEl_)
+      );
     }
 
     this.setValueInternal_(this.getValue());
@@ -87,9 +90,13 @@ export class EnumField extends Field {
     var value = this.value_;
     if (value === undefined) {
       value = this.params_.defaultValue;
-      if (value === undefined && this.params_.options && this.params_.options.length) {
+      if (
+        value === undefined &&
+        this.params_.options &&
+        this.params_.options.length
+      ) {
         let firstOption = this.params_.options[0];
-        value = ('id' in firstOption) ? firstOption.id : String(firstOption);
+        value = 'id' in firstOption ? firstOption.id : String(firstOption);
       }
     }
     return value;
@@ -107,8 +114,9 @@ export class EnumField extends Field {
     this.value_ = val;
     if (!pauseUi) {
       if (this.params_.buttons) {
-        this.el_.find('input').each((i, el) =>
-            $(el).prop('checked', $(el).val() == val));
+        this.el_
+          .find('input')
+          .each((i, el) => $(el).prop('checked', $(el).val() == val));
       } else {
         this.selectEl_.val(val);
       }

@@ -1,4 +1,4 @@
 {
   "upgrade": true,
-  "reject": ["vue", "vue-router", "vuex", "sass"]
+  "reject": ["del", "gulp-imagemin", "pretty-bytes"]
 }

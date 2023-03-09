@@ -16,7 +16,7 @@
 
 import * as studio from '../../studio';
 
-import {Summer} from './summer';
+import { Summer } from './summer';
 
 export const NinePatchTrimming = {
   /**
@@ -28,17 +28,21 @@ export const NinePatchTrimming = {
       return;
     }
 
-    const srcData = stage.srcCtx.getImageData(0, 0, stage.srcSize.w, stage.srcSize.h);
+    const srcData = stage.srcCtx.getImageData(
+      0,
+      0,
+      stage.srcSize.w,
+      stage.srcSize.h
+    );
 
     // Always trim by top-left pixel color
     const trimPixel = getPixel_(stage, srcData, 0, 0);
 
-    let insetRect = {l:0, t:0, r:0, b:0};
+    let insetRect = { l: 0, t: 0, r: 0, b: 0 };
     let x, y;
 
     // Trim top
-    trimTop:
-    for (y = 0; y < stage.srcSize.h; y++) {
+    trimTop: for (y = 0; y < stage.srcSize.h; y++) {
       for (x = 0; x < stage.srcSize.w; x++) {
         if (getPixel_(stage, srcData, x, y) != trimPixel) {
           break trimTop;
@@ -47,8 +51,7 @@ export const NinePatchTrimming = {
     }
     insetRect.t = y;
     // Trim left
-    trimLeft:
-    for (x = 0; x < stage.srcSize.w; x++) {
+    trimLeft: for (x = 0; x < stage.srcSize.w; x++) {
       for (y = 0; y < stage.srcSize.h; y++) {
         if (getPixel_(stage, srcData, x, y) != trimPixel) {
           break trimLeft;
@@ -57,8 +60,7 @@ export const NinePatchTrimming = {
     }
     insetRect.l = x;
     // Trim bottom
-    trimBottom:
-    for (y = stage.srcSize.h - 1; y >= 0; y--) {
+    trimBottom: for (y = stage.srcSize.h - 1; y >= 0; y--) {
       for (x = 0; x < stage.srcSize.w; x++) {
         if (getPixel_(stage, srcData, x, y) != trimPixel) {
           break trimBottom;
@@ -67,8 +69,7 @@ export const NinePatchTrimming = {
     }
     insetRect.b = stage.srcSize.h - y - 1;
     // Trim right
-    trimRight:
-    for (x = stage.srcSize.w - 1; x >= 0; x--) {
+    trimRight: for (x = stage.srcSize.w - 1; x >= 0; x--) {
       for (y = 0; y < stage.srcSize.h; y++) {
         if (getPixel_(stage, srcData, x, y) != trimPixel) {
           break trimRight;
@@ -77,7 +78,12 @@ export const NinePatchTrimming = {
     }
     insetRect.r = stage.srcSize.w - x - 1;
 
-    if (insetRect.l <= 0 && insetRect.t <= 0 && insetRect.r <= 0 && insetRect.b <= 0) {
+    if (
+      insetRect.l <= 0 &&
+      insetRect.t <= 0 &&
+      insetRect.r <= 0 &&
+      insetRect.b <= 0
+    ) {
       // No-op
       return;
     }
@@ -85,7 +91,7 @@ export const NinePatchTrimming = {
     // Build a new stage with inset values
     const size = {
       w: stage.srcSize.w - insetRect.l - insetRect.r,
-      h: stage.srcSize.h - insetRect.t - insetRect.b
+      h: stage.srcSize.h - insetRect.t - insetRect.b,
     };
 
     const rects = {
@@ -93,27 +99,35 @@ export const NinePatchTrimming = {
         x: stage.contentRect.x - insetRect.l,
         y: stage.contentRect.y - insetRect.t,
         w: stage.contentRect.w,
-        h: stage.contentRect.h
+        h: stage.contentRect.h,
       }),
       stretchRect: constrain_(size, {
         x: stage.stretchRect.x - insetRect.l,
         y: stage.stretchRect.y - insetRect.t,
         w: stage.stretchRect.w,
-        h: stage.stretchRect.h
+        h: stage.stretchRect.h,
       }),
       opticalBoundsRect: constrain_(size, {
         x: stage.opticalBoundsRect.x - insetRect.l,
         y: stage.opticalBoundsRect.y - insetRect.t,
         w: stage.opticalBoundsRect.w,
-        h: stage.opticalBoundsRect.h
-      })
+        h: stage.opticalBoundsRect.h,
+      }),
     };
 
     stage.name = `${stage.name}-EDGES_TRIMMED`;
     let newCtx = studio.Drawing.context(size);
-    newCtx.drawImage(stage.srcCtx.canvas,
-        insetRect.l, insetRect.t, size.w, size.h,
-        0, 0, size.w, size.h);
+    newCtx.drawImage(
+      stage.srcCtx.canvas,
+      insetRect.l,
+      insetRect.t,
+      size.w,
+      size.h,
+      0,
+      0,
+      size.w,
+      size.h
+    );
     stage.loadSourceImage(newCtx, rects);
   },
 
@@ -126,7 +140,12 @@ export const NinePatchTrimming = {
       return;
     }
 
-    const srcData = stage.srcCtx.getImageData(0, 0, stage.srcSize.w, stage.srcSize.h);
+    const srcData = stage.srcCtx.getImageData(
+      0,
+      0,
+      stage.srcSize.w,
+      stage.srcSize.h
+    );
 
     let collapseX = stage.stretchRect.w > 4; // generally going to start as true
     let collapseY = stage.stretchRect.h > 4; // generally going to start as true
@@ -138,7 +157,11 @@ export const NinePatchTrimming = {
     // See if can be horizontally collapsed.
     let first = true;
     let firstSum = -1;
-    for (x = stage.stretchRect.x; x < (stage.stretchRect.x + stage.stretchRect.w); x++) {
+    for (
+      x = stage.stretchRect.x;
+      x < stage.stretchRect.x + stage.stretchRect.w;
+      x++
+    ) {
       // Compute column
       summer.reset();
       for (y = 0; y < stage.srcSize.h; y++) {
@@ -154,7 +177,11 @@ export const NinePatchTrimming = {
     }
 
     first = true;
-    for (y = stage.stretchRect.y; y < (stage.stretchRect.y + stage.stretchRect.h); y++) {
+    for (
+      y = stage.stretchRect.y;
+      y < stage.stretchRect.y + stage.stretchRect.h;
+      y++
+    ) {
       // Compute row
       summer.reset();
       for (x = 0; x < stage.srcSize.w; x++) {
@@ -178,17 +205,17 @@ export const NinePatchTrimming = {
       l: stage.stretchRect.x,
       t: stage.stretchRect.y,
       r: stage.srcSize.w - stage.stretchRect.x - stage.stretchRect.w,
-      b: stage.srcSize.h - stage.stretchRect.y - stage.stretchRect.h
+      b: stage.srcSize.h - stage.stretchRect.y - stage.stretchRect.h,
     };
 
     const middle = {
       w: collapseX ? 4 : stage.stretchRect.w,
-      h: collapseY ? 4 : stage.stretchRect.h
+      h: collapseY ? 4 : stage.stretchRect.h,
     };
 
     const size = {
       w: fixed.l + middle.w + fixed.r,
-      h: fixed.t + middle.h + fixed.b
+      h: fixed.t + middle.h + fixed.b,
     };
 
     // Redraw components
@@ -196,76 +223,148 @@ export const NinePatchTrimming = {
 
     // TL
     if (fixed.l && fixed.t)
-      ctx.drawImage(stage.srcCtx.canvas,
-          0, 0, fixed.l, fixed.t,
-          0, 0, fixed.l, fixed.t);
+      ctx.drawImage(
+        stage.srcCtx.canvas,
+        0,
+        0,
+        fixed.l,
+        fixed.t,
+        0,
+        0,
+        fixed.l,
+        fixed.t
+      );
 
     // BL
     if (fixed.l && fixed.b)
-      ctx.drawImage(stage.srcCtx.canvas,
-          0, stage.srcSize.h - fixed.b, fixed.l, fixed.b,
-          0, size.h - fixed.b, fixed.l, fixed.b);
+      ctx.drawImage(
+        stage.srcCtx.canvas,
+        0,
+        stage.srcSize.h - fixed.b,
+        fixed.l,
+        fixed.b,
+        0,
+        size.h - fixed.b,
+        fixed.l,
+        fixed.b
+      );
 
     // TR
     if (fixed.r && fixed.t)
-      ctx.drawImage(stage.srcCtx.canvas,
-          stage.srcSize.w - fixed.r, 0, fixed.r, fixed.t,
-          size.w - fixed.r, 0, fixed.r, fixed.t);
+      ctx.drawImage(
+        stage.srcCtx.canvas,
+        stage.srcSize.w - fixed.r,
+        0,
+        fixed.r,
+        fixed.t,
+        size.w - fixed.r,
+        0,
+        fixed.r,
+        fixed.t
+      );
 
     // BR
     if (fixed.r && fixed.b)
-      ctx.drawImage(stage.srcCtx.canvas,
-          stage.srcSize.w - fixed.r, stage.srcSize.h - fixed.b, fixed.r, fixed.b,
-          size.w - fixed.r, size.h - fixed.b, fixed.r, fixed.b);
+      ctx.drawImage(
+        stage.srcCtx.canvas,
+        stage.srcSize.w - fixed.r,
+        stage.srcSize.h - fixed.b,
+        fixed.r,
+        fixed.b,
+        size.w - fixed.r,
+        size.h - fixed.b,
+        fixed.r,
+        fixed.b
+      );
 
     // Top
     if (fixed.t)
-      ctx.drawImage(stage.srcCtx.canvas,
-          fixed.l, 0, stage.stretchRect.w, fixed.t,
-          fixed.l, 0, size.w - fixed.l - fixed.r, fixed.t);
+      ctx.drawImage(
+        stage.srcCtx.canvas,
+        fixed.l,
+        0,
+        stage.stretchRect.w,
+        fixed.t,
+        fixed.l,
+        0,
+        size.w - fixed.l - fixed.r,
+        fixed.t
+      );
 
     // Left
     if (fixed.l)
-      ctx.drawImage(stage.srcCtx.canvas,
-          0, fixed.t, fixed.l, stage.stretchRect.h,
-          0, fixed.t, fixed.l, size.h - fixed.t - fixed.b);
+      ctx.drawImage(
+        stage.srcCtx.canvas,
+        0,
+        fixed.t,
+        fixed.l,
+        stage.stretchRect.h,
+        0,
+        fixed.t,
+        fixed.l,
+        size.h - fixed.t - fixed.b
+      );
 
     // Right
     if (fixed.r)
-      ctx.drawImage(stage.srcCtx.canvas,
-          stage.srcSize.w - fixed.r, fixed.t, fixed.r, stage.stretchRect.h,
-          size.w - fixed.r, fixed.t, fixed.r, size.h - fixed.t - fixed.b);
+      ctx.drawImage(
+        stage.srcCtx.canvas,
+        stage.srcSize.w - fixed.r,
+        fixed.t,
+        fixed.r,
+        stage.stretchRect.h,
+        size.w - fixed.r,
+        fixed.t,
+        fixed.r,
+        size.h - fixed.t - fixed.b
+      );
 
     // Bottom
     if (fixed.b)
-      ctx.drawImage(stage.srcCtx.canvas,
-          fixed.l, stage.srcSize.h - fixed.b, stage.stretchRect.w, fixed.b,
-          fixed.l, size.h - fixed.b, size.w - fixed.l - fixed.r, fixed.b);
+      ctx.drawImage(
+        stage.srcCtx.canvas,
+        fixed.l,
+        stage.srcSize.h - fixed.b,
+        stage.stretchRect.w,
+        fixed.b,
+        fixed.l,
+        size.h - fixed.b,
+        size.w - fixed.l - fixed.r,
+        fixed.b
+      );
 
     // Middle
-    ctx.drawImage(stage.srcCtx.canvas,
-        fixed.l, fixed.t, stage.stretchRect.w, stage.stretchRect.h,
-        fixed.l, fixed.t, size.w - fixed.l - fixed.r, size.h - fixed.t - fixed.b);
+    ctx.drawImage(
+      stage.srcCtx.canvas,
+      fixed.l,
+      fixed.t,
+      stage.stretchRect.w,
+      stage.stretchRect.h,
+      fixed.l,
+      fixed.t,
+      size.w - fixed.l - fixed.r,
+      size.h - fixed.t - fixed.b
+    );
 
     const rects = {
       stretchRect: {
         x: stage.stretchRect.x,
         y: stage.stretchRect.y,
         w: middle.w,
-        h: middle.h
+        h: middle.h,
       },
       contentRect: {
         x: stage.contentRect.x,
         y: stage.contentRect.y,
         w: stage.contentRect.w + middle.w - stage.stretchRect.w,
-        h: stage.contentRect.h + middle.h - stage.stretchRect.h
+        h: stage.contentRect.h + middle.h - stage.stretchRect.h,
       },
       opticalBoundsRect: {
         x: stage.opticalBoundsRect.x,
         y: stage.opticalBoundsRect.y,
         w: stage.opticalBoundsRect.w + middle.w - stage.stretchRect.w,
-        h: stage.opticalBoundsRect.h + middle.h - stage.stretchRect.h
-      }
+        h: stage.opticalBoundsRect.h + middle.h - stage.stretchRect.h,
+      },
     };
 
     stage.name = `${stage.name}-STRETCH_TRIMMED`;
@@ -282,7 +381,12 @@ export const NinePatchTrimming = {
       return null;
     }
 
-    const srcData = stage.srcCtx.getImageData(0, 0, stage.srcSize.w, stage.srcSize.h);
+    const srcData = stage.srcCtx.getImageData(
+      0,
+      0,
+      stage.srcSize.w,
+      stage.srcSize.h
+    );
 
     let x, y;
 
@@ -293,11 +397,16 @@ export const NinePatchTrimming = {
     for (x = 0; x < stage.srcSize.w; x++) {
       for (y = 0; y < stage.srcSize.h; y++) {
         let alpha = srcData.data[(y * stage.srcSize.w + x) * 4 + 3];
-        alphaHistogram[alpha] = alphaHistogram[alpha] ? alphaHistogram[alpha] + 1 : 1;
+        alphaHistogram[alpha] = alphaHistogram[alpha]
+          ? alphaHistogram[alpha] + 1
+          : 1;
       }
     }
 
-    let max1 = 0, max1Freq = 0, max2 = 0, max2Freq = 0;
+    let max1 = 0,
+      max1Freq = 0,
+      max2 = 0,
+      max2Freq = 0;
     for (let i = 0; i < 256; i++) {
       if (alphaHistogram[i] > max1Freq) {
         max2 = max1;
@@ -310,16 +419,15 @@ export const NinePatchTrimming = {
       }
     }
 
-    let alphaMin = (max1 < max2) ? max1 : max2;
-    let alphaMax = (max1 > max2) ? max1 : max2;
+    let alphaMin = max1 < max2 ? max1 : max2;
+    let alphaMax = max1 > max2 ? max1 : max2;
 
     const ALPHA_THRESHOLD = 5;
 
-    var opticalBoundsRect = {l:-1, r:-1, t:-1, b:-1};
+    var opticalBoundsRect = { l: -1, r: -1, t: -1, b: -1 };
 
     // Find left optical bound
-    obrLeft:
-    for (x = 0; x < stage.srcSize.w; x++) {
+    obrLeft: for (x = 0; x < stage.srcSize.w; x++) {
       for (y = 0; y < stage.srcSize.h; y++) {
         var alpha = srcData.data[(y * stage.srcSize.w + x) * 4 + 3];
         if (alpha >= alphaMax - ALPHA_THRESHOLD) {
@@ -329,8 +437,7 @@ export const NinePatchTrimming = {
       }
     }
     // Find right optical bound
-    obrRight:
-    for (x = stage.srcSize.w - 1; x >= 0; x--) {
+    obrRight: for (x = stage.srcSize.w - 1; x >= 0; x--) {
       for (y = 0; y < stage.srcSize.h; y++) {
         var alpha = srcData.data[(y * stage.srcSize.w + x) * 4 + 3];
         if (alpha >= alphaMax - ALPHA_THRESHOLD) {
@@ -340,8 +447,7 @@ export const NinePatchTrimming = {
       }
     }
     // Find top optical bound
-    obrTop:
-    for (y = 0; y < stage.srcSize.h; y++) {
+    obrTop: for (y = 0; y < stage.srcSize.h; y++) {
       for (x = 0; x < stage.srcSize.w; x++) {
         var alpha = srcData.data[(y * stage.srcSize.w + x) * 4 + 3];
         if (alpha >= alphaMax - ALPHA_THRESHOLD) {
@@ -351,8 +457,7 @@ export const NinePatchTrimming = {
       }
     }
     // Find bottom optical bound
-    obrBottom:
-    for (y = stage.srcSize.h - 1; y >= 0; y--) {
+    obrBottom: for (y = stage.srcSize.h - 1; y >= 0; y--) {
       for (x = 0; x < stage.srcSize.w; x++) {
         let alpha = srcData.data[(y * stage.srcSize.w + x) * 4 + 3];
         if (alpha >= alphaMax - ALPHA_THRESHOLD) {
@@ -364,13 +469,17 @@ export const NinePatchTrimming = {
 
     let returnRect;
 
-    if (opticalBoundsRect.l >= 0 && opticalBoundsRect.r > opticalBoundsRect.l
-        && opticalBoundsRect.t >= 0 && opticalBoundsRect.b > opticalBoundsRect.t) {
+    if (
+      opticalBoundsRect.l >= 0 &&
+      opticalBoundsRect.r > opticalBoundsRect.l &&
+      opticalBoundsRect.t >= 0 &&
+      opticalBoundsRect.b > opticalBoundsRect.t
+    ) {
       let rect = {
         x: opticalBoundsRect.l,
         y: opticalBoundsRect.t,
         w: opticalBoundsRect.r - opticalBoundsRect.l + 1,
-        h: opticalBoundsRect.b - opticalBoundsRect.t + 1
+        h: opticalBoundsRect.b - opticalBoundsRect.t + 1,
       };
 
       if (regionToFind == 'opticalbounds' || regionToFind == 'padding') {
@@ -460,14 +569,14 @@ export const NinePatchTrimming = {
   },
 };
 
-
 function getPixel_(stage, srcData, x, y) {
-  return (srcData.data[(y * stage.srcSize.w + x) * 4 + 0] << 16) // r
-      + (srcData.data[(y * stage.srcSize.w + x) * 4 + 1] << 8) // g
-      + (srcData.data[(y * stage.srcSize.w + x) * 4 + 2] << 0) // b
-      + (srcData.data[(y * stage.srcSize.w + x) * 4 + 3] << 24); // a
+  return (
+    (srcData.data[(y * stage.srcSize.w + x) * 4 + 0] << 16) + // r
+    (srcData.data[(y * stage.srcSize.w + x) * 4 + 1] << 8) + // g
+    (srcData.data[(y * stage.srcSize.w + x) * 4 + 2] << 0) + // b
+    (srcData.data[(y * stage.srcSize.w + x) * 4 + 3] << 24)
+  ); // a
 }
-
 
 function constrain_(size, rect) {
   if (rect.x < 0) {
@@ -498,7 +607,7 @@ function getEqualRanges_(arr) {
       startVal = arr[i];
     } else if (arr[i] != startVal) {
       if (start != i - 1) {
-        equalRanges.push({start: start, length: i - start});
+        equalRanges.push({ start: start, length: i - start });
       }
 
       start = i;
@@ -506,7 +615,9 @@ function getEqualRanges_(arr) {
     }
   }
   if (start != arr.length - 1) {
-    equalRanges.push({start: start, length: arr.length - start});
+    equalRanges.push({ start: start, length: arr.length - start });
   }
-  return equalRanges.sort(function(x, y){ return y.length - x.length; });
+  return equalRanges.sort(function (x, y) {
+    return y.length - x.length;
+  });
 }

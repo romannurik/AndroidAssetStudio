@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-import $ from "jquery";
+import $ from 'jquery';
 
 export const Util = {
   getMultBaseMdpi(density) {
     switch (density) {
-      case "electron":
+      case 'electron':
         return 21.34;
-      case "xxxhdpi":
+      case 'xxxhdpi':
         return 4.0;
-      case "xxhdpi":
+      case 'xxhdpi':
         return 3.0;
-      case "xhdpi":
+      case 'xhdpi':
         return 2.0;
-      case "hdpi":
+      case 'hdpi':
         return 1.5;
-      case "tvdpi":
+      case 'tvdpi':
         return 1.33125;
-      case "mdpi":
+      case 'mdpi':
         return 1.0;
-      case "ldpi":
+      case 'ldpi':
         return 0.75;
     }
     return 1.0;
@@ -41,21 +41,21 @@ export const Util = {
 
   getDpiForDensity(density) {
     switch (density) {
-      case "electron":
+      case 'electron':
         return 1024;
-      case "xxxhdpi":
+      case 'xxxhdpi':
         return 640;
-      case "xxhdpi":
+      case 'xxhdpi':
         return 480;
-      case "xhdpi":
+      case 'xhdpi':
         return 320;
-      case "hdpi":
+      case 'hdpi':
         return 240;
-      case "tvdpi":
+      case 'tvdpi':
         return 213;
-      case "mdpi":
+      case 'mdpi':
         return 160;
-      case "ldpi":
+      case 'ldpi':
         return 120;
     }
     return 160;
@@ -80,16 +80,16 @@ export const Util = {
   sanitizeResourceName(s) {
     return s
       .toLowerCase()
-      .replace(/[\s-\.]/g, "_")
-      .replace(/[^\w_]/g, "");
+      .replace(/[\s-\.]/g, '_')
+      .replace(/[^\w_]/g, '');
   },
 
   // TODO: support Safari
   downloadFile(content, filename) {
-    let anchor = $("<a>").hide().appendTo(document.body);
+    let anchor = $('<a>').hide().appendTo(document.body);
     let blob = content;
     if (!(content instanceof Blob)) {
-      blob = new Blob([content], { type: "application/octet-stream" });
+      blob = new Blob([content], { type: 'application/octet-stream' });
     }
     let url = window.URL.createObjectURL(blob);
     anchor.attr({
@@ -105,7 +105,7 @@ export const Util = {
 
   loadImageFromUri(uri) {
     return new Promise((resolve, reject) => {
-      let img = document.createElement("img");
+      let img = document.createElement('img');
       img.onload = () => resolve(img);
       img.onerror = () => reject();
       img.src = uri;
@@ -117,16 +117,16 @@ export const Util = {
       Util.debugCtx.$lastEl.remove();
     }
 
-    Util.debugCtx.$lastEl = $("<img>")
+    Util.debugCtx.$lastEl = $('<img>')
       .css({
-        position: "fixed",
+        position: 'fixed',
         top: 0,
         right: 0,
         zIndex: 100,
-        backgroundColor: "rgba(255, 0, 0, 0.5)",
-        pointerEvents: "none",
+        backgroundColor: 'rgba(255, 0, 0, 0.5)',
+        pointerEvents: 'none',
       })
-      .attr("src", ctx.canvas.toDataURL())
+      .attr('src', ctx.canvas.toDataURL())
       .appendTo(document.body);
   },
 

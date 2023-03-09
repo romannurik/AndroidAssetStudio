@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import {EnumField} from './enum-field';
+import { EnumField } from './enum-field';
 
 export class BooleanField extends EnumField {
   constructor(id, params) {
     super(id, params);
     params.options = [
       { id: '1', title: params.onText || 'Yes' },
-      { id: '0', title: params.offText || 'No' }
+      { id: '0', title: params.offText || 'No' },
     ];
     params.defaultValue = params.defaultValue ? '1' : '0';
     params.buttons = true;

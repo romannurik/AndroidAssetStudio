@@ -1,5 +1,4 @@
-Android Asset Studio
-====================
+# Android Asset Studio
 
 **[Open the Android Asset Studio](https://romannurik.github.io/AndroidAssetStudio/)**
 
@@ -19,11 +18,15 @@ Currently available asset generators are for:
 
 To build, ensure you have `node` and `npm` installed, and run:
 
-    $ npm install
+```sh
+\$ npm install
+```
 
 Once dependencies are installed, run with `gulp`:
 
-    $ gulp serve
+```sh
+\$ gulp serve
+```
 
 ## Related (third-party) projects
 

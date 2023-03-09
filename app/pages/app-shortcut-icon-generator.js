@@ -15,17 +15,16 @@
  */
 
 import * as studio from '../studio';
-import {BaseGenerator} from '../base-generator';
+import { BaseGenerator } from '../base-generator';
 
 const ICON_SIZE = { w: 48, h: 48 };
 const TARGET_RECT = { x: 12, y: 12, w: 24, h: 24 };
 
-const GRID_OVERLAY_SVG =
-    `<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-        <g fill="none" fill-rule="evenodd">
-            <rect vector-effect="non-scaling-stroke" x="12" y="12" width="24" height="24"/>
-        </g>
-    </svg>`;
+const GRID_OVERLAY_SVG = `<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" fill-rule="evenodd">
+    <rect vector-effect="non-scaling-stroke" x="12" y="12" width="24" height="24"/>
+  </g>
+</svg>`;
 
 export class AppShortcutIconGenerator extends BaseGenerator {
   get gridOverlaySvg() {
@@ -56,23 +55,23 @@ export class AppShortcutIconGenerator extends BaseGenerator {
             if (nameField.getValue() == defaultNameForSourceValue_(oldValue)) {
               nameField.setValue(defaultNameForSourceValue_(newValue));
             }
-          }
+          },
         }),
         (nameField = new studio.TextField('name', {
           newGroup: true,
           title: 'Name',
           helpText: 'Used when generating ZIP files.',
-          defaultValue: defaultNameForSourceValue_({})
+          defaultValue: defaultNameForSourceValue_({}),
         })),
         new studio.ColorField('foreColor', {
           title: 'Color',
-          defaultValue: '#448aff'
+          defaultValue: '#448aff',
         }),
         new studio.ColorField('backColor', {
           title: 'Background color',
-          defaultValue: '#f5f5f5'
-        })
-      ]
+          defaultValue: '#f5f5f5',
+        }),
+      ],
     });
     this.form.onChange(() => this.regenerateDebounced_());
   }
@@ -103,20 +102,24 @@ export class AppShortcutIconGenerator extends BaseGenerator {
       if (values.source.ctx) {
         let srcCtx = values.source.ctx;
         studio.Drawing.drawCenterInside(
-            tmpCtx,
-            srcCtx,
-            studio.Util.mult(TARGET_RECT, mult),
-            {x: 0, y: 0, w: srcCtx.canvas.width, h: srcCtx.canvas.height});
+          tmpCtx,
+          srcCtx,
+          studio.Util.mult(TARGET_RECT, mult),
+          { x: 0, y: 0, w: srcCtx.canvas.width, h: srcCtx.canvas.height }
+        );
       }
 
       values.foreColor.setAlpha(1);
-      studio.Effects.fx([
-        {effect: 'fill-color', color: values.foreColor.toRgbString()}
-      ], outCtx, tmpCtx, iconSize);
+      studio.Effects.fx(
+        [{ effect: 'fill-color', color: values.foreColor.toRgbString() }],
+        outCtx,
+        tmpCtx,
+        iconSize
+      );
 
       this.zipper.add({
         name: `res/drawable-${density}/${values.name}.png`,
-        canvas: outCtx.canvas
+        canvas: outCtx.canvas,
       });
 
       this.setImageForSlot_(density, outCtx.canvas.toDataURL());

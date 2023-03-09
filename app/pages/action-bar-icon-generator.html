@@ -4,11 +4,8 @@ bodyClasses: page-actionbar-icon-generator
 destination: /icons-actionbar.html
 ---
 
-{% extends '_generator-base.html' %}
-
-{% block body %}
-{{ super() }}
+{% extends '_generator-base.html' %} {% block body %} {{ super() }}
 <script>
-new pages.ActionBarIconGenerator();
+  new pages.ActionBarIconGenerator();
 </script>
 {% endblock %}

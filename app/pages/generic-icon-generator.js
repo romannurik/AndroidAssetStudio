@@ -16,7 +16,7 @@
 
 import * as studio from '../studio';
 
-import {BaseGenerator} from '../base-generator';
+import { BaseGenerator } from '../base-generator';
 
 export class GenericIconGenerator extends BaseGenerator {
   setupForm() {
@@ -42,7 +42,7 @@ export class GenericIconGenerator extends BaseGenerator {
             if (nameField.getValue() == defaultNameForSourceValue_(oldValue)) {
               nameField.setValue(defaultNameForSourceValue_(newValue));
             }
-          }
+          },
         }),
         new studio.RangeField('size', {
           newGroup: true,
@@ -63,14 +63,14 @@ export class GenericIconGenerator extends BaseGenerator {
           title: 'Color',
           helpText: 'Set to transparent to retain original colors',
           defaultValue: 'rgba(0, 0, 0, 0.54)',
-          alpha: true
+          alpha: true,
         }),
         (nameField = new studio.TextField('name', {
           title: 'Name',
           helpText: 'Used when generating ZIP files as the resource name.',
-          defaultValue: defaultNameForSourceValue_({})
-        }))
-      ]
+          defaultValue: defaultNameForSourceValue_({}),
+        })),
+      ],
     });
     this.form.onChange(field => this.regenerateDebounced_());
   }
@@ -87,20 +87,30 @@ export class GenericIconGenerator extends BaseGenerator {
       let totalSize = values.size;
       let padding = Math.min(values.size / 2 - 1, values.padding);
       let iconSize = studio.Util.multRound(
-          {w: totalSize, h: totalSize}, mult);
+        { w: totalSize, h: totalSize },
+        mult
+      );
       let targetRect = studio.Util.multRound(
-          {x: padding, y: padding, w: totalSize - padding * 2, h: totalSize - padding * 2}, mult);
+        {
+          x: padding,
+          y: padding,
+          w: totalSize - padding * 2,
+          h: totalSize - padding * 2,
+        },
+        mult
+      );
 
       let outCtx = studio.Drawing.context(iconSize);
       let tmpCtx = studio.Drawing.context(iconSize);
 
       if (values.source.ctx) {
         let srcCtx = values.source.ctx;
-        studio.Drawing.drawCenterInside(
-            tmpCtx,
-            srcCtx,
-            targetRect,
-            {x: 0, y: 0, w: srcCtx.canvas.width, h: srcCtx.canvas.height});
+        studio.Drawing.drawCenterInside(tmpCtx, srcCtx, targetRect, {
+          x: 0,
+          y: 0,
+          w: srcCtx.canvas.width,
+          h: srcCtx.canvas.height,
+        });
       }
 
       let color = values.color;
@@ -108,9 +118,18 @@ export class GenericIconGenerator extends BaseGenerator {
       if (alpha > 0) {
         color.setAlpha(1);
 
-        studio.Effects.fx([
-          {effect: 'fill-color', color: color.toRgbString(), opacity: alpha}
-        ], outCtx, tmpCtx, iconSize);
+        studio.Effects.fx(
+          [
+            {
+              effect: 'fill-color',
+              color: color.toRgbString(),
+              opacity: alpha,
+            },
+          ],
+          outCtx,
+          tmpCtx,
+          iconSize
+        );
 
         color.setAlpha(alpha);
       } else {
@@ -119,7 +138,7 @@ export class GenericIconGenerator extends BaseGenerator {
 
       this.zipper.add({
         name: `res/drawable-${density}/${values.name}.png`,
-        canvas: outCtx.canvas
+        canvas: outCtx.canvas,
       });
 
       this.setImageForSlot_(density, outCtx.canvas.toDataURL());

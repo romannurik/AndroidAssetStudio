@@ -18,10 +18,10 @@ import $ from 'jquery';
 
 import * as studio from '../studio';
 
-import {BaseGenerator} from '../base-generator';
+import { BaseGenerator } from '../base-generator';
 
-const ICON_SIZE = {w: 24, h: 24};
-const TARGET_RECT = {x: 1, y: 1, w: 22, h: 22};
+const ICON_SIZE = { w: 24, h: 24 };
+const TARGET_RECT = { x: 1, y: 1, w: 22, h: 22 };
 
 export class NotificationIconGenerator extends BaseGenerator {
   setupForm() {
@@ -48,15 +48,15 @@ export class NotificationIconGenerator extends BaseGenerator {
             if (nameField.getValue() == defaultNameForSourceValue_(oldValue)) {
               nameField.setValue(defaultNameForSourceValue_(newValue));
             }
-          }
+          },
         }),
         (nameField = new studio.TextField('name', {
           newGroup: true,
           title: 'Name',
           helpText: 'Used when generating ZIP files.',
-          defaultValue: defaultNameForSourceValue_({})
-        }))
-      ]
+          defaultValue: defaultNameForSourceValue_({}),
+        })),
+      ],
     });
     this.form.onChange(field => this.regenerateDebounced_());
   }
@@ -78,19 +78,23 @@ export class NotificationIconGenerator extends BaseGenerator {
       if (values.source.ctx) {
         let srcCtx = values.source.ctx;
         studio.Drawing.drawCenterInside(
-            tmpCtx,
-            srcCtx,
-            studio.Util.mult(TARGET_RECT, mult),
-            {x: 0, y: 0, w: srcCtx.canvas.width, h: srcCtx.canvas.height});
+          tmpCtx,
+          srcCtx,
+          studio.Util.mult(TARGET_RECT, mult),
+          { x: 0, y: 0, w: srcCtx.canvas.width, h: srcCtx.canvas.height }
+        );
       }
 
-      studio.Effects.fx([
-        {effect: 'fill-color', color: '#fff'}
-      ], outCtx, tmpCtx, iconSize);
+      studio.Effects.fx(
+        [{ effect: 'fill-color', color: '#fff' }],
+        outCtx,
+        tmpCtx,
+        iconSize
+      );
 
       this.zipper.add({
         name: `res/drawable-${density}/${values.name}.png`,
-        canvas: outCtx.canvas
+        canvas: outCtx.canvas,
       });
 
       this.setImageForSlot_(density, outCtx.canvas.toDataURL());

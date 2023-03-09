@@ -14,55 +14,94 @@
  * limitations under the License.
  */
 
-import {Effects} from './effects';
+import { Effects } from './effects';
 
 export const Drawing = {};
 
-Drawing.context = function(size) {
-  var canvas = document.createElement('canvas');
+Drawing.context = function (size) {
+  const canvas = document.createElement('canvas');
   canvas.width = size.w;
   canvas.height = size.h;
   canvas.style.setProperty('image-rendering', 'optimizeQuality', null);
   return canvas.getContext('2d');
 };
 
-Drawing.drawCenterInside = function(dstCtx, src, dstRect, srcRect) {
+Drawing.drawCenterInside = function (dstCtx, src, dstRect, srcRect) {
   if (srcRect.w / srcRect.h > dstRect.w / dstRect.h) {
-    var h = srcRect.h * dstRect.w / srcRect.w;
-     Drawing.drawImageScaled(dstCtx, src,
-        srcRect.x, srcRect.y,
-        srcRect.w, srcRect.h,
-        dstRect.x, dstRect.y + (dstRect.h - h) / 2,
-        dstRect.w, h);
+    const h = (srcRect.h * dstRect.w) / srcRect.w;
+    Drawing.drawImageScaled(
+      dstCtx,
+      src,
+      srcRect.x,
+      srcRect.y,
+      srcRect.w,
+      srcRect.h,
+      dstRect.x,
+      dstRect.y + (dstRect.h - h) / 2,
+      dstRect.w,
+      h
+    );
   } else {
-    var w = srcRect.w * dstRect.h / srcRect.h;
-     Drawing.drawImageScaled(dstCtx, src,
-        srcRect.x, srcRect.y,
-        srcRect.w, srcRect.h,
-        dstRect.x + (dstRect.w - w) / 2, dstRect.y,
-        w, dstRect.h);
+    const w = (srcRect.w * dstRect.h) / srcRect.h;
+    Drawing.drawImageScaled(
+      dstCtx,
+      src,
+      srcRect.x,
+      srcRect.y,
+      srcRect.w,
+      srcRect.h,
+      dstRect.x + (dstRect.w - w) / 2,
+      dstRect.y,
+      w,
+      dstRect.h
+    );
   }
 };
 
-Drawing.drawCenterCrop = function(dstCtx, src, dstRect, srcRect) {
+Drawing.drawCenterCrop = function (dstCtx, src, dstRect, srcRect) {
   if (srcRect.w / srcRect.h > dstRect.w / dstRect.h) {
-    var w = srcRect.h * dstRect.w / dstRect.h;
-    Drawing.drawImageScaled(dstCtx, src,
-        srcRect.x + (srcRect.w - w) / 2, srcRect.y,
-        w, srcRect.h,
-        dstRect.x, dstRect.y,
-        dstRect.w, dstRect.h);
+    const w = (srcRect.h * dstRect.w) / dstRect.h;
+    Drawing.drawImageScaled(
+      dstCtx,
+      src,
+      srcRect.x + (srcRect.w - w) / 2,
+      srcRect.y,
+      w,
+      srcRect.h,
+      dstRect.x,
+      dstRect.y,
+      dstRect.w,
+      dstRect.h
+    );
   } else {
-    var h = srcRect.w * dstRect.h / dstRect.w;
-    Drawing.drawImageScaled(dstCtx, src,
-        srcRect.x, srcRect.y + (srcRect.h - h) / 2,
-        srcRect.w, h,
-        dstRect.x, dstRect.y,
-        dstRect.w, dstRect.h);
+    const h = (srcRect.w * dstRect.h) / dstRect.w;
+    Drawing.drawImageScaled(
+      dstCtx,
+      src,
+      srcRect.x,
+      srcRect.y + (srcRect.h - h) / 2,
+      srcRect.w,
+      h,
+      dstRect.x,
+      dstRect.y,
+      dstRect.w,
+      dstRect.h
+    );
   }
 };
 
-Drawing.drawImageScaled = function(dstCtx, src, sx, sy, sw, sh, dx, dy, dw, dh) {
+Drawing.drawImageScaled = function (
+  dstCtx,
+  src,
+  sx,
+  sy,
+  sw,
+  sh,
+  dx,
+  dy,
+  dw,
+  dh
+) {
   if (dw <= 0 || dh <= 0 || sw <= 0 || sh <= 0) {
     console.error('Width/height must be at least 0');
     return;
@@ -89,7 +128,7 @@ Drawing.drawImageScaled = function(dstCtx, src, sx, sy, sw, sh, dx, dy, dw, dh) 
   dstCtx.drawImage(src, sx, sy, sw, sh, dx, dy, dw, dh);
 };
 
-Drawing.drawLayers = function(dstCtx, size, layerTree) {
+Drawing.drawLayers = function (dstCtx, size, layerTree) {
   drawLayer_(dstCtx, layerTree);
 
   function drawLayer_(dstCtx, layer) {
@@ -114,14 +153,16 @@ Drawing.drawLayers = function(dstCtx, size, layerTree) {
   function drawGroup_(dstCtx, group) {
     let dstCtxStack = [dstCtx];
 
-    group.children.filter(layer => !!layer).forEach(layer => {
-      drawLayer_(dstCtxStack[dstCtxStack.length - 1], layer);
-      if (layer.mask) {
-        // draw future layers into a separate buffer (later gets masked)
-        let maskedContentCtx = Drawing.context(size);
-        dstCtxStack.push(maskedContentCtx);
-      }
-    });
+    group.children
+      .filter(layer => !!layer)
+      .forEach(layer => {
+        drawLayer_(dstCtxStack[dstCtxStack.length - 1], layer);
+        if (layer.mask) {
+          // draw future layers into a separate buffer (later gets masked)
+          let maskedContentCtx = Drawing.context(size);
+          dstCtxStack.push(maskedContentCtx);
+        }
+      });
 
     while (dstCtxStack.length > 1) {
       let targetCtx = dstCtxStack[dstCtxStack.length - 2];

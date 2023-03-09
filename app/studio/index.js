@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-export {Hash} from './hash';
-export {Util} from './util';
-export {Zip} from './zip';
+export { Hash } from './hash';
+export { Util } from './util';
+export { Zip } from './zip';
 export * from './forms';
 export * from './imagelib';

@@ -46,7 +46,9 @@ export class Form {
     if (this.pauseNotify_) {
       return;
     }
-    (this.changeListeners_ || []).forEach(listener => listener(field, newValue, oldValue));
+    (this.changeListeners_ || []).forEach(listener =>
+      listener(field, newValue, oldValue)
+    );
   }
 
   /**
@@ -55,7 +57,7 @@ export class Form {
    */
   getValues() {
     let values = {};
-    this.fields_.forEach(field => values[field.id_] = field.getValue());
+    this.fields_.forEach(field => (values[field.id_] = field.getValue()));
     return values;
   }
 
@@ -84,8 +86,8 @@ export class Form {
   setValuesSerialized(serializedValues) {
     this.pauseNotify_ = true;
     this.fields_
-        .filter(field => field.id_ in serializedValues && field.deserializeValue)
-        .forEach(field => field.deserializeValue(serializedValues[field.id_]));
+      .filter(field => field.id_ in serializedValues && field.deserializeValue)
+      .forEach(field => field.deserializeValue(serializedValues[field.id_]));
     this.pauseNotify_ = false;
     this.notifyChanged_();
   }

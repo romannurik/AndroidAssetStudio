@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import * as studio from "../studio";
+import * as studio from '../studio';
 
-import { BaseGenerator } from "../base-generator";
+import { BaseGenerator } from '../base-generator';
 
 const ICON_SIZE = { w: 48, h: 48 };
 
@@ -29,39 +29,39 @@ const TARGET_RECTS_BY_SHAPE = {
 };
 
 const GRID_OVERLAY_SVG = `<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-        <g fill="none" fill-rule="evenodd">
-            <rect vector-effect="non-scaling-stroke" x="8" y="2" width="32" height="44" rx="3"/>
-            <rect vector-effect="non-scaling-stroke" x="5" y="5" width="38" height="38" rx="3"/>
-            <rect vector-effect="non-scaling-stroke" x="2" y="8" width="44" height="32" rx="3"/>
-            <circle vector-effect="non-scaling-stroke" cx="24" cy="24" r="10"/>
-            <circle vector-effect="non-scaling-stroke" cx="24" cy="24" r="22"/>
-            <path vector-effect="non-scaling-stroke" d="M0 48L48 0M0 0l48 48M24 48V0M17 0v48M31 0v48M48 24H0M0 31h48M0 17h48"/>
-        </g>
-    </svg>`;
+  <g fill="none" fill-rule="evenodd">
+    <rect vector-effect="non-scaling-stroke" x="8" y="2" width="32" height="44" rx="3"/>
+    <rect vector-effect="non-scaling-stroke" x="5" y="5" width="38" height="38" rx="3"/>
+    <rect vector-effect="non-scaling-stroke" x="2" y="8" width="44" height="32" rx="3"/>
+    <circle vector-effect="non-scaling-stroke" cx="24" cy="24" r="10"/>
+    <circle vector-effect="non-scaling-stroke" cx="24" cy="24" r="22"/>
+    <path vector-effect="non-scaling-stroke" d="M0 48L48 0M0 0l48 48M24 48V0M17 0v48M31 0v48M48 24H0M0 31h48M0 17h48"/>
+  </g>
+</svg>`;
 
 const DEFAULT_EFFECT_OPTIONS = [
-  { id: "none", title: "None" },
-  { id: "elevate", title: "Elevate" },
-  { id: "shadow", title: "Cast shadow" },
-  { id: "score", title: "Score" },
+  { id: 'none', title: 'None' },
+  { id: 'elevate', title: 'Elevate' },
+  { id: 'shadow', title: 'Cast shadow' },
+  { id: 'score', title: 'Score' },
 ];
 
 const NO_SHAPE_EFFECT_OPTIONS = [
-  { id: "none", title: "None" },
-  { id: "score", title: "Score" },
+  { id: 'none', title: 'None' },
+  { id: 'score', title: 'Score' },
 ];
 
 export class LauncherIconGenerator extends BaseGenerator {
   get densities() {
     return new Set([
-      "xxxhdpi" /* must be first */,
-      "web",
-      "webx",
-      "electron",
-      "xxhdpi",
-      "xhdpi",
-      "hdpi",
-      "mdpi",
+      'xxxhdpi' /* must be first */,
+      'web',
+      'webx',
+      'electron',
+      'xxhdpi',
+      'xhdpi',
+      'hdpi',
+      'mdpi',
     ]);
   }
 
@@ -72,93 +72,91 @@ export class LauncherIconGenerator extends BaseGenerator {
   setupForm() {
     let backColorField, effectsField;
     this.form = new studio.Form({
-      id: "iconform",
-      container: "#inputs-form",
+      id: 'iconform',
+      container: '#inputs-form',
       fields: [
-        new studio.ImageField("foreground", {
-          title: "Foreground",
+        new studio.ImageField('foreground', {
+          title: 'Foreground',
           maxFinalSize: { w: 720, h: 720 }, // max render size, for SVGs
           defaultValueTrim: 1,
           defaultValuePadding: 0.25,
-          defaultValueClipart: "android",
+          defaultValueClipart: 'android',
           dropTarget: document.body,
         }),
-        new studio.ColorField("foreColor", {
+        new studio.ColorField('foreColor', {
           newGroup: true,
-          title: "Color",
-          helpText: "Set to transparent to use original colors",
+          title: 'Color',
+          helpText: 'Set to transparent to use original colors',
           alpha: true,
-          defaultValue: "rgba(96, 125, 139, 0)",
+          defaultValue: 'rgba(96, 125, 139, 0)',
         }),
-        (backColorField = new studio.ColorField("backColor", {
-          title: "Background color",
-          defaultValue: "#448aff",
+        (backColorField = new studio.ColorField('backColor', {
+          title: 'Background color',
+          defaultValue: '#448aff',
         })),
-        new studio.BooleanField("crop", {
-          title: "Scaling",
+        new studio.BooleanField('crop', {
+          title: 'Scaling',
           defaultValue: false,
-          offText: "Center",
-          onText: "Crop",
+          offText: 'Center',
+          onText: 'Crop',
         }),
-        new studio.EnumField("backgroundShape", {
-          title: "Shape",
-          helpText: "Web version will always be square",
+        new studio.EnumField('backgroundShape', {
+          title: 'Shape',
+          helpText: 'Web version will always be square',
           options: [
-            { id: "none", title: "None" },
-            { id: "square", title: "Square" },
-            { id: "circle", title: "Circle" },
-            { id: "vrect", title: "Tall rect" },
-            { id: "hrect", title: "Wide rect" },
+            { id: 'none', title: 'None' },
+            { id: 'square', title: 'Square' },
+            { id: 'circle', title: 'Circle' },
+            { id: 'vrect', title: 'Tall rect' },
+            { id: 'hrect', title: 'Wide rect' },
           ],
-          defaultValue: "square",
-          onChange: (newValue) => {
-            backColorField.setEnabled(newValue != "none");
+          defaultValue: 'square',
+          onChange: newValue => {
+            backColorField.setEnabled(newValue != 'none');
             let newEffectsOptions =
-              newValue == "none"
+              newValue == 'none'
                 ? NO_SHAPE_EFFECT_OPTIONS
                 : DEFAULT_EFFECT_OPTIONS;
-            if (
-              !newEffectsOptions.find((e) => e.id == effectsField.getValue())
-            ) {
+            if (!newEffectsOptions.find(e => e.id == effectsField.getValue())) {
               effectsField.setValue(newEffectsOptions[0].id);
             }
             effectsField.setOptions(newEffectsOptions);
           },
         }),
-        (effectsField = new studio.EnumField("effects", {
-          title: "Effect",
+        (effectsField = new studio.EnumField('effects', {
+          title: 'Effect',
           buttons: true,
           options: DEFAULT_EFFECT_OPTIONS,
-          defaultValue: "none",
+          defaultValue: 'none',
         })),
-        new studio.TextField("name", {
-          title: "Name",
-          defaultValue: "ic_launcher",
+        new studio.TextField('name', {
+          title: 'Name',
+          defaultValue: 'ic_launcher',
         }),
       ],
     });
-    this.form.onChange((field) => this.regenerateDebounced_());
+    this.form.onChange(field => this.regenerateDebounced_());
   }
 
   regenerate() {
     let values = this.form.getValues();
-    values.name = values.name || "ic_launcher";
+    values.name = values.name || 'ic_launcher';
 
     this.zipper.clear();
     this.zipper.setZipFilename(`${values.name}.zip`);
 
     let xxxhdpiCtx = null;
 
-    this.densities.forEach((density) => {
+    this.densities.forEach(density => {
       let ctx;
       if (
-        density == "xxxhdpi" ||
-        density == "web" ||
-        density == "webx" ||
-        density == "electron"
+        density == 'xxxhdpi' ||
+        density == 'web' ||
+        density == 'webx' ||
+        density == 'electron'
       ) {
         ctx = this.regenerateRawAtDensity_(density);
-        if (density == "xxxhdpi") {
+        if (density == 'xxxhdpi') {
           xxxhdpiCtx = ctx;
         }
       } else {
@@ -182,14 +180,14 @@ export class LauncherIconGenerator extends BaseGenerator {
 
       let name = `res/mipmap-${density}/${values.name}.png`;
       switch (density) {
-        case "web":
-          name = "web_hi_res_512.png";
+        case 'web':
+          name = 'web_hi_res_512.png';
           break;
-        case "webx":
-          name = "web_hi_res_1024.png";
+        case 'webx':
+          name = 'web_hi_res_1024.png';
           break;
-        case "electron":
-          name = "electron_2024.png";
+        case 'electron':
+          name = 'electron_2024.png';
           break;
       }
       this.zipper.add({
@@ -205,15 +203,15 @@ export class LauncherIconGenerator extends BaseGenerator {
     let values = this.form.getValues();
     let foreSrcCtx = values.foreground ? values.foreground.ctx : null;
     let mult = studio.Util.getMultBaseMdpi(density);
-    if (density == "web") {
+    if (density == 'web') {
       mult = 512 / 48;
-    } else if (density == "webx") {
+    } else if (density == 'webx') {
       mult = 1024 / 48;
     }
 
     let iconSize = studio.Util.multRound(ICON_SIZE, mult);
     let targetRect = TARGET_RECTS_BY_SHAPE[values.backgroundShape];
-    if (density == "web" || density == "webx") {
+    if (density == 'web' || density == 'webx') {
       targetRect = { x: 0, y: 0, w: 48, h: 48 };
     }
 
@@ -234,13 +232,13 @@ export class LauncherIconGenerator extends BaseGenerator {
 
     let backgroundLayer = {
       // background layer
-      draw: (ctx) => {
+      draw: ctx => {
         ctx.scale(mult, mult);
         values.backColor.setAlpha(1);
         ctx.fillStyle = values.backColor.toRgbString();
-        if (density == "web" || density == "webx") {
-          if (values.backgroundShape == "none") {
-            ctx.fillStyle = "white";
+        if (density == 'web' || density == 'webx') {
+          if (values.backgroundShape == 'none') {
+            ctx.fillStyle = 'white';
           }
           ctx.fillRect(0, 0, 48, 48);
           return;
@@ -248,14 +246,14 @@ export class LauncherIconGenerator extends BaseGenerator {
 
         let targetRect = TARGET_RECTS_BY_SHAPE[values.backgroundShape];
         switch (values.backgroundShape) {
-          case "square":
-          case "vrect":
-          case "hrect":
+          case 'square':
+          case 'vrect':
+          case 'hrect':
             roundRectPath_(ctx, targetRect, 3);
             ctx.fill();
             break;
 
-          case "circle":
+          case 'circle':
             ctx.beginPath();
             ctx.arc(
               targetRect.x + targetRect.w / 2,
@@ -275,13 +273,13 @@ export class LauncherIconGenerator extends BaseGenerator {
 
     let foregroundLayer = {
       // foreground content layer
-      draw: (ctx) => {
+      draw: ctx => {
         if (!foreSrcCtx) {
           return;
         }
 
         let drawFn_ =
-          studio.Drawing[values.crop ? "drawCenterCrop" : "drawCenterInside"];
+          studio.Drawing[values.crop ? 'drawCenterCrop' : 'drawCenterInside'];
         drawFn_(ctx, foreSrcCtx, studio.Util.mult(targetRect, mult), {
           x: 0,
           y: 0,
@@ -290,34 +288,34 @@ export class LauncherIconGenerator extends BaseGenerator {
         });
       },
       effects: [],
-      mask: !!(values.backgroundShape == "none"),
+      mask: !!(values.backgroundShape == 'none'),
     };
 
-    if (values.backgroundShape != "none" && values.effects == "shadow") {
-      foregroundLayer.effects.push({ effect: "cast-shadow" });
+    if (values.backgroundShape != 'none' && values.effects == 'shadow') {
+      foregroundLayer.effects.push({ effect: 'cast-shadow' });
     }
 
     if (values.foreColor.getAlpha()) {
       foregroundLayer.effects.push({
-        effect: "fill-color",
+        effect: 'fill-color',
         color: values.foreColor.toRgbString(),
       });
     }
 
     if (
-      values.backgroundShape != "none" &&
-      (values.effects == "elevate" || values.effects == "shadow")
+      values.backgroundShape != 'none' &&
+      (values.effects == 'elevate' || values.effects == 'shadow')
     ) {
       foregroundLayer.effects = [
         ...foregroundLayer.effects,
         {
-          effect: "outer-shadow",
-          color: "rgba(0, 0, 0, 0.2)",
+          effect: 'outer-shadow',
+          color: 'rgba(0, 0, 0, 0.2)',
           translateY: 0.25 * mult,
         },
         {
-          effect: "outer-shadow",
-          color: "rgba(0, 0, 0, 0.2)",
+          effect: 'outer-shadow',
+          color: 'rgba(0, 0, 0, 0.2)',
           blur: 1 * mult,
           translateY: 1 * mult,
         },
@@ -325,59 +323,59 @@ export class LauncherIconGenerator extends BaseGenerator {
     }
 
     let scoreLayer = {
-      draw: (ctx) => {
-        ctx.fillStyle = "rgba(0, 0, 0, .1)";
+      draw: ctx => {
+        ctx.fillStyle = 'rgba(0, 0, 0, .1)';
         ctx.fillRect(0, 0, iconSize.w, iconSize.h / 2);
       },
     };
 
     let finalEffects = [
       {
-        effect: "inner-shadow",
-        color: "rgba(255, 255, 255, 0.2)",
+        effect: 'inner-shadow',
+        color: 'rgba(255, 255, 255, 0.2)',
         translateY: 0.25 * mult,
       },
       {
-        effect: "inner-shadow",
-        color: "rgba(0, 0, 0, 0.2)",
+        effect: 'inner-shadow',
+        color: 'rgba(0, 0, 0, 0.2)',
         translateY: -0.25 * mult,
       },
       {
-        effect: "outer-shadow",
-        color: "rgba(0, 0, 0, 0.3)",
+        effect: 'outer-shadow',
+        color: 'rgba(0, 0, 0, 0.3)',
         blur: 0.7 * mult,
         translateY: 0.7 * mult,
       },
       {
-        effect: "fill-radialgradient",
+        effect: 'fill-radialgradient',
         centerX: 0,
         centerY: 0,
         radius: iconSize.w,
         colors: [
-          { offset: 0, color: "rgba(255,255,255,.1)" },
-          { offset: 1.0, color: "rgba(255,255,255,0)" },
+          { offset: 0, color: 'rgba(255,255,255,.1)' },
+          { offset: 1.0, color: 'rgba(255,255,255,0)' },
         ],
       },
     ];
 
-    if (density == "web" || density == "webx") {
-      if (values.backgroundShape == "none") {
+    if (density == 'web' || density == 'webx') {
+      if (values.backgroundShape == 'none') {
         foregroundLayer.effects = [...foregroundLayer.effects, ...finalEffects];
         finalEffects = [];
       } else {
-        finalEffects = finalEffects.filter((e) => e.effect.match(/fill/));
+        finalEffects = finalEffects.filter(e => e.effect.match(/fill/));
       }
     }
 
     studio.Drawing.drawLayers(outCtx, iconSize, {
       children: [
-        density == "web" ||
-        density == "webx" ||
-        values.backgroundShape != "none"
+        density == 'web' ||
+        density == 'webx' ||
+        values.backgroundShape != 'none'
           ? backgroundLayer
           : null,
         foregroundLayer,
-        values.effects == "score" ? scoreLayer : null,
+        values.effects == 'score' ? scoreLayer : null,
       ],
       effects: finalEffects,
     });

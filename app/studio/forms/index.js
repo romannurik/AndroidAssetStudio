@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-export {BooleanField} from './boolean-field';
-export {ColorField} from './color-field';
-export {EnumField} from './enum-field';
-export {Field} from './field';
-export {Form} from './form';
-export {ImageField} from './image-field';
-export {RangeField} from './range-field';
-export {TextField} from './text-field';
+export { BooleanField } from './boolean-field';
+export { ColorField } from './color-field';
+export { EnumField } from './enum-field';
+export { Field } from './field';
+export { Form } from './form';
+export { ImageField } from './image-field';
+export { RangeField } from './range-field';
+export { TextField } from './text-field';

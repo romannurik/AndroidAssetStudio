@@ -59,7 +59,7 @@ $formFieldSpacing: 24px;
   }
 
   &[disabled] {
-    opacity: .2;
+    opacity: 0.2;
     pointer-events: none;
     user-select: none;
     filter: grayscale(100%);
@@ -93,7 +93,7 @@ $formFieldSpacing: 24px;
   }
 
   &[disabled] {
-    opacity: .5;
+    opacity: 0.5;
     user-select: none;
     cursor: not-allowed;
     filter: grayscale(100%);
@@ -113,8 +113,8 @@ $formFieldSpacing: 24px;
 
   select {
     @include form-field-element;
-    padding:
-        $formFieldPaddingY ($formFieldPaddingX + 16px) $formFieldPaddingY $formFieldPaddingX;
+    padding: $formFieldPaddingY ($formFieldPaddingX + 16px) $formFieldPaddingY
+      $formFieldPaddingX;
     cursor: pointer;
     appearance: none;
   }
@@ -147,7 +147,7 @@ $formFieldSpacing: 24px;
   flex-direction: row;
   overflow: hidden;
 
-  input[type=radio] {
+  input[type='radio'] {
     display: none;
   }
 
@@ -260,10 +260,7 @@ $formFieldSpacing: 24px;
   border-radius: 50%;
 
   color: $colorBlackPrimary;
-  transition:
-      color .1s ease,
-      background-color .1s ease,
-      box-shadow .1s ease;
+  transition: color 0.1s ease, background-color 0.1s ease, box-shadow 0.1s ease;
 
   &:hover,
   &:focus {
@@ -299,7 +296,7 @@ $formFieldSpacing: 24px;
   flex-direction: row;
   align-items: center;
 
-  input[type="range"] {
+  input[type='range'] {
     flex: 1;
     outline: 0;
     cursor: pointer;
@@ -332,7 +329,7 @@ $formFieldSpacing: 24px;
       height: 16px;
       border-radius: 50%;
       transform: translateY(calc(-50% + 1px));
-      transition: transform .1s ease;
+      transition: transform 0.1s ease;
     }
   }
 }
@@ -358,13 +355,17 @@ $formFieldSpacing: 24px;
     top: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba($colorAccent, .5);
-    animation: pulsate-color .33s ease 0s infinite alternate;
+    background-color: rgba($colorAccent, 0.5);
+    animation: pulsate-color 0.33s ease 0s infinite alternate;
     z-index: 1000;
 
     @keyframes pulsate-color {
-      from { opacity: .5 }
-      to { opacity: 1 }
+      from {
+        opacity: 0.5;
+      }
+      to {
+        opacity: 1;
+      }
     }
   }
 }
@@ -405,7 +406,7 @@ $formFieldSpacing: 24px;
   &-widget-swatch {
     width: 40px;
     height: 20px;
-    box-shadow: 0 0 0 1px rgba(#000, .12);
+    box-shadow: 0 0 0 1px rgba(#000, 0.12);
     position: relative;
 
     &::before,
@@ -419,7 +420,7 @@ $formFieldSpacing: 24px;
     }
 
     &::before {
-      background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCA0MCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCAwaDEwdjEwSDBWMHptMjAgMGgxMHYxMEgyMFYwek0xMCAxMGgxMHYxMEgxMFYxMHptMjAgMGgxMHYxMEgzMFYxMHoiIGZpbGw9IiMwMDAiIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbC1vcGFjaXR5PSIuMSIvPjwvc3ZnPg==");
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCA0MCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMCAwaDEwdjEwSDBWMHptMjAgMGgxMHYxMEgyMFYwek0xMCAxMGgxMHYxMEgxMFYxMHptMjAgMGgxMHYxMEgzMFYxMHoiIGZpbGw9IiMwMDAiIGZpbGwtcnVsZT0ibm9uemVybyIgZmlsbC1vcGFjaXR5PSIuMSIvPjwvc3ZnPg==');
     }
 
     &::after {

@@ -16,25 +16,25 @@
 
 import $ from 'jquery';
 
-import {Field} from './field';
+import { Field } from './field';
 
 export class TextField extends Field {
   createUi(container) {
     var fieldContainer = $('.form-field-container', super.createUi(container));
 
     this.el_ = $('<input>')
-        .attr('type', 'text')
-        .attr('placeholder', this.params_.placeholder)
-        .addClass('form-field-text')
-        .val(this.getValue())
-        .on('input', ev => {
-          var oldVal = this.getValue();
-          var newVal = $(ev.currentTarget).val();
-          if (oldVal != newVal) {
-            this.setValue(newVal, true);
-          }
-        })
-        .appendTo(fieldContainer);
+      .attr('type', 'text')
+      .attr('placeholder', this.params_.placeholder)
+      .addClass('form-field-text')
+      .val(this.getValue())
+      .on('input', ev => {
+        var oldVal = this.getValue();
+        var newVal = $(ev.currentTarget).val();
+        if (oldVal != newVal) {
+          this.setValue(newVal, true);
+        }
+      })
+      .appendTo(fieldContainer);
   }
 
   getValue() {

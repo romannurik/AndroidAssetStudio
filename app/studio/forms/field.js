@@ -73,22 +73,21 @@ export class Field {
   createUi(container) {
     container = $(container);
     this.baseEl_ = $('<div>')
-        .addClass('form-field-outer')
-        .addClass(this.params_.newGroup ? 'is-new-group' : '')
-        .append(
-          $('<label>')
-            .attr('for', this.getHtmlId())
-            .text(this.params_.title)
-            .append($('<div>')
+      .addClass('form-field-outer')
+      .addClass(this.params_.newGroup ? 'is-new-group' : '')
+      .append(
+        $('<label>')
+          .attr('for', this.getHtmlId())
+          .text(this.params_.title)
+          .append(
+            $('<div>')
               .addClass('form-field-help-text')
               .css('display', this.params_.helpText ? '' : 'none')
-              .html(this.params_.helpText))
-        )
-        .append(
-          $('<div>')
-            .addClass('form-field-container')
-        )
-        .appendTo(container);
+              .html(this.params_.helpText)
+          )
+      )
+      .append($('<div>').addClass('form-field-container'))
+      .appendTo(container);
     return this.baseEl_;
   }
 
@@ -115,6 +114,8 @@ export class Field {
   }
 
   notifyChanged_(newValue, oldValue) {
-    (this.changeListeners_ || []).forEach(listener => listener(newValue, oldValue));
+    (this.changeListeners_ || []).forEach(listener =>
+      listener(newValue, oldValue)
+    );
   }
 }

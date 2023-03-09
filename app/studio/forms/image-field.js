@@ -17,24 +17,22 @@
 import $ from 'jquery';
 import WebFont from 'webfontloader';
 
-import {Form} from './form';
-import {Field} from './field';
-import {TextField} from './text-field';
-import {RangeField} from './range-field';
-import {BooleanField} from './boolean-field';
-import {EnumField} from '.';
+import { Form } from './form';
+import { Field } from './field';
+import { TextField } from './text-field';
+import { RangeField } from './range-field';
+import { BooleanField } from './boolean-field';
+import { EnumField } from '.';
 
-import {Util} from '../util';
+import { Util } from '../util';
 
 import * as studio from '../index';
 
-import {CLIPART_NAMES} from './image-field-clipart';
-
+import { CLIPART_NAMES } from './image-field-clipart';
 
 const WEB_FONTS_API_KEY = 'AIzaSyAtSe8wlXPCUaLQ4LTyPKpbzBBPJAzEXmU';
 const WEB_FONTS_API_URL = `https://www.googleapis.com/webfonts/v1/webfonts?key=${WEB_FONTS_API_KEY}&fields=items(family)`;
 const WEB_FONTS_CACHE_TIME = 60 * 60 * 1000; // 1 hour
-
 
 /**
  * Represents a form field for image values.
@@ -60,20 +58,18 @@ export class ImageField extends Field {
 
     // Create radio buttons
     this.el_ = $('<div>')
-        .attr('id', this.getHtmlId())
-        .addClass('form-field-buttonset')
-        .appendTo(fieldContainer);
+      .attr('id', this.getHtmlId())
+      .addClass('form-field-buttonset')
+      .appendTo(fieldContainer);
 
     var types;
     if (this.params_.imageOnly) {
-      types = [
-        ['image', 'Select image']
-      ];
+      types = [['image', 'Select image']];
     } else {
       types = [
         ['image', 'Image'],
         ['clipart', 'Clipart'],
-        ['text', 'Text']
+        ['text', 'Text'],
       ];
     }
 
@@ -81,30 +77,30 @@ export class ImageField extends Field {
 
     types.forEach(([id, label]) => {
       $('<input>')
-          .attr({
-            type: 'radio',
-            name: this.getHtmlId(),
-            id: `${this.getHtmlId()}-${id}`,
-            value: id
-          })
-          .appendTo(this.el_);
+        .attr({
+          type: 'radio',
+          name: this.getHtmlId(),
+          id: `${this.getHtmlId()}-${id}`,
+          value: id,
+        })
+        .appendTo(this.el_);
       typeEls[id] = $('<label>')
-          .attr('for', `${this.getHtmlId()}-${id}`)
-          .attr('tabindex', 0)
-          .text(label)
-          .appendTo(this.el_);
+        .attr('for', `${this.getHtmlId()}-${id}`)
+        .attr('tabindex', 0)
+        .text(label)
+        .appendTo(this.el_);
     });
 
     // Prepare UI for the 'image' type
     this.fileEl_ = $('<input>')
-        .addClass('form-image-hidden-file-field')
-        .attr({
-          id: this.getHtmlId(),
-          type: 'file',
-          accept: 'image/*'
-        })
-        .on('change', () => this.loadImage_(this.fileEl_.get(0).files))
-        .appendTo(this.el_);
+      .addClass('form-image-hidden-file-field')
+      .attr({
+        id: this.getHtmlId(),
+        type: 'file',
+        accept: 'image/*',
+      })
+      .on('change', () => this.loadImage_(this.fileEl_.get(0).files))
+      .appendTo(this.el_);
 
     typeEls.image.click(evt => {
       this.fileEl_.trigger('click');
@@ -117,22 +113,24 @@ export class ImageField extends Field {
     // Prepare UI for the 'clipart' type
     if (!this.params_.imageOnly) {
       let clipartParamsEl = $('<div>')
-          .addClass('form-image-type-params form-image-type-params-clipart is-hidden')
-          .appendTo(fieldContainer);
+        .addClass(
+          'form-image-type-params form-image-type-params-clipart is-hidden'
+        )
+        .appendTo(fieldContainer);
 
       let clipartListEl = $('<div>')
-          .addClass('form-image-clipart-list')
-          .addClass('cancel-parent-scroll')
-          .appendTo(clipartParamsEl);
+        .addClass('form-image-clipart-list')
+        .addClass('cancel-parent-scroll')
+        .appendTo(clipartParamsEl);
 
       CLIPART_NAMES.forEach(clipartSrc => {
         $('<div>')
-            .addClass('form-image-clipart-item')
-            .attr('data-name', clipartSrc)
-            .attr('title', clipartSrc)
-            .text(clipartSrc)
-            .click(() => this.loadClipart_(clipartSrc))
-            .appendTo(clipartListEl);
+          .addClass('form-image-clipart-item')
+          .attr('data-name', clipartSrc)
+          .attr('title', clipartSrc)
+          .text(clipartSrc)
+          .click(() => this.loadClipart_(clipartSrc))
+          .appendTo(clipartListEl);
       });
 
       this.$clipartItems = clipartListEl.find('.form-image-clipart-item');
@@ -142,7 +140,10 @@ export class ImageField extends Field {
         .attr('placeholder', 'Find clipart')
         .on('input', ev => {
           let $filter = $(ev.currentTarget);
-          let val = $filter.val().toLowerCase().replace(/[^\w]+/g, '');
+          let val = $filter
+            .val()
+            .toLowerCase()
+            .replace(/[^\w]+/g, '');
           if (!val) {
             this.$clipartItems.show();
           } else {
@@ -154,15 +155,17 @@ export class ImageField extends Field {
         .prependTo(clipartParamsEl);
 
       var clipartAttributionEl = $('<div>')
-          .addClass('form-image-clipart-attribution')
-          .html(`
+        .addClass('form-image-clipart-attribution')
+        .html(
+          `
               For clipart sources, visit
               <a target="_blank"
                  class="external-link"
                  href="https://github.com/google/material-design-icons">
               Material Design Icons on GitHub</a>
-              `)
-          .appendTo(clipartParamsEl);
+              `
+        )
+        .appendTo(clipartParamsEl);
 
       typeEls.clipart.click(evt => {
         this.setValueType_('clipart');
@@ -171,8 +174,10 @@ export class ImageField extends Field {
 
       // Prepare UI for the 'text' type
       var textParamsEl = $('<div>')
-          .addClass('form-subform form-image-type-params form-image-type-params-text is-hidden')
-          .appendTo(fieldContainer);
+        .addClass(
+          'form-subform form-image-type-params form-image-type-params-text is-hidden'
+        )
+        .appendTo(fieldContainer);
 
       let fontFamilyField;
       this.textForm_ = new Form({
@@ -184,13 +189,17 @@ export class ImageField extends Field {
           }),
           (fontFamilyField = new EnumField('font', {
             title: 'Font',
-            helpText: 'From fonts.google.com'
-          }))
-        ]
+            helpText: 'From fonts.google.com',
+          })),
+        ],
       });
-      this.loadGoogleWebFontsList_().then(fonts => fontFamilyField.setOptions([''].concat(fonts)));
+      this.loadGoogleWebFontsList_().then(fonts =>
+        fontFamilyField.setOptions([''].concat(fonts))
+      );
 
-      let tryLoadWebFontDebounced_ = Util.debounce(500, () => this.tryLoadWebFont_());
+      let tryLoadWebFontDebounced_ = Util.debounce(500, () =>
+        this.tryLoadWebFont_()
+      );
       this.textForm_.onChange(() => {
         var values = this.textForm_.getValues();
         this.textParams_.text = values.text;
@@ -208,8 +217,8 @@ export class ImageField extends Field {
     // Create spacing subform
     if (!this.params_.noTrimForm) {
       let spaceFormContainer = $('<div>')
-          .addClass('form-subform')
-          .appendTo(fieldContainer);
+        .addClass('form-subform')
+        .appendTo(fieldContainer);
       this.spaceFormValues_ = {};
       this.spaceForm_ = new Form({
         id: `${this.form_.id_}-${this.id_}-spaceform`,
@@ -219,7 +228,7 @@ export class ImageField extends Field {
             title: 'Trim whitespace',
             defaultValue: true,
             offText: `Don't trim`,
-            onText: 'Trim'
+            onText: 'Trim',
           })),
           (this.spaceFormPaddingField_ = new RangeField('pad', {
             title: 'Padding',
@@ -229,9 +238,9 @@ export class ImageField extends Field {
             step: 0.05,
             textFn(v) {
               return (v * 100).toFixed(0) + '%';
-            }
+            },
           })),
-        ]
+        ],
       });
       this.spaceForm_.onChange(() => {
         this.spaceFormValues_ = this.spaceForm_.getValues();
@@ -245,9 +254,9 @@ export class ImageField extends Field {
     // Create image preview element
     if (!this.params_.noPreview) {
       this.imagePreview_ = $('<canvas>')
-          .addClass('form-image-preview')
-          .hide()
-          .appendTo(fieldContainer.parent());
+        .addClass('form-image-preview')
+        .hide()
+        .appendTo(fieldContainer.parent());
     }
 
     if (this.params_.defaultValueClipart) {
@@ -260,42 +269,43 @@ export class ImageField extends Field {
   }
 
   setupDropTarget_(el) {
-    let $el = this.params_.dropTarget
-        ? $(this.params_.dropTarget)
-        : $(el);
+    let $el = this.params_.dropTarget ? $(this.params_.dropTarget) : $(el);
     let enterLeaveTimeout;
 
     $el
-        .addClass('form-field-drop-target')
-        .on('dragenter', ev => {
-          ev.preventDefault();
-          if (enterLeaveTimeout) {
-            clearTimeout(enterLeaveTimeout);
-            enterLeaveTimeout = null;
-          }
-          $el.addClass('drag-hover');
-        })
-        .on('dragleave', ev => {
-          ev.preventDefault();
-          if (enterLeaveTimeout) {
-            clearTimeout(enterLeaveTimeout);
-          }
-          enterLeaveTimeout = setTimeout(() => $el.removeClass('drag-hover'), 100);
-        })
-        .on('dragover', ev => {
-          ev.preventDefault();
-          if (enterLeaveTimeout) {
-            clearTimeout(enterLeaveTimeout);
-            enterLeaveTimeout = null;
-          }
-          ev.originalEvent.dataTransfer.dropEffect = 'copy';
-        })
-        .on('drop', ev => {
-          $el.removeClass('drag-hover');
-          ev.stopPropagation();
-          ev.preventDefault();
-          this.loadImage_(ev.originalEvent.dataTransfer.files);
-        });
+      .addClass('form-field-drop-target')
+      .on('dragenter', ev => {
+        ev.preventDefault();
+        if (enterLeaveTimeout) {
+          clearTimeout(enterLeaveTimeout);
+          enterLeaveTimeout = null;
+        }
+        $el.addClass('drag-hover');
+      })
+      .on('dragleave', ev => {
+        ev.preventDefault();
+        if (enterLeaveTimeout) {
+          clearTimeout(enterLeaveTimeout);
+        }
+        enterLeaveTimeout = setTimeout(
+          () => $el.removeClass('drag-hover'),
+          100
+        );
+      })
+      .on('dragover', ev => {
+        ev.preventDefault();
+        if (enterLeaveTimeout) {
+          clearTimeout(enterLeaveTimeout);
+          enterLeaveTimeout = null;
+        }
+        ev.originalEvent.dataTransfer.dropEffect = 'copy';
+      })
+      .on('drop', ev => {
+        $el.removeClass('drag-hover');
+        ev.stopPropagation();
+        ev.preventDefault();
+        this.loadImage_(ev.originalEvent.dataTransfer.files);
+      });
   }
 
   loadImage_(fileList) {
@@ -314,7 +324,9 @@ export class ImageField extends Field {
   loadGoogleWebFontsList_() {
     return new Promise((resolve, reject) => {
       if ('assetStudioWebFontsCache' in localStorage) {
-        let {fetchTime, fonts} = JSON.parse(localStorage.assetStudioWebFontsCache);
+        let { fetchTime, fonts } = JSON.parse(
+          localStorage.assetStudioWebFontsCache
+        );
         if (Number(new Date()) - fetchTime < WEB_FONTS_CACHE_TIME) {
           // use cache
           resolve(fonts);
@@ -324,15 +336,18 @@ export class ImageField extends Field {
 
       $.ajax({
         url: WEB_FONTS_API_URL,
-        dataType: 'json'
-      }).then(data => {
-        let fonts = data.items.map(item => item.family);
-        localStorage.assetStudioWebFontsCache = JSON.stringify({
-          fetchTime: Number(new Date()),
-          fonts
-        });
-        resolve(fonts);
-      }, e => reject(e));
+        dataType: 'json',
+      }).then(
+        data => {
+          let fonts = data.items.map(item => item.family);
+          localStorage.assetStudioWebFontsCache = JSON.stringify({
+            fetchTime: Number(new Date()),
+            fonts,
+          });
+          resolve(fonts);
+        },
+        e => reject(e)
+      );
     });
   }
 
@@ -344,12 +359,12 @@ export class ImageField extends Field {
 
     WebFont.load({
       google: {
-        families: [desiredFont]
+        families: [desiredFont],
       },
       active: () => {
         this.loadedWebFont_ = desiredFont;
         this.renderValueAndNotifyChanged_();
-      }
+      },
     });
   }
 
@@ -359,7 +374,9 @@ export class ImageField extends Field {
     $('.form-image-type-params', this.el_.parent()).addClass('is-hidden');
     if (type) {
       $(`#${this.getHtmlId()}-${type}`).prop('checked', true);
-      $('.form-image-type-params-' + type, this.el_.parent()).removeClass('is-hidden');
+      $('.form-image-type-params-' + type, this.el_.parent()).removeClass(
+        'is-hidden'
+      );
     }
 
     if (this.spaceForm_) {
@@ -381,7 +398,9 @@ export class ImageField extends Field {
 
   loadClipart_(clipartSrc) {
     this.$clipartItems.removeClass('is-selected');
-    this.$clipartItems.filter(`[data-name="${clipartSrc}"]`).addClass('is-selected');
+    this.$clipartItems
+      .filter(`[data-name="${clipartSrc}"]`)
+      .addClass('is-selected');
 
     this.setValueType_('clipart');
     this.clipartSrc_ = clipartSrc;
@@ -418,7 +437,7 @@ export class ImageField extends Field {
       ctx: this.valueCtx_,
       origImg: this.valueOrigImg_,
       type: this.valueType_,
-      name
+      name,
     };
   }
 
@@ -443,46 +462,55 @@ export class ImageField extends Field {
 
     if (this.rendering_) {
       this.renderTimeout_ = setTimeout(
-          () => this.renderValueAndNotifyChanged_(),
-          100);
+        () => this.renderValueAndNotifyChanged_(),
+        100
+      );
       return;
     }
 
     this.rendering_ = true;
 
     this.renderSource_()
-        .then(({ctx, size}) => {
-          this.computeTrimRect_(ctx, size)
-              .then(trimRect => {
-                let pad = this.spaceFormValues_.pad || 0;
-                let padPx = Math.round(pad * Math.min(trimRect.w, trimRect.h));
-                this.valueCtx_ = studio.Drawing.context({
-                  w: trimRect.w + padPx * 2,
-                  h: trimRect.h + padPx * 2
-                });
-                this.valueCtx_.drawImage(ctx.canvas,
-                    trimRect.x, trimRect.y, trimRect.w, trimRect.h,
-                    padPx, padPx, trimRect.w, trimRect.h);
+      .then(({ ctx, size }) => {
+        this.computeTrimRect_(ctx, size).then(trimRect => {
+          let pad = this.spaceFormValues_.pad || 0;
+          let padPx = Math.round(pad * Math.min(trimRect.w, trimRect.h));
+          this.valueCtx_ = studio.Drawing.context({
+            w: trimRect.w + padPx * 2,
+            h: trimRect.h + padPx * 2,
+          });
+          this.valueCtx_.drawImage(
+            ctx.canvas,
+            trimRect.x,
+            trimRect.y,
+            trimRect.w,
+            trimRect.h,
+            padPx,
+            padPx,
+            trimRect.w,
+            trimRect.h
+          );
 
-                if (this.imagePreview_) {
-                  this.imagePreview_.attr({
-                    width: this.valueCtx_.canvas.width,
-                    height: this.valueCtx_.canvas.height
-                  });
+          if (this.imagePreview_) {
+            this.imagePreview_.attr({
+              width: this.valueCtx_.canvas.width,
+              height: this.valueCtx_.canvas.height,
+            });
 
-                  let previewCtx = this.imagePreview_.get(0).getContext('2d');
-                  previewCtx.drawImage(this.valueCtx_.canvas, 0, 0);
-                  this.imagePreview_.show();
-                }
+            let previewCtx = this.imagePreview_.get(0).getContext('2d');
+            previewCtx.drawImage(this.valueCtx_.canvas, 0, 0);
+            this.imagePreview_.show();
+          }
 
-                this.rendering_ = false;
-                this.notifyChanged_(this.getValue(), this.lastNotifiedValue_);
-              });
-        }).catch(e => {
-          console.error('Error: ' + e);
           this.rendering_ = false;
           this.notifyChanged_(this.getValue(), this.lastNotifiedValue_);
         });
+      })
+      .catch(e => {
+        console.error('Error: ' + e);
+        this.rendering_ = false;
+        this.notifyChanged_(this.getValue(), this.lastNotifiedValue_);
+      });
   }
 
   renderSource_() {
@@ -491,32 +519,39 @@ export class ImageField extends Field {
       switch (this.valueType_) {
         case 'image':
           if (this.imageParams_.uri) {
-            Util.loadImageFromUri(this.imageParams_.uri)
-                .then(img => {
-                  this.valueOrigImg_ = img;
-                  let origSize = {
-                    w: img.naturalWidth,
-                    h: img.naturalHeight
-                  };
-                  let size = Object.assign({}, origSize);
-                  if (this.imageParams_.isSvg && this.params_.maxFinalSize) {
-                    if (size.w / size.h > this.params_.maxFinalSize.w / this.params_.maxFinalSize.h) {
-                      size.w = this.params_.maxFinalSize.w;
-                      size.h = size.w * origSize.h / origSize.w;
-                    } else {
-                      size.h = this.params_.maxFinalSize.h;
-                      size.w = size.h * origSize.w / origSize.h;
-                    }
-                  }
-                  let ctx = studio.Drawing.context(size);
-                  // don't specify source width and height because it breaks
-                  // SVGs that don't have a width or height set (i.e. viewbox only)
-                  // and is irrelevant for PNGs
-                  ctx.drawImage(img,
-                      // 0, 0, origSize.w, origSize.h,
-                      0, 0, size.w, size.h);
-                  resolve({ctx, size});
-                });
+            Util.loadImageFromUri(this.imageParams_.uri).then(img => {
+              this.valueOrigImg_ = img;
+              let origSize = {
+                w: img.naturalWidth,
+                h: img.naturalHeight,
+              };
+              let size = Object.assign({}, origSize);
+              if (this.imageParams_.isSvg && this.params_.maxFinalSize) {
+                if (
+                  size.w / size.h >
+                  this.params_.maxFinalSize.w / this.params_.maxFinalSize.h
+                ) {
+                  size.w = this.params_.maxFinalSize.w;
+                  size.h = (size.w * origSize.h) / origSize.w;
+                } else {
+                  size.h = this.params_.maxFinalSize.h;
+                  size.w = (size.h * origSize.w) / origSize.h;
+                }
+              }
+              let ctx = studio.Drawing.context(size);
+              // don't specify source width and height because it breaks
+              // SVGs that don't have a width or height set (i.e. viewbox only)
+              // and is irrelevant for PNGs
+              ctx.drawImage(
+                img,
+                // 0, 0, origSize.w, origSize.h,
+                0,
+                0,
+                size.w,
+                size.h
+              );
+              resolve({ ctx, size });
+            });
           } else {
             reject('no uri');
           }
@@ -532,7 +567,7 @@ export class ImageField extends Field {
           ctx.textBaseline = 'alphabetic';
           ctx.fillText(text, 0, size.h);
 
-          resolve({ctx, size});
+          resolve({ ctx, size });
           break;
 
         case 'text':
@@ -546,9 +581,11 @@ export class ImageField extends Field {
           ctx.font = `bold ${textHeight}px/${size.h}px ${this.textParams_.fontStack}`;
           ctx.textBaseline = 'alphabetic';
           ctx.fillText(text, 0, textHeight);
-          size.w = Math.ceil(Math.min(ctx.measureText(text).width, size.w) || size.w);
+          size.w = Math.ceil(
+            Math.min(ctx.measureText(text).width, size.w) || size.w
+          );
 
-          resolve({ctx, size});
+          resolve({ ctx, size });
           break;
 
         default:
@@ -565,19 +602,20 @@ export class ImageField extends Field {
         }
 
         this.trimPromise_ = studio.Analysis.getTrimRect(ctx, size, 1)
-            .then(trimRect => {
-              let pad = Math.min(size.w, size.h) * .01;
-              // pad a little bit to avoid edge artifacts
-              Object.assign(trimRect, {
-                x: Math.max(Math.floor(trimRect.x - pad), 0),
-                y: Math.max(Math.floor(trimRect.y - pad), 0),
-                w: Math.ceil(trimRect.w + pad * 2),
-                h: Math.ceil(trimRect.h + pad * 2)
-              });
-              trimRect.w = Math.min(trimRect.w, size.w - trimRect.x);
-              trimRect.h = Math.min(trimRect.h, size.h - trimRect.y);
-              resolve(trimRect);
-            }).catch(reject);
+          .then(trimRect => {
+            let pad = Math.min(size.w, size.h) * 0.01;
+            // pad a little bit to avoid edge artifacts
+            Object.assign(trimRect, {
+              x: Math.max(Math.floor(trimRect.x - pad), 0),
+              y: Math.max(Math.floor(trimRect.y - pad), 0),
+              w: Math.ceil(trimRect.w + pad * 2),
+              h: Math.ceil(trimRect.h + pad * 2),
+            });
+            trimRect.w = Math.min(trimRect.w, size.w - trimRect.x);
+            trimRect.h = Math.min(trimRect.h, size.h - trimRect.y);
+            resolve(trimRect);
+          })
+          .catch(reject);
       } else {
         resolve({ x: 0, y: 0, w: size.w, h: size.h });
       }
@@ -587,8 +625,9 @@ export class ImageField extends Field {
   serializeValue() {
     let vals = {
       type: this.valueType_,
-      clipart: (this.valueType_ == 'clipart') ? this.clipartSrc_ : null,
-      text: (this.valueType_ == 'text') ? this.textForm_.getValuesSerialized() : null
+      clipart: this.valueType_ == 'clipart' ? this.clipartSrc_ : null,
+      text:
+        this.valueType_ == 'text' ? this.textForm_.getValuesSerialized() : null,
     };
 
     if (this.spaceForm_) {
@@ -624,7 +663,7 @@ export class ImageField extends Field {
  *      the loaded image. There will also be a 'name' field indicating the file name, if one
  *      is available.
  */
-ImageField.loadImageFromFileList = function(fileList) {
+ImageField.loadImageFromFileList = function (fileList) {
   return new Promise((resolve, reject) => {
     fileList = fileList || [];
 
@@ -641,11 +680,12 @@ ImageField.loadImageFromFileList = function(fileList) {
     let fileReader = new FileReader();
 
     // Closure to capture the file information.
-    fileReader.onload = e => resolve({
-      isSvg,
-      uri: e.target.result,
-      name: file.name
-    });
+    fileReader.onload = e =>
+      resolve({
+        isSvg,
+        uri: e.target.result,
+        name: file.name,
+      });
 
     fileReader.onerror = e => {
       switch (e.target.error.code) {

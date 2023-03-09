@@ -24,14 +24,14 @@ $hueAccent: 'blue';
 $colorAccent: material-color($hueAccent, 'a400');
 
 $colorWhitePrimary: #fff;
-$colorWhiteSecondary: rgba(#fff, .7);
-$colorWhiteTertiary: rgba(#fff, .5);
+$colorWhiteSecondary: rgba(#fff, 0.7);
+$colorWhiteTertiary: rgba(#fff, 0.5);
 
-$colorBlackPrimary: rgba(#000, .87);
-$colorBlackSecondary: rgba(#000, .54);
-$colorBlackTertiary: rgba(#000, .38);
+$colorBlackPrimary: rgba(#000, 0.87);
+$colorBlackSecondary: rgba(#000, 0.54);
+$colorBlackTertiary: rgba(#000, 0.38);
 
-$opacityBlackHighlight: .1;
-$opacityWhiteHighlight: .2;
+$opacityBlackHighlight: 0.1;
+$opacityWhiteHighlight: 0.2;
 
-$thinBorderColor: rgba(#000, .12);
+$thinBorderColor: rgba(#000, 0.12);

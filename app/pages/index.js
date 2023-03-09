@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-export {LauncherIconGenerator} from './launcher-icon-generator';
-export {AppShortcutIconGenerator} from './app-shortcut-icon-generator';
-export {ActionBarIconGenerator} from './action-bar-icon-generator';
-export {NotificationIconGenerator} from './notification-icon-generator';
-export {GenericIconGenerator} from './generic-icon-generator';
-export {NinePatchGenerator} from './ninepatch/nine-patch-generator';
+export { LauncherIconGenerator } from './launcher-icon-generator';
+export { AppShortcutIconGenerator } from './app-shortcut-icon-generator';
+export { ActionBarIconGenerator } from './action-bar-icon-generator';
+export { NotificationIconGenerator } from './notification-icon-generator';
+export { GenericIconGenerator } from './generic-icon-generator';
+export { NinePatchGenerator } from './ninepatch/nine-patch-generator';

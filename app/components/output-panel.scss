@@ -20,7 +20,7 @@
   display: flex;
   background-color: material-color('grey', '300');
 
-  &[data-theme="dark"] {
+  &[data-theme='dark'] {
     background-color: material-color('grey', '400');
   }
 }
@@ -62,7 +62,7 @@
   font-weight: 500;
   margin-top: 32px;
   text-transform: uppercase;
-  letter-spacing: .5px;
+  letter-spacing: 0.5px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -158,7 +158,7 @@
 }
 
 .outputs-image-group.dark {
-  background-color: rgba(0,0,0,0.9);
+  background-color: rgba(0, 0, 0, 0.9);
 }
 
 .outputs-image-group.dark .label {
@@ -170,5 +170,5 @@
 }
 
 .outputs-image-group.dark.half {
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }

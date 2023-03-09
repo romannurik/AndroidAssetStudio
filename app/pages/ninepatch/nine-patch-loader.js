@@ -16,9 +16,10 @@
 
 import * as studio from '../../studio';
 
-const numberForRGBA = (r,g,b,a) => (r << 16) + (g << 8) + (b << 0) + (a << 24);
-const BLACK = numberForRGBA(0,0,0,255);
-const RED = numberForRGBA(255,0,0,255);
+const numberForRGBA = (r, g, b, a) =>
+  (r << 16) + (g << 8) + (b << 0) + (a << 24);
+const BLACK = numberForRGBA(0, 0, 0, 255);
+const RED = numberForRGBA(255, 0, 0, 255);
 
 export const NinePatchLoader = {
   loadNinePatchIntoStage(ctx, stage) {
@@ -28,14 +29,16 @@ export const NinePatchLoader = {
     let rects = {
       contentRect: { x: 0, y: 0, w: size.w, h: size.h },
       stretchRect: { x: 0, y: 0, w: size.w, h: size.h },
-      opticalBoundsRect: { x: 0, y: 0, w: size.w, h: size.h }
+      opticalBoundsRect: { x: 0, y: 0, w: size.w, h: size.h },
     };
 
     function _getPixel(x, y) {
-      return (imgData.data[(y * srcSize.w + x) * 4 + 0] << 16) // r
-          + (imgData.data[(y * srcSize.w + x) * 4 + 1] << 8) // g
-          + (imgData.data[(y * srcSize.w + x) * 4 + 2] << 0) // b
-          + (imgData.data[(y * srcSize.w + x) * 4 + 3] << 24); // a
+      return (
+        (imgData.data[(y * srcSize.w + x) * 4 + 0] << 16) + // r
+        (imgData.data[(y * srcSize.w + x) * 4 + 1] << 8) + // g
+        (imgData.data[(y * srcSize.w + x) * 4 + 2] << 0) + // b
+        (imgData.data[(y * srcSize.w + x) * 4 + 3] << 24)
+      ); // a
     }
 
     let inRegion;
@@ -117,5 +120,5 @@ export const NinePatchLoader = {
     let newCtx = studio.Drawing.context(size);
     newCtx.drawImage(ctx.canvas, 1, 1, size.w, size.h, 0, 0, size.w, size.h);
     stage.loadSourceImage(newCtx, rects);
-  }
+  },
 };

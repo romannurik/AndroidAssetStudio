@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-require('babel-polyfill');
+import 'babel-polyfill';
 
 import * as pages from './pages';
 window.pages = pages;

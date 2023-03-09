@@ -123,7 +123,7 @@ body.page-nine-patch-generator {
     &::before,
     &::after {
       flex: 1;
-      background-color: rgba($canvasLabelColor, .2);
+      background-color: rgba($canvasLabelColor, 0.2);
       content: '';
     }
 
@@ -213,20 +213,20 @@ body.page-nine-patch-generator {
     min-height: 0;
   }
 
-  &[data-theme="dark"] {
+  &[data-theme='dark'] {
     .outputs-panel,
     .nine-patch-preview-area-container {
       background-color: material-color('grey', '400');
     }
   }
 
-  .outputs-preview-sidebar[data-view="preview"] {
+  .outputs-preview-sidebar[data-view='preview'] {
     .nine-patch-preview-area-container {
       display: flex;
     }
   }
 
-  .outputs-preview-sidebar[data-view="output"] {
+  .outputs-preview-sidebar[data-view='output'] {
     .outputs-panel {
       display: flex;
     }

@@ -19,22 +19,21 @@ import tinycolor from 'tinycolor2';
 
 import * as studio from '../studio';
 
-import {BaseGenerator} from '../base-generator';
+import { BaseGenerator } from '../base-generator';
 
 const ICON_SIZE = { w: 24, h: 24 };
 const TARGET_RECT = { x: 0, y: 0, w: 24, h: 24 };
 
-const GRID_OVERLAY_SVG =
-    `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <g fill="none" fill-rule="evenodd">
-            <rect vector-effect="non-scaling-stroke" x="4" y="2" width="16" height="20" rx="2"/>
-            <rect vector-effect="non-scaling-stroke" x="3" y="3" width="18" height="18" rx="2"/>
-            <rect vector-effect="non-scaling-stroke" x="2" y="4" width="20" height="16" rx="2"/>
-            <circle vector-effect="non-scaling-stroke" cx="12" cy="12" r="5"/>
-            <circle vector-effect="non-scaling-stroke" cx="12" cy="12" r="10"/>
-            <path vector-effect="non-scaling-stroke" d="M0 24L24 0M0 0l24 24m-12 0V0M8 0v24m8-24v24m8-12H0m0 4h24M0 8h24"/>
-        </g>
-    </svg>`;
+const GRID_OVERLAY_SVG = `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" fill-rule="evenodd">
+    <rect vector-effect="non-scaling-stroke" x="4" y="2" width="16" height="20" rx="2"/>
+    <rect vector-effect="non-scaling-stroke" x="3" y="3" width="18" height="18" rx="2"/>
+    <rect vector-effect="non-scaling-stroke" x="2" y="4" width="20" height="16" rx="2"/>
+    <circle vector-effect="non-scaling-stroke" cx="12" cy="12" r="5"/>
+    <circle vector-effect="non-scaling-stroke" cx="12" cy="12" r="10"/>
+    <path vector-effect="non-scaling-stroke" d="M0 24L24 0M0 0l24 24m-12 0V0M8 0v24m8-24v24m8-12H0m0 4h24M0 8h24"/>
+  </g>
+</svg>`;
 
 export class ActionBarIconGenerator extends BaseGenerator {
   get gridOverlaySvg() {
@@ -65,13 +64,13 @@ export class ActionBarIconGenerator extends BaseGenerator {
             if (nameField.getValue() == defaultNameForSourceValue_(oldValue)) {
               nameField.setValue(defaultNameForSourceValue_(newValue));
             }
-          }
+          },
         }),
         (nameField = new studio.TextField('name', {
           newGroup: true,
           title: 'Name',
           helpText: 'Used when generating ZIP files.',
-          defaultValue: defaultNameForSourceValue_({})
+          defaultValue: defaultNameForSourceValue_({}),
         })),
         new studio.EnumField('theme', {
           title: 'Theme',
@@ -79,16 +78,16 @@ export class ActionBarIconGenerator extends BaseGenerator {
           options: [
             { id: 'light', title: 'Light' },
             { id: 'dark', title: 'Dark' },
-            { id: 'custom', title: 'Custom' }
+            { id: 'custom', title: 'Custom' },
           ],
-          defaultValue: 'light'
+          defaultValue: 'light',
         }),
         (customColorField = new studio.ColorField('color', {
           title: 'Color',
           defaultValue: 'rgba(33, 150, 243, .6)',
-          alpha: true
-        }))
-      ]
+          alpha: true,
+        })),
+      ],
     });
     this.form.onChange(field => {
       let values = this.form.getValues();
@@ -115,10 +114,11 @@ export class ActionBarIconGenerator extends BaseGenerator {
       if (values.source.ctx) {
         let srcCtx = values.source.ctx;
         studio.Drawing.drawCenterInside(
-            tmpCtx,
-            srcCtx,
-            studio.Util.mult(TARGET_RECT, mult),
-            {x: 0, y: 0, w: srcCtx.canvas.width, h: srcCtx.canvas.height});
+          tmpCtx,
+          srcCtx,
+          studio.Util.mult(TARGET_RECT, mult),
+          { x: 0, y: 0, w: srcCtx.canvas.width, h: srcCtx.canvas.height }
+        );
       }
 
       let color = values.color;
@@ -131,15 +131,18 @@ export class ActionBarIconGenerator extends BaseGenerator {
       let alpha = color.getAlpha();
       color.setAlpha(1);
 
-      studio.Effects.fx([
-        {effect: 'fill-color', color: color.toRgbString(), opacity: alpha}
-      ], outCtx, tmpCtx, iconSize);
+      studio.Effects.fx(
+        [{ effect: 'fill-color', color: color.toRgbString(), opacity: alpha }],
+        outCtx,
+        tmpCtx,
+        iconSize
+      );
 
       color.setAlpha(alpha);
 
       this.zipper.add({
         name: `res/drawable-${density}/${values.name}.png`,
-        canvas: outCtx.canvas
+        canvas: outCtx.canvas,
       });
 
       this.setImageForSlot_(density, outCtx.canvas.toDataURL());

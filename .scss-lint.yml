@@ -37,7 +37,7 @@ linters:
     enabled: false
   Shorthand:
     # 3 sides are less readable than 4.
-    allowed_shorthands: [1,2,4]
+    allowed_shorthands: [1, 2, 4]
   SpaceAfterPropertyColon:
     enabled: false
     # Since we have line length limits in place, sometimes (like with image
