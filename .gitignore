@@ -1,12 +1,13 @@
-_sandbox
-.sass-cache
-.tmp
+/.yarn/*
+# !/.yarn/patches
+# !/.yarn/plugins
+!/.yarn/releases
+# !/.yarn/sdks
+# !/.yarn/cache
 node_modules
-!app/node_modules
-bower_components
-dist
 .DS_Store
-.publish
-*.sublime-workspace
-*~
-older-version
+dist
+dist-ssr
+*.local
+/src/Meta.ts
+/docs

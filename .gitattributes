@@ -1,0 +1,27 @@
+* text=auto
+
+* vue eol=lf encoding=UTF-8
+*.css eol=lf encoding=UTF-8
+*.html eol=lf encoding=UTF-8
+*.js eol=lf encoding=UTF-8
+*.jsx eol=lf encoding=UTF-8
+*.md eol=lf encoding=UTF-8
+*.scss eol=lf encoding=UTF-8
+*.ts eol=lf encoding=UTF-8
+*.tsx eol=lf encoding=UTF-8
+*.txt eol=lf encoding=UTF-8
+*.xml eol=lf encoding=UTF-8
+
+# Images
+*.gif binary
+*.ico binary
+*.jpg binary
+*.png binary
+*.svg eol=lf encoding=UTF-8
+*.webp binary
+
+# Fonts
+*.eot binary
+*.otf binary
+*.ttf binary
+*.woff binary

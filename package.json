@@ -1,13 +1,13 @@
 {
   "name": "android-asset-studio",
   "devDependencies": {
-    "@babel/core": "^7.21.0",
+    "@babel/core": "^7.22.10",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
-    "@babel/preset-env": "^7.20.2",
-    "@babel/preset-react": "^7.18.6",
-    "@babel/register": "^7.21.0",
-    "babel-loader": "^9.1.2",
-    "browser-sync": "^2.28.3",
+    "@babel/preset-env": "^7.22.10",
+    "@babel/preset-react": "^7.22.5",
+    "@babel/register": "^7.22.5",
+    "babel-loader": "^9.1.3",
+    "browser-sync": "^2.29.3",
     "del": "^6.1.1",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^8.0.0",
@@ -29,14 +29,14 @@
     "merge-stream": "^2.0.0",
     "pretty-bytes": "^5.6.0",
     "run-sequence": "^2.2.1",
-    "webpack": "^5.76.0",
-    "workbox-build": "^6.5.4",
-    "workbox-webpack-plugin": "^6.5.4"
+    "webpack": "^5.88.2",
+    "workbox-build": "^7.0.0",
+    "workbox-webpack-plugin": "^7.0.0"
   },
   "engines": {
-    "node": ">=18.15.0"
+    "node": ">=18.17.1"
   },
-  "packageManager": "yarn@3.4.1",
+  "packageManager": "yarn@3.6.3",
   "scripts": {
     "build": "gulp",
     "start": "gulp serve"
@@ -46,13 +46,13 @@
     "arg": "^5.0.2",
     "babel-polyfill": "^6.26.0",
     "esm": "^3.2.25",
-    "jquery": "^3.6.4",
+    "jquery": "^3.7.0",
     "jszip": "^3.10.1",
-    "open": "^8.4.2",
+    "open": "^9.1.0",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
-    "sass": "^1.58.3",
+    "sass": "^1.66.1",
     "tinycolor2": "^1.6.0",
     "webfontloader": "^1.6.28"
   },
@@ -61,7 +61,9 @@
     "access": "public"
   },
   "resolutions": {
+    "http-cache-semantics": "^4.1.1",
     "json5": "^2.2.3",
-    "http-cache-semantics": "^4.1.1"
+    "semver": "^7.5.2",
+    "yaml": "^2.2.2"
   }
 }
